@@ -1,0 +1,334 @@
+
+/* GLOBAL */
+
+body {
+  background-color: #fff;
+  text-rendering: optimizeLegibility;
+  max-width: 1200px;
+  margin: auto;
+}
+
+html {
+  font-size: 15px;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: "Encode Sans Expanded", sans-serif;
+  margin-right: 1rem;
+  margin-left: 1rem;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+h1 {
+  color: #621360;
+  font-size: 2.125rem;
+  line-height: 2.375rem;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 400;
+}
+h2 {
+  color: #621360;
+  font-size: 1.5rem;
+  line-height: 1.75rem;
+  font-weight: 500;
+}
+h3 {
+  color: #621360;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+}
+h4 {
+  color: #505457;
+  font-size: 1.125rem;
+  line-height: 1.375rem;
+  font-weight: 500;
+}
+h5 {
+  color: #505457;
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+  font-weight: 500;
+}
+
+p {
+  color: #505457;
+  font-family: "Open Sans", sans-serif;
+  font-size: 1rem;
+  line-height: 1.4rem;
+  font-weight: 400;
+  margin: 16px;
+}
+
+a {
+  text-decoration: none;
+  color: #0078b4;
+}
+a:hover {
+  color: #00A0FF;
+}
+
+
+input {
+  color: #505457;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 1rem;
+}
+
+.port-SubHeading {
+  color: #621360;
+  font-family: "Open Sans", sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  margin: 16px;
+  margin-top: 64px;
+}
+
+.image-logo {
+  margin: 32px;
+  text-align: center;
+  }
+
+.row-main {
+  margin: 16px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+
+/* INDEX */
+
+.row-box{
+  content: "";
+  clear: both;
+  display: block;
+  margin-top: 32px;
+  margin-bottom: 30%;
+  margin-right: 16px;
+  margin-left: 16px;
+}
+.box-left {
+  float: left;
+  width: 50%;
+  padding: 16px;
+}
+.box-right {
+  float: left;
+  position: relative;
+  width: 50%;
+  padding: 16px;
+}
+
+#box-right-applicant-heading {
+  position: absolute;
+  left: 10%;
+  top: 25%;
+}
+#box-right-applicant-id {
+  position: absolute;
+  left: 10%;
+  top: 40%;
+  width: 50%;
+  padding: 1rem;
+  border: 1px solid #505457;
+  color: #505457;
+}
+#box-right-applicant-next {
+  font-family: "Open Sans", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1rem;
+  background-color: #0078B4;
+  color: #fff;
+  border: none;
+  position: absolute;
+  left: 62%;
+  top: 40%;
+  padding: 1rem;
+}
+#box-right-applicant-next:hover {
+  font-family: "Open Sans", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1rem;
+  background-color: #00A0FF;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  left: 62%;
+  top: 40%;
+  padding: 1rem;
+  cursor: pointer;
+}
+#box-right-applicant-tcs {
+  position: absolute;
+  left: 10%;
+  top: 60%;
+}
+
+
+/* CHOOSE A CHARITY */
+
+.image-charity {
+  margin: 16px;
+  text-align: center;
+  }
+
+#charity-text {
+  color: #fff;
+  text-align: left;
+}
+
+#charity-heading {
+  color: #fff;
+  text-align: left;
+}
+
+#charity-select {
+  color: #fff;
+  text-align: center;
+  margin-top: 0;
+  text-decoration: none;
+  padding: 1rem;
+}
+
+button {
+  color: #fff;
+  font-family: "Open Sans", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 16px;
+  background-color: #3c023c;
+  border: none;
+
+}
+button:hover {
+  color: #fff;
+  background-color: #00A0FF;
+  border: none;
+  cursor: pointer;
+}
+button:active {
+  color: #fff;
+  background-color: #0078B4;
+  border: none;
+  cursor: pointer;
+}
+button:focus {
+  color: #fff;
+  background-color: #0078B4;
+  border: none;
+  cursor: pointer;
+}
+
+.flex-choices {
+  background-color: #621360;
+  padding-top: 4px;
+  margin: 16px;
+  margin-bottom: 0;
+  margin-top: 0;
+  height: 275px;
+}
+
+.flex-select {
+  background-color: #3c023c;
+  margin: 16px;
+  height: 50px;
+  margin-top: 0;
+  width: 100%;
+  width: -moz-available;          /* WebKit-based browsers will ignore this. */
+  width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+  width: fill-available;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  margin-right: 16px;
+  margin-left: 16px;
+  text-align: center;
+}
+
+.flex-item-1 {
+  background-color: #e1e1e1;
+  border: none;
+  margin: 16px;
+  flex: 25%;
+}
+
+.flex-item-2  {
+  background-color: #e1e1e1;
+    border: none;
+  margin: 16px;
+  flex: 25%;
+}
+
+.flex-item-3 {
+  background-color: #e1e1e1;
+  border: none;
+  margin: 16px;
+  flex: 25%;
+}
+
+.flex-item-4 {
+  background-color: #e1e1e1;
+  border: none;
+  margin: 16px;
+  flex: 25%;
+}
+
+
+/* Responsive layout - makes a one column-layout instead of row layout */
+@media (max-width: 1135px) {
+  .flex-container {
+    flex-direction: column;
+  }
+  .flex-choices {
+    height: 200px;
+  }
+}
+
+/* Style the Headings that are used to open and close the accordion panel */
+.accordion {
+  background-color: #621360;
+  cursor: pointer;
+}
+/* Change color of the heading and icon (on hover and click) */
+.active, .accordion:hover, .accordion:hover::after {
+  background-color: #00A0FF;
+  color: white;
+}
+/* Add "plus" sign (+) after Accordion */
+.accordion::after {
+  content: 'Choose';
+}
+/* Add "minus" sign (-) after Accordion (when accordion is active) */
+.active::after {
+  content: "\2212";
+  color: white;
+}
+/* Style the accordion panel */
+.accordion-panel {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0 ease-out;
+}
+
+
+
+
+/* GOOD NEWS */
+
+
+
+
+/* T&CS */
