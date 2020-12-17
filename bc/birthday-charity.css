@@ -143,28 +143,31 @@ input {
   font-family: "Open Sans", sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  margin: 1rem;
+  text-align: center;
   background-color: #0078B4;
   color: #fff;
   border: none;
   position: absolute;
-  left: 62%;
+  left: 65%;
   top: 40%;
   padding: 1rem;
+  padding-right: 7%;
+  padding-left: 7%;
 }
 #box-right-applicant-next:hover {
   font-family: "Open Sans", sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  margin: 1rem;
   background-color: #00A0FF;
   color: #fff;
   border: none;
   cursor: pointer;
   position: absolute;
-  left: 62%;
+  left: 65%;
   top: 40%;
   padding: 1rem;
+  padding-right: 7%;
+  padding-left: 7%;
   cursor: pointer;
 }
 #box-right-applicant-tcs {
@@ -192,7 +195,11 @@ input {
 }
 
 #charity-select {
+  font-family: "Encode Sans Expanded", sans-serif;
   color: #fff;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  font-weight: 500;
   text-align: center;
   margin-top: 0;
   text-decoration: none;
@@ -331,12 +338,30 @@ button:focus {
 }
 /* Add "plus" sign (+) after Accordion */
 .accordion::after {
-  content: 'Choose';
+  content: "Choose" "\00a0" "\00a0" "\2610";
+  font-family: "Encode Sans Expanded", sans-serif;
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 0;
+  text-decoration: none;
+  padding: 1rem;
 }
+
 /* Add "minus" sign (-) after Accordion (when accordion is active) */
 .active::after {
-  content: "\2212";
-  color: white;
+  content: "Choose" "\00a0" "\00a0" "\2611";
+  font-family: "Encode Sans Expanded", sans-serif;
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 0;
+  text-decoration: none;
+  padding: 1rem;
 }
 /* Style the accordion panel */
 .accordion-panel {
