@@ -287,15 +287,37 @@ button:focus {
 }
 
 
+/* MEDIA QUERIES */
 /* Responsive layout - makes a one column-layout instead of row layout */
 @media (max-width: 1135px) {
   .flex-container {
     flex-direction: column;
   }
-  .flex-choices {
-    height: 200px;
+}
+
+@media (min-width: 1000px) {
+  .row-box-mobile {
+    display: none
   }
 }
+
+@media (max-width: 1000px) {
+  .row-box {
+    display: none
+  }
+  .box-left {
+    width: 100%;
+    padding: 32px;
+    padding-top: 32px;
+    padding-bottom: 0;
+  }
+  .box-right {
+    position: relative;
+    width: 100%;
+    padding: 32px;
+  }
+}
+
 
 /* Style the Headings that are used to open and close the accordion panel */
 .accordion {
