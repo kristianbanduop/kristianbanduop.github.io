@@ -181,6 +181,7 @@ input {
 
 .image-charity {
   margin: 16px;
+  margin-bottom: 0;
   text-align: center;
   }
 
@@ -237,10 +238,9 @@ button:focus {
 
 .flex-choices {
   background-color: #621360;
-  padding-top: 4px;
-  margin: 16px;
-  margin-bottom: 0;
-  margin-top: 0;
+  margin-right: 16px;
+  margin-left: 16px;
+  margin-top: 8px;
   height: 275px;
 }
 
@@ -330,6 +330,7 @@ button:focus {
 .accordion {
   background-color: #621360;
   cursor: pointer;
+  margin-bottom: 0;
 }
 /* Change color of the heading and icon (on hover and click) */
 .active, .accordion:hover, .accordion:hover::after {
@@ -368,6 +369,8 @@ button:focus {
   overflow: hidden;
   max-height: 0;
   transition: max-height 0 ease-out;
+  padding-bottom: 0px;
+  padding-top: 0px;
 }
 
 
