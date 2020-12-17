@@ -219,7 +219,7 @@ button {
 }
 button:hover {
   color: #fff;
-  background-color: #00A0FF;
+  background-color: #0078B4;
   border: none;
   cursor: pointer;
 }
@@ -334,7 +334,7 @@ button:focus {
 }
 /* Change color of the heading and icon (on hover and click) */
 .active, .accordion:hover, .accordion:hover::after {
-  background-color: #00A0FF;
+  background-color: #0078B4;
   color: white;
 }
 /* Add "plus" sign (+) after Accordion */
