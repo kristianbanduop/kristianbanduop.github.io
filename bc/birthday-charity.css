@@ -215,6 +215,7 @@ button {
   margin: 16px;
   background-color: #3c023c;
   border: none;
+  vertical-align: bottom;
 
 }
 button:hover {
@@ -241,7 +242,7 @@ button:focus {
   margin-right: 16px;
   margin-left: 16px;
   margin-top: 8px;
-  height: 275px;
+  height: 230px;
 }
 
 .flex-select {
@@ -296,7 +297,7 @@ button:focus {
 
 /* MEDIA QUERIES */
 /* Responsive layout - makes a one column-layout instead of row layout */
-@media (max-width: 1135px) {
+@media (max-width: 1200px) {
   .flex-container {
     flex-direction: column;
   }
