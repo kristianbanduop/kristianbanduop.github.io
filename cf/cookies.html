@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
-html {margin-left:10%; margin-right:10%;}
 body {font-family: "Open Sans", sans-serif; color: #000;}
 h1,h2,h3,h4,h5,h6 {font-family: "Encode Sans Expanded", sans-serif; color: #621360;}
+p {font-family: "Open Sans", sans-serif; color: #000;}
 .w3-bar,h1,button {font-family: "Encode Sans Expanded", sans-serif;}
 .fa-anchor,.fa-coffee {font-size:200px}
 
@@ -177,8 +177,8 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 .w3-orange,.w3-hover-orange:hover{color:#000!important;background-color:#ff9800!important}
 .w3-deep-orange,.w3-hover-deep-orange:hover{color:#fff!important;background-color:#ff5722!important}
 .w3-pink,.w3-hover-pink:hover{color:#fff!important;background-color:#e91e63!important}
-.w3-purple,.w3-hover-purple:hover{color:#fff!important;background-color:#9c27b0!important}
-.w3-deep-purple,.w3-hover-deep-purple:hover{color:#fff!important;background-color:#673ab7!important}
+.w3-purple,.w3-hover-purple:hover{color:#fff!important;background-color:#621360!important}
+.w3-deep-purple,.w3-hover-deep-purple:hover{color:#fff!important;background-color:#3c023c!important}
 .w3-red,.w3-hover-red:hover{color:#fff!important;background-color:#f44336!important}
 .w3-sand,.w3-hover-sand:hover{color:#000!important;background-color:#fdf5e6!important}
 .w3-teal,.w3-hover-teal:hover{color:#fff!important;background-color:#009688!important}
@@ -252,37 +252,40 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 <script src="https://consent.cookiefirst.com/banner.js" data-cookiefirst-key="4fa10b57-b3a4-4449-8a94-d8d8c7f65c60"></script>
 
 <!-- Navbar -->
-<div class="w3-top">
+<div class="w3-top" style="margin-left:10%; margin-right:10%;">
   <div class="w3-bar w3-deep-purple w3-card w3-left-align w3-large">
     <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-left w3-padding-large w3-hover-blue w3-large w3-purple" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
     <a href="#" class="w3-bar-item w3-button w3-padding-large w3-blue">Home</a>
-    <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-purple">Cookies</a>
+    <a href="/cookies/" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-purple">Cookies</a>
 
   </div>
 
   <!-- Navbar on small screens -->
-  <div id="navDemo" class="w3-bar-block w3-deep-purple w3-hide w3-hide-large w3-hide-medium w3-large">
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">Cookies</a>
+ <div id="navDemo" class="w3-bar-block w3-deep-purple w3-hide w3-hide-large w3-hide-medium w3-large" style="margin-left:10%; margin-right:10%;">
+    <a href="/cookies/" class="w3-bar-item w3-button w3-padding-large">Cookies</a>
   </div>
 </div>
 
 <!-- Header -->
-<header style="padding:200px 0 0 0">
+<header style="padding:200px 0 0 0; margin-left:10%; margin-right:10%;">
   <h1>COOKIES PAGE</h1>
 </header>
 
 <!-- Cookie policy -->
+<div style="margin-left:10%; margin-right:10%;">
 <h2>Information about our use of cookies</h2>
 <p>Our website uses cookies to distinguish you from other users of our website. This helps us to provide you with a good experience when you browse our website and also allows us to improve our site. By continuing to browse the site, you are agreeing to our use of cookies.<p>
 <br>
 <p>A cookie is a small file of letters and numbers that we store on your browser or the hard drive of your computer or device. It gets stored if you agree to our Cookie’s policy when first visiting our website. Cookies contain information that is transferred to and from your computer's hard drive. First-party cookies are set by the port.ac.uk domain. Third-party cookies are set via the domain of a product partner. Each cookie includes a duration - this is how long the cookie will remain active on your computer. You can use your browser’s “clear history” tool to remove cookies before their expiration date.</p>
+</div>
 
 <!-- Cookiefirst -->
+<div style="margin-left:10%; margin-right:10%;">
 <div id="cookiefirst-policy-page"></div>
   <div>This cookie policy has been created and updated by <a href="https://cookiefirst.com">CookieFirst.com</a>.</div>
 <div id="cookiefirst-cookies-table"></div>
   <div>This cookie table has been created and updated by the <a href="https://cookiefirst.com">CookieFirst consent management platform</a>.</div>
-
+</div>
 <!-- Footer -->
 <footer class="w3-container w3-padding-64 w3-center w3-deep-purple">Footer</footer>
 <footer class="w3-container w3-padding-16 w3-center w3-purple">Footer</footer>
