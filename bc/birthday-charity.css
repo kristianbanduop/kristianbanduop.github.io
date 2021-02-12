@@ -340,7 +340,7 @@ button:focus {
 }
 /* Add "plus" sign (+) after Accordion */
 .accordion::after {
-  content: "Choose" "\00a0" "\00a0" "\2610";
+  content: "Choose";
   font-family: "Encode Sans Expanded", sans-serif;
   color: #fff;
   font-size: 1.25rem;
@@ -354,7 +354,7 @@ button:focus {
 
 /* Add "minus" sign (-) after Accordion (when accordion is active) */
 .active::after {
-  content: "Choose" "\00a0" "\00a0" "\2611";
+  content: "Deselect";
   font-family: "Encode Sans Expanded", sans-serif;
   color: #fff;
   font-size: 1.25rem;
