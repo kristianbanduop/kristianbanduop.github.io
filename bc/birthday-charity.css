@@ -12,7 +12,7 @@ html {
   font-size: 15px;
 }
 
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, ol, li {
   font-family: "Encode Sans Expanded", sans-serif;
   margin-right: 1rem;
   margin-left: 1rem;
@@ -133,7 +133,7 @@ input {
 #box-right-applicant-id {
   position: absolute;
   left: 10%;
-  top: 40%;
+  top: 38%;
   width: 50%;
   padding: 1rem;
   border: 1px solid #505457;
@@ -149,7 +149,7 @@ input {
   border: none;
   position: absolute;
   left: 65%;
-  top: 40%;
+  top: 38%;
   padding: 1rem;
   padding-right: 7%;
   padding-left: 7%;
@@ -164,7 +164,7 @@ input {
   cursor: pointer;
   position: absolute;
   left: 65%;
-  top: 40%;
+  top: 38%;
   padding: 1rem;
   padding-right: 7%;
   padding-left: 7%;
