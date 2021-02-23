@@ -27,31 +27,33 @@
   <!-- 2 boxes - left (image) - right (applicant id form) -->
   <div class="row-box">
     <div class="box-left">
-      <img src="https://www.port.ac.uk/-/media/images/news-events-and-blogs/blogs/2020/august/preparing-for-law-course-800x400.jpg" alt="example" style="width:100%">
+      <img src="https://www.port.ac.uk/-/media/images/news-events-and-blogs/blogs/2020/august/preparing-for-law-course-800x400.jpg" alt="campaign" style="width:100%">
     </div>
     <div class="box-right">
-      <!-- USE SVG? --><img src="https://www.port.ac.uk/-/media/images/campaigns/birthday-charity/grey-box.jpg" alt="example" style="width:100%;"><!-- USE SVG? -->
+      <img src="https://www.port.ac.uk/-/media/images/campaigns/birthday-charity/grey-box.jpg" alt="box" style="width:100%;">
       <h2 id="box-right-applicant-heading">Applicant ID number</h2>
+      <div id="error-message"></div>
       <form action="choose-a-charity.html">
         <input id="box-right-applicant-id" type="text" onfocus="this.value=''" value="Enter ID here">
         <input id="box-right-applicant-next" type="submit" value="Next">
       </form>
-      <p id="box-right-applicant-tcs">Check out the T&Cs <a href="terms-and-conditions.html">here</a></p>
+      <p id="box-right-applicant-tcs">Check out the T&Cs <a href="javascript:void(0)" onclick="document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">here</a></p>
     </div>
   </div>
 
   <div class="row-box-mobile">
     <div class="box-left">
-      <img src="https://www.port.ac.uk/-/media/images/news-events-and-blogs/blogs/2020/august/preparing-for-law-course-800x400.jpg" alt="example" style="width:100%">
+      <img src="https://www.port.ac.uk/-/media/images/news-events-and-blogs/blogs/2020/august/preparing-for-law-course-800x400.jpg" alt="campaign" style="width:100%">
     </div>
     <div class="box-right">
-      <img src="grey%20box%20e1e1e1.jpg" alt="example" style="width:100%;">
+      <img src="https://www.port.ac.uk/-/media/images/campaigns/birthday-charity/grey-box.jpg" alt="box" style="width:100%;">
       <h2 id="box-right-applicant-heading">Applicant ID number</h2>
+      <div id="error-message"></div>
       <form action="choose-a-charity.html">
         <input id="box-right-applicant-id" type="text" onfocus="this.value=''" value="Enter ID here">
         <input id="box-right-applicant-next" type="submit" value="Next">
       </form>
-      <p id="box-right-applicant-tcs">Check out the T&Cs <a href="terms-and-conditions.html">here</a></p>
+      <p id="box-right-applicant-tcs">Check out the T&Cs <a href="javascript:void(0)" onclick="document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">here</a></p>
     </div>
   </div>
 
@@ -62,6 +64,31 @@
     <p>Why are we making a donation this year? Because we're not just here to teach, but to support our students, our communities and the causes they’re passionate about.<br> To make a donation, just enter your Applicant ID number (you can find it on your card) and then select your chosen charity.<br>Enjoy the rest of your birthday and we hope to see you soon.</p>
   </div>
 
+  <!-- Lightbox -->
+  <div id="light" class="lightbox_content">
+  <!-- Lightbox 1st close -->
+  <a id="close_button" style="float:right;" href="javascript:void(0)" onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
+    <div>
+      <!-- Terms and conditions copy -->
+      <br>
+      <h2>Terms and conditions</h2>
+      <br>
+      <p>These terms and conditions are for the Birthday Card mailout for current applicants of the University of Portsmouth. This offer includes the gift of a charity donation on behalf of an Applicant to a preselected charity from the University of Portsmouth.
+      <br>
+      <br>
+      <strong>1.0</strong> This offer is in no way linked to the student’s acceptance of an offer or otherwise. The only condition is that the student has applied and currently holds an offer by the University of Portsmouth.
+      <br>
+      <br>
+      <strong>2.0</strong> Applicants sent the card are only permitted to one donation per person.
+      <br>
+      <br>
+      <strong>3.0</strong> Although the University of Portsmouth supports the suggested charities, it is not officially affiliated with any of the four charities including Stonewall, Black Lives Matter UK, Ocean Plastics or the National Trust.
+      <br>
+      <br>
+      <strong>4.0</strong> The University of Portsmouth has the right to vary or withdraw the offer at its discretion.</p>
+    </div>
+  </div>
+  <div id="fade" class="lightbox_overlay"></div>
 
 </body>
 
