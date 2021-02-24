@@ -371,13 +371,13 @@ button:focus {
   .box-left {
     width: 100%;
     padding: 32px;
-    padding-top: 32px;
-    padding-bottom: 0;
   }
   .box-right {
     position: relative;
     width: 100%;
     padding: 32px;
+    padding-top: 32px;
+    padding-bottom: 0;
   }
 }
 
@@ -428,13 +428,3 @@ button:focus {
   padding-bottom: 0px;
   padding-top: 0px;
 }
-
-
-
-
-/* GOOD NEWS */
-
-
-
-
-/* T&CS */
