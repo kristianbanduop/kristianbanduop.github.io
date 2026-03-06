@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Brand reframing 2025/26</title>
+  <meta name="description" content="Landing page linking to demo examples for the 2025/26 brand reframing straplines." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:wght@600;700&family=Open+Sans:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root{
+      --bg: #ffffff;
+      --text: #0b0c0c;         /* near-black (gov style) */
+      --muted: #505a5f;        /* dark grey */
+      --border: #b1b4b6;       /* mid grey */
+      --panel: #f3f2f1;        /* light grey */
+      --link: #0b0c0c;         /* keep black */
+      --focus: #ffdd00;        /* high-vis focus */
+      --max: 72ch;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body{
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height: 1.6;
+      font-size: 18px;
+    }
+
+    /* Skip link */
+    .skip-link{
+      position: absolute;
+      left: -999px;
+      top: 0.5rem;
+      padding: 0.6rem 0.9rem;
+      background: var(--focus);
+      color: var(--text);
+      font-weight: 700;
+      border: 2px solid var(--text);
+      z-index: 9999;
+    }
+    .skip-link:focus{
+      left: 0.5rem;
+      outline: none;
+    }
+
+    header{
+      border-bottom: 2px solid var(--border);
+      background: var(--bg);
+    }
+
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 1.25rem 1rem;
+    }
+
+    h1, h2, h3{
+      font-family: "Encode Sans Expanded", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      letter-spacing: 0.2px;
+      margin: 0 0 0.75rem 0;
+    }
+
+    h1{
+      font-size: 2rem;
+      line-height: 1.2;
+    }
+
+    .lede{
+      margin: 0.25rem 0 0 0;
+      color: var(--muted);
+      max-width: 60ch;
+    }
+
+    main{
+      padding: 1.5rem 0 2rem;
+    }
+
+    section{
+      border: 2px solid var(--border);
+      background: var(--bg);
+      padding: 1.25rem 1rem;
+      margin: 0 0 1.25rem 0;
+    }
+
+    section + section{
+      margin-top: 1.25rem;
+    }
+
+    h2{
+      font-size: 1.5rem;
+      line-height: 1.25;
+      margin-bottom: 1rem;
+    }
+
+    .block{
+      padding: 1rem;
+      background: var(--panel);
+      border-left: 6px solid var(--text);
+      margin: 0 0 1rem 0;
+    }
+
+    h3{
+      font-size: 1.15rem;
+      line-height: 1.35;
+      margin-bottom: 0.5rem;
+    }
+
+    ul{
+      margin: 0;
+      padding-left: 1.1rem;
+    }
+
+    li{
+      margin: 0.35rem 0;
+    }
+
+    a{
+      color: var(--link);
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 0.18em;
+      font-weight: 600;
+    }
+
+    a:hover{
+      text-decoration-thickness: 3px;
+    }
+
+    a:visited{
+      color: var(--muted);
+    }
+
+    /* AAA-style visible focus */
+    a:focus,
+    button:focus,
+    input:focus{
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 2px var(--text);
+    }
+
+    footer{
+      border-top: 2px solid var(--border);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* Improve readability on small screens */
+    @media (max-width: 480px){
+      body{ font-size: 17px; }
+      h1{ font-size: 1.75rem; }
+      section{ padding: 1rem; }
+      .block{ padding: 0.9rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header>
+    <div class="wrap">
+      <h1>Brand reframing 2025/26</h1>
+      <p class="lede">
+        Links to demo examples for each strapline (e.g. homepage demos and single-component HTML examples).
+      </p>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <section aria-labelledby="with-you">
+      <h2 id="with-you">We’re with you</h2>
+
+      <div class="block">
+        <h3>Homepage demo examples</h3>
+        <ul>
+          <li><a href="#" aria-label="Open We're with you homepage demo (placeholder link)">Homepage demo – Option A (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We're with you homepage demo Option B (placeholder link)">Homepage demo – Option B (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We're with you homepage demo Option C (placeholder link)">Homepage demo – Option C (placeholder)</a></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h3>Single component demos</h3>
+        <ul>
+          <li><a href="#" aria-label="Open We're with you hero component demo (placeholder link)">Hero component demo (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We're with you card grid component demo (placeholder link)">Card grid component demo (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We're with you stats component demo (placeholder link)">Stats / accolades component demo (placeholder)</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="what-matters">
+      <h2 id="what-matters">We do what matters</h2>
+
+      <div class="block">
+        <h3>Homepage demo examples</h3>
+        <ul>
+          <li><a href="#" aria-label="Open We do what matters homepage demo Option A (placeholder link)">Homepage demo – Option A (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We do what matters homepage demo Option B (placeholder link)">Homepage demo – Option B (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We do what matters homepage demo Option C (placeholder link)">Homepage demo – Option C (placeholder)</a></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h3>Single component demos</h3>
+        <ul>
+          <li><a href="#" aria-label="Open We do what matters course search component demo (placeholder link)">Find-a-course search demo (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We do what matters stats component demo (placeholder link)">Stats / evidence component demo (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We do what matters video component demo (placeholder link)">Video / story component demo (placeholder)</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="make-it-happen">
+      <h2 id="make-it-happen">We make it happen</h2>
+
+      <div class="block">
+        <h3>Homepage demo examples</h3>
+        <ul>
+          <li><a href="#" aria-label="Open We make it happen homepage demo Option A (placeholder link)">Homepage demo – Option A (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We make it happen homepage demo Option B (placeholder link)">Homepage demo – Option B (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We make it happen homepage demo Option C (placeholder link)">Homepage demo – Option C (placeholder)</a></li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h3>Single component demos</h3>
+        <ul>
+          <li><a href="#" aria-label="Open We make it happen hero carousel component demo (placeholder link)">Hero / carousel demo (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We make it happen card grid component demo (placeholder link)">Card grid demo (placeholder)</a></li>
+          <li><a href="#" aria-label="Open We make it happen video component demo (placeholder link)">Video / in-action demo (placeholder)</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p style="margin:0;">
+        Tip: replace each <code>#</code> with the URL to your external HTML demo pages.
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
