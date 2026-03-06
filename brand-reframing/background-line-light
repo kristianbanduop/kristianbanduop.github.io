@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diagonal scroll-reveal squiggle</title>
+
+  <!-- Anton for titles/headings -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #f6f1e6;          /* off-white */
+      --ink: #1f1f1f;
+      --card: rgba(255,255,255,0.78);
+      --border: rgba(20,20,20,0.12);
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+      --heading: "Anton", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Anton for titles/headings only */
+    h1, h2, h3, .section-title{
+      font-family: var(--heading);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    /* Fixed background SVG (never affected by components) */
+    .bg-squiggle{
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Foreground content */
+    .page{
+      position: relative;
+      z-index: 1;
+      padding: clamp(20px, 4vw, 48px);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header{
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .brand{ display: grid; gap: 6px; }
+    .brand h1{
+      font-size: clamp(30px, 3.2vw, 48px);
+      line-height: 1.0;
+      margin: 0;
+    }
+    .brand p{
+      margin: 0;
+      max-width: 68ch;
+      opacity: 0.85;
+      line-height: 1.5;
+    }
+
+    .grid{
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+
+    .hero{
+      grid-column: span 12;
+      padding: 22px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.55));
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      margin-bottom: 6px;
+    }
+
+    .card{
+      grid-column: span 6;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      min-height: 140px;
+    }
+
+    .card h2{
+      margin: 0 0 8px;
+      font-size: 22px;
+      line-height: 1.05;
+    }
+
+    .section-title{
+      grid-column: span 12;
+      margin: 22px 0 4px;
+      font-size: 20px;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 840px){
+      .card{ grid-column: span 12; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- One line: diagonal + gentle squiggle + ONE smooth anticlockwise loop + scroll reveal -->
+  <svg class="bg-squiggle" viewBox="0 0 1200 800" preserveAspectRatio="none" aria-hidden="true">
+    <path
+      id="squiggle"
+      fill="none"
+      stroke="rgba(186, 152, 92, 0.34)"
+      stroke-width="72"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+
+  <main class="page">
+    <header>
+      <div class="brand">
+        <h1>Diagonal scroll-reveal squiggle</h1>
+        <p>
+          One thick line, gentle squiggle, a single smooth anticlockwise loop, revealing from left to right as you scroll.
+        </p>
+      </div>
+    </header>
+
+    <section class="grid">
+      <div class="hero">
+        <strong>Scroll down</strong> — the line is drawn progressively (stroke-dash) while staying behind everything.
+      </div>
+
+      <!-- Make the page long -->
+      <div class="section-title">Section A</div>
+      <article class="card"><h2>A1</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>A2</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>A3</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>A4</h2><p>Filler content to create scroll.</p></article>
+
+      <div class="section-title">Section B</div>
+      <article class="card"><h2>B1</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>B2</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>B3</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>B4</h2><p>Filler content to create scroll.</p></article>
+
+      <div class="section-title">Section C</div>
+      <article class="card"><h2>C1</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>C2</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>C3</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>C4</h2><p>Filler content to create scroll.</p></article>
+
+      <div class="section-title">Section D</div>
+      <article class="card"><h2>D1</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>D2</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>D3</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>D4</h2><p>Filler content to create scroll.</p></article>
+
+      <div class="section-title">Section E</div>
+      <article class="card"><h2>E1</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>E2</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>E3</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>E4</h2><p>Filler content to create scroll.</p></article>
+
+      <div class="section-title">Section F</div>
+      <article class="card"><h2>F1</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>F2</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>F3</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>F4</h2><p>Filler content to create scroll.</p></article>
+
+      <div class="section-title">Section G</div>
+      <article class="card"><h2>G1</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>G2</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>G3</h2><p>Filler content to create scroll.</p></article>
+      <article class="card"><h2>G4</h2><p>Filler content to create scroll.</p></article>
+    </section>
+  </main>
+
+  <script>
+    const path = document.getElementById("squiggle");
+
+    function clamp01(n){ return Math.max(0, Math.min(1, n)); }
+    function lerp(a,b,t){ return a + (b - a) * t; }
+    function easeInOutCubic(t){
+      return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2;
+    }
+
+    function getScrollProgress(){
+      const doc = document.documentElement;
+      const scrollTop = doc.scrollTop || document.body.scrollTop;
+      const scrollHeight = doc.scrollHeight || document.body.scrollHeight;
+      const clientHeight = doc.clientHeight;
+      const maxScroll = Math.max(1, scrollHeight - clientHeight);
+      return clamp01(scrollTop / maxScroll);
+    }
+
+    // Catmull-Rom -> cubic Bezier for a very smooth stroke
+    function catmullRomToBezier(points){
+      if (points.length < 2) return "";
+      let d = `M ${points[0][0].toFixed(2)} ${points[0][1].toFixed(2)}`;
+
+      for (let i = 0; i < points.length - 1; i++){
+        const p0 = points[i - 1] || points[i];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = points[i + 2] || p2;
+
+        const c1x = p1[0] + (p2[0] - p0[0]) / 6;
+        const c1y = p1[1] + (p2[1] - p0[1]) / 6;
+
+        const c2x = p2[0] - (p3[0] - p1[0]) / 6;
+        const c2y = p2[1] - (p3[1] - p1[1]) / 6;
+
+        d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2[0].toFixed(2)} ${p2[1].toFixed(2)}`;
+      }
+      return d;
+    }
+
+    // Main diagonal + gentle sine
+    function makeMainCurve({
+      width = 1200,
+      xPad = 160,
+      yStart = 585,
+      slope = -0.17,
+      amp = 36,
+      wiggles = 2.0
+    } = {}){
+      const x0 = -xPad;
+      const span = (width + xPad) - x0;
+
+      const k = (Math.PI * 2 * wiggles) / span;
+
+      const yAt = (x) => {
+        const diag = yStart + slope * (x - x0);
+        const wobble = Math.sin((x - x0) * k) * amp;
+        return diag + wobble;
+      };
+
+      const dyDx = (x) => slope + Math.cos((x - x0) * k) * amp * k;
+
+      return { x0, span, yAt, dyDx };
+    }
+
+    /**
+     * One continuous path:
+     * - left-to-right main line
+     * - insert ONE smooth loop (anticlockwise, starts by moving rightwards)
+     */
+    function buildPath({
+      loopAt = 0.64,
+      loopRadius = 170   // <-- smaller loop (was ~240)
+    } = {}){
+      const { x0, span, yAt, dyDx } = makeMainCurve();
+
+      const xAnchor = x0 + loopAt * span;
+      const yAnchor = yAt(xAnchor);
+
+      // Smaller ellipse loop
+      const rx = loopRadius * 1.25;
+      const ry = loopRadius * 0.90;
+
+      // Match loop tangent to main slope at anchor:
+      // slope m = -(ry/rx) * cot(theta)
+      const m = dyDx(xAnchor);
+      let cot = -(m) * (rx / ry);
+      if (!Number.isFinite(cot) || cot <= 0) cot = 0.001;
+      const theta0 = Math.atan(1 / cot);
+
+      // Center so anchor is on ellipse at theta0
+      const cx = xAnchor - rx * Math.cos(theta0);
+      const cy = yAnchor - ry * Math.sin(theta0);
+
+      // Left points to anchor
+      const leftPts = [];
+      const leftSteps = 18;
+      for (let i = 0; i <= leftSteps; i++){
+        const t = (loopAt * i) / leftSteps;
+        const x = x0 + t * span;
+        leftPts.push([x, yAt(x)]);
+      }
+      leftPts[leftPts.length - 1] = [xAnchor, yAnchor];
+
+      // Right points from anchor
+      const rightPts = [];
+      const rightSteps = 18;
+      for (let i = 0; i <= rightSteps; i++){
+        const t = loopAt + ((1 - loopAt) * i) / rightSteps;
+        const x = x0 + t * span;
+        rightPts.push([x, yAt(x)]);
+      }
+      rightPts[0] = [xAnchor, yAnchor];
+
+      // Loop points: ONE revolution anticlockwise => decreasing angle
+      const loopPts = [];
+      const loopSteps = 34;
+      for (let i = 0; i <= loopSteps; i++){
+        const theta = theta0 - (i / loopSteps) * (Math.PI * 2);
+        loopPts.push([cx + rx * Math.cos(theta), cy + ry * Math.sin(theta)]);
+      }
+
+      // Build final path
+      let d = catmullRomToBezier(leftPts);
+      d += catmullRomToBezier(loopPts).replace(/^M [^C]+/, "");
+      d += catmullRomToBezier(rightPts).replace(/^M [^C]+/, "");
+      return d;
+    }
+
+    let totalLen = 0;
+    let ticking = false;
+
+    function setupPath(){
+      path.setAttribute("d", buildPath({
+        loopAt: 0.64,
+        loopRadius: 165   // smaller still; adjust this number as needed
+      }));
+
+      totalLen = path.getTotalLength();
+      path.style.strokeDasharray = `${totalLen}`;
+      path.style.strokeDashoffset = `${totalLen}`;
+      path.style.willChange = "stroke-dashoffset";
+    }
+
+    function updateReveal(){
+      ticking = false;
+
+      const t = getScrollProgress();
+      const start = 0.05;
+      const end   = 0.90;
+      const p = clamp01((t - start) / (end - start));
+      const eased = easeInOutCubic(p);
+
+      const offset = totalLen * (1 - eased);
+      path.style.strokeDashoffset = `${offset.toFixed(2)}`;
+
+      const alpha = lerp(0.20, 0.36, eased);
+      path.setAttribute("stroke", `rgba(186, 152, 92, ${alpha.toFixed(3)})`);
+    }
+
+    function onScroll(){
+      if (!ticking){
+        ticking = true;
+        requestAnimationFrame(updateReveal);
+      }
+    }
+
+    setupPath();
+    updateReveal();
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", () => {
+      setupPath();
+      updateReveal();
+    });
+  </script>
+</body>
+</html>
