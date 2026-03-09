@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>University Menu System</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f6f8fb;
+      --surface-2: #eef3f9;
+      --text: #102033;
+      --muted: #5b6b80;
+      --border: #d6deea;
+      --primary: #083b8a;
+      --primary-2: #0c55c7;
+      --focus: #ffbf47;
+      --danger: #c62828;
+      --shadow: 0 14px 40px rgba(12, 31, 66, 0.12);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --max-width: 1280px;
+      --header-height: 88px;
+      --transition: 180ms ease;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #fbfcfe 0%, #f5f8fc 100%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -3rem;
+      background: var(--focus);
+      color: #111;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      z-index: 1000;
+      font-weight: 700;
+      transition: top var(--transition);
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid rgba(214, 222, 234, 0.95);
+    }
+
+    .header-shell,
+    .utility-inner,
+    .hero,
+    .content-grid,
+    .footer-inner {
+      width: min(calc(100% - 2rem), var(--max-width));
+      margin: 0 auto;
+    }
+
+    .utility-bar {
+      border-bottom: 1px solid var(--border);
+      background: #f8fbff;
+      font-size: 0.95rem;
+    }
+
+    .utility-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 2.9rem;
+    }
+
+    .utility-links,
+    .utility-actions,
+    .primary-links,
+    .menu-columns,
+    .menu-feature-list,
+    .menu-link-list,
+    .mobile-section-links,
+    .quick-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .utility-links,
+    .utility-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .utility-links a,
+    .utility-actions a {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .utility-links a:hover,
+    .utility-actions a:hover,
+    .utility-links a:focus-visible,
+    .utility-actions a:focus-visible {
+      color: var(--primary);
+    }
+
+    .header-shell {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 1.25rem;
+      min-height: calc(var(--header-height) - 2.9rem);
+      padding: 0.9rem 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.85rem;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: inline-grid;
+      place-items: center;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 0.9rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      box-shadow: 0 12px 24px rgba(8, 59, 138, 0.2);
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-kicker {
+      display: block;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .brand-name {
+      display: block;
+      font-size: 1.15rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .desktop-nav {
+      justify-self: center;
+      min-width: 0;
+    }
+
+    .primary-links {
+      display: flex;
+      align-items: stretch;
+      gap: 0.25rem;
+      flex-wrap: nowrap;
+    }
+
+    .nav-item {
+      position: static;
+    }
+
+    .nav-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-height: 3rem;
+      padding: 0.8rem 0.95rem;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      border-radius: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .nav-trigger:hover,
+    .nav-item[data-open="true"] > .nav-trigger {
+      background: var(--surface-2);
+      color: var(--primary);
+    }
+
+    .nav-trigger .caret {
+      width: 0.7rem;
+      height: 0.7rem;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg) translateY(-2px);
+      transition: transform var(--transition);
+    }
+
+    .nav-item[data-open="true"] > .nav-trigger .caret {
+      transform: rotate(-135deg) translateX(-2px);
+    }
+
+    .mega-menu {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: calc(100% + 1px);
+      width: min(calc(100vw - 2rem), 1180px);
+      background: rgba(255, 255, 255, 0.99);
+      border: 1px solid var(--border);
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      display: none;
+    }
+
+    .nav-item[data-open="true"] > .mega-menu {
+      display: block;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 2fr 1.15fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    .menu-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      min-height: 100%;
+    }
+
+    .menu-eyebrow {
+      display: inline-block;
+      margin-bottom: 0.55rem;
+      color: var(--primary);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+    }
+
+    .menu-heading {
+      margin: 0 0 0.4rem;
+      font-size: 1.12rem;
+      line-height: 1.2;
+    }
+
+    .menu-copy {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .menu-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .menu-column h4,
+    .menu-feature h4 {
+      margin: 0 0 0.6rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .menu-link-list,
+    .menu-feature-list {
+      display: grid;
+      gap: 0.2rem;
+    }
+
+    .menu-link-list a,
+    .menu-feature-list a {
+      display: block;
+      padding: 0.6rem 0.7rem;
+      border-radius: 0.75rem;
+      font-weight: 650;
+    }
+
+    .menu-link-list a:hover,
+    .menu-link-list a:focus-visible,
+    .menu-feature-list a:hover,
+    .menu-feature-list a:focus-visible {
+      background: var(--surface-2);
+      color: var(--primary);
+      outline: none;
+    }
+
+    .menu-feature {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .feature-callout {
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #eaf3ff 0%, #f8fbff 100%);
+      border: 1px solid #cfe0fb;
+    }
+
+    .feature-callout strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 1rem;
+    }
+
+    .feature-callout p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-input {
+      width: 16rem;
+      min-height: 2.9rem;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 0.95rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1rem;
+      height: 1rem;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .cta,
+    .icon-button,
+    .mobile-toggle,
+    .mobile-close {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .cta {
+      min-height: 2.9rem;
+      padding: 0.8rem 1.1rem;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 10px 20px rgba(8, 59, 138, 0.2);
+    }
+
+    .cta:hover,
+    .cta:focus-visible {
+      background: var(--primary-2);
+    }
+
+    .mobile-toggle,
+    .icon-button,
+    .mobile-close {
+      display: inline-grid;
+      place-items: center;
+      width: 2.9rem;
+      height: 2.9rem;
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .mobile-toggle {
+      display: none;
+    }
+
+    .mobile-toggle svg,
+    .icon-button svg,
+    .mobile-close svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    .icon-button:hover,
+    .icon-button:focus-visible,
+    .mobile-toggle:hover,
+    .mobile-toggle:focus-visible,
+    .mobile-close:hover,
+    .mobile-close:focus-visible {
+      background: var(--surface-2);
+      color: var(--primary);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2rem;
+      align-items: center;
+      padding: 3.5rem 0 2.5rem;
+    }
+
+    .hero h1 {
+      margin: 0 0 1rem;
+      font-size: clamp(2.2rem, 4vw, 4.2rem);
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      max-width: 60ch;
+      margin: 0 0 1.25rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-top: 1.35rem;
+    }
+
+    .quick-links a,
+    .stat-card,
+    .content-card {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 30px rgba(8, 31, 66, 0.06);
+    }
+
+    .quick-links a {
+      padding: 1rem;
+      font-weight: 700;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+
+    .quick-links a:hover,
+    .quick-links a:focus-visible,
+    .content-card:hover {
+      transform: translateY(-1px);
+      border-color: #b7c9e5;
+      box-shadow: 0 14px 32px rgba(8, 31, 66, 0.1);
+      outline: none;
+    }
+
+    .hero-panel {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .stat-card,
+    .content-card {
+      padding: 1.2rem;
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 2rem;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+      color: var(--primary);
+    }
+
+    .stat-card span,
+    .content-card p {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      padding-bottom: 4rem;
+    }
+
+    .content-card h2 {
+      margin: 0 0 0.6rem;
+      font-size: 1.2rem;
+    }
+
+    .content-card a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-top: 0.8rem;
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .site-footer {
+      background: #102033;
+      color: #e8effa;
+      padding: 2rem 0 3rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-inner a {
+      color: #e8effa;
+    }
+
+    .footer-inner small {
+      color: #b2c1d8;
+    }
+
+    .mobile-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 18, 36, 0.42);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition);
+      z-index: 79;
+    }
+
+    .mobile-overlay[data-open="true"] {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(92vw, 26rem);
+      height: 100dvh;
+      background: #fff;
+      border-left: 1px solid var(--border);
+      box-shadow: -12px 0 36px rgba(10, 25, 52, 0.16);
+      transform: translateX(100%);
+      transition: transform var(--transition);
+      z-index: 80;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mobile-drawer[data-open="true"] {
+      transform: translateX(0);
+    }
+
+    .mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-body {
+      overflow: auto;
+      padding: 1rem;
+    }
+
+    .mobile-search {
+      margin-bottom: 1rem;
+    }
+
+    .mobile-search input {
+      width: 100%;
+      min-height: 3rem;
+      padding: 0.85rem 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+
+    .mobile-section {
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      background: #fbfdff;
+      overflow: hidden;
+      margin-bottom: 0.8rem;
+    }
+
+    .mobile-section summary {
+      list-style: none;
+      cursor: pointer;
+      font-weight: 800;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mobile-section summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .mobile-section summary::after {
+      content: "+";
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
+
+    .mobile-section[open] summary::after {
+      content: "−";
+    }
+
+    .mobile-section-links {
+      display: grid;
+      gap: 0.25rem;
+      padding: 0 0.75rem 0.9rem;
+    }
+
+    .mobile-section-links a {
+      display: block;
+      padding: 0.85rem 0.75rem;
+      border-radius: 0.85rem;
+      font-weight: 650;
+    }
+
+    .mobile-section-links a:hover,
+    .mobile-section-links a:focus-visible {
+      background: var(--surface-2);
+      color: var(--primary);
+      outline: none;
+    }
+
+    .mobile-utility {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .mobile-utility a {
+      padding: 0.85rem 0.2rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 1160px) {
+      .search-input {
+        width: 13rem;
+      }
+
+      .menu-grid {
+        grid-template-columns: 1fr 1.4fr 1fr;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .desktop-nav,
+      .search-wrap,
+      .utility-bar {
+        display: none;
+      }
+
+      .header-shell {
+        grid-template-columns: auto 1fr auto;
+        min-height: var(--header-height);
+      }
+
+      .mobile-toggle {
+        display: inline-grid;
+      }
+
+      .hero,
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-links {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header-shell,
+      .hero,
+      .content-grid,
+      .footer-inner {
+        width: min(calc(100% - 1rem), var(--max-width));
+      }
+
+      .brand-name {
+        white-space: normal;
+      }
+
+      .quick-links {
+        grid-template-columns: 1fr;
+      }
+
+      .cta {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="utility-bar" aria-label="Secondary navigation">
+      <div class="utility-inner">
+        <ul class="utility-links">
+          <li><a href="#">Current students</a></li>
+          <li><a href="#">Staff</a></li>
+          <li><a href="#">Alumni</a></li>
+          <li><a href="#">Business</a></li>
+        </ul>
+        <ul class="utility-actions">
+          <li><a href="#">News</a></li>
+          <li><a href="#">Events</a></li>
+          <li><a href="#">Library</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="header-shell">
+      <a class="brand" href="#" aria-label="University home">
+        <span class="brand-mark" aria-hidden="true">UNI</span>
+        <span class="brand-text">
+          <span class="brand-kicker"></span>
+          <span class="brand-name">UoP</span>
+        </span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <ul class="primary-links">
+          <li class="nav-item" data-open="false">
+            <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="menu-study">
+              Study <span class="caret" aria-hidden="true"></span>
+            </button>
+            <div class="mega-menu" id="menu-study" role="region" aria-label="Study menu">
+              <div class="menu-grid">
+                <section class="menu-card">
+                  <span class="menu-eyebrow">Explore</span>
+                  <h3 class="menu-heading">Find the right route into university</h3>
+                  <p class="menu-copy">Support prospective undergraduate, postgraduate, online, and degree apprenticeship audiences with a menu built for high-volume discovery.</p>
+                </section>
+                <div class="menu-columns">
+                  <section class="menu-column">
+                    <h4>Prospective students</h4>
+                    <ul class="menu-link-list">
+                      <li><a href="#">Undergraduate courses</a></li>
+                      <li><a href="#">Postgraduate taught</a></li>
+                      <li><a href="#">Postgraduate research</a></li>
+                      <li><a href="#">Degree apprenticeships</a></li>
+                      <li><a href="#">Online and distance learning</a></li>
+                    </ul>
+                  </section>
+                  <section class="menu-column">
+                    <h4>Guidance and support</h4>
+                    <ul class="menu-link-list">
+                      <li><a href="#">How to apply</a></li>
+                      <li><a href="#">Open days and visits</a></li>
+                      <li><a href="#">Fees and funding</a></li>
+                      <li><a href="#">Scholarships and bursaries</a></li>
+                      <li><a href="#">Accommodation</a></li>
+                    </ul>
+                  </section>
+                </div>
+                <aside class="menu-feature">
+                  <div class="feature-callout">
+                    <strong>Ready to search 500+ courses?</strong>
+                    <p>Surface the course finder, search, and application call to action prominently for scale and conversion.</p>
+                  </div>
+                  <section>
+                    <h4>Popular shortcuts</h4>
+                    <ul class="menu-feature-list">
+                      <li><a href="#">Course finder</a></li>
+                      <li><a href="#">Entry requirements</a></li>
+                      <li><a href="#">International applications</a></li>
+                    </ul>
+                  </section>
+                </aside>
+              </div>
+            </div>
+          </li>
+
+          <li class="nav-item" data-open="false">
+            <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="menu-research">
+              Research <span class="caret" aria-hidden="true"></span>
+            </button>
+            <div class="mega-menu" id="menu-research" role="region" aria-label="Research menu">
+              <div class="menu-grid">
+                <section class="menu-card">
+                  <span class="menu-eyebrow">Research</span>
+                  <h3 class="menu-heading">From impact stories to institutes</h3>
+                  <p class="menu-copy">Help prospective researchers, collaborators, funders, and the public move quickly through a complex research estate.</p>
+                </section>
+                <div class="menu-columns">
+                  <section class="menu-column">
+                    <h4>Research at the university</h4>
+                    <ul class="menu-link-list">
+                      <li><a href="#">Research themes</a></li>
+                      <li><a href="#">Institutes and centres</a></li>
+                      <li><a href="#">REF and performance</a></li>
+                      <li><a href="#">Facilities and equipment</a></li>
+                      <li><a href="#">Work with our experts</a></li>
+                    </ul>
+                  </section>
+                  <section class="menu-column">
+                    <h4>For researchers</h4>
+                    <ul class="menu-link-list">
+                      <li><a href="#">Research degrees</a></li>
+                      <li><a href="#">Funding opportunities</a></li>
+                      <li><a href="#">Ethics and governance</a></li>
+                      <li><a href="#">Open research</a></li>
+                      <li><a href="#">Publications and outputs</a></li>
+                    </ul>
+                  </section>
+                </div>
+                <aside class="menu-feature">
+                  <div class="feature-callout">
+                    <strong>Feature the latest breakthrough</strong>
+                    <p>Use the right-hand column for a rotating story, major bid, or flagship partnership.</p>
+                  </div>
+                  <section>
+                    <h4>Popular shortcuts</h4>
+                    <ul class="menu-feature-list">
+                      <li><a href="#">Find a researcher</a></li>
+                      <li><a href="#">Research news</a></li>
+                      <li><a href="#">PhD opportunities</a></li>
+                    </ul>
+                  </section>
+                </aside>
+              </div>
+            </div>
+          </li>
+
+          <li class="nav-item" data-open="false">
+            <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="menu-international">
+              International <span class="caret" aria-hidden="true"></span>
+            </button>
+            <div class="mega-menu" id="menu-international" role="region" aria-label="International menu">
+              <div class="menu-grid">
+                <section class="menu-card">
+                  <span class="menu-eyebrow">Global</span>
+                  <h3 class="menu-heading">Give overseas visitors the shortest path</h3>
+                  <p class="menu-copy">International audiences often arrive with specific goals. This structure prioritises admissions, country information, and support content.</p>
+                </section>
+                <div class="menu-columns">
+                  <section class="menu-column">
+                    <h4>Study here</h4>
+                    <ul class="menu-link-list">
+                      <li><a href="#">International undergraduate</a></li>
+                      <li><a href="#">International postgraduate</a></li>
+                      <li><a href="#">English language support</a></li>
+                      <li><a href="#">Country and region guides</a></li>
+                      <li><a href="#">Agent and partner information</a></li>
+                    </ul>
+                  </section>
+                  <section class="menu-column">
+                    <h4>Practical information</h4>
+                    <ul class="menu-link-list">
+                      <li><a href="#">Visa guidance</a></li>
+                      <li><a href="#">Tuition fees</a></li>
+                      <li><a href="#">Scholarships</a></li>
+                      <li><a href="#">Arrival support</a></li>
+                      <li><a href="#">Living in the UK</a></li>
+                    </ul>
+                  </section>
+                </div>
+                <aside class="menu-feature">
+                  <div class="feature-callout">
+                    <strong>Optimised for campaign landings</strong>
+                    <p>Country-specific paid traffic can land in this area and still recover via consistent local navigation.</p>
+                  </div>
+                  <section>
+                    <h4>Popular shortcuts</h4>
+                    <ul class="menu-feature-list">
+                      <li><a href="#">Meet our advisers</a></li>
+                      <li><a href="#">Join a webinar</a></li>
+                      <li><a href="#">Chat to a student ambassador</a></li>
+                    </ul>
+                  </section>
+                </aside>
+              </div>
+            </div>
+          </li>
+
+          <li class="nav-item" data-open="false">
+            <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="menu-student-life">
+              Student life <span class="caret" aria-hidden="true"></span>
+            </button>
+            <div class="mega-menu" id="menu-student-life" role="region" aria-label="Student life menu">
+              <div class="menu-grid">
+                <section class="menu-card">
+                  <span class="menu-eyebrow">Campus</span>
+                  <h3 class="menu-heading">Show the lived student experience</h3>
+                  <p class="menu-copy">A strong university menu needs more than course links. This section supports conversion by surfacing community, wellbeing, and place.</p>
+                </section>
+                <div class="menu-columns">
+                  <section class="menu-column">
+                    <h4>Life on campus</h4>
+                    <ul class="menu-link-list">
+                      <li><a href="#">Accommodation</a></li>
+                      <li><a href="#">Clubs and societies</a></li>
+                      <li><a href="#">Sport and fitness</a></li>
+                      <li><a href="#">Food and drink</a></li>
+                      <li><a href="#">City and region</a></li>
+                    </ul>
+                  </section>
+                  <section class="menu-column">
+                    <h4>Support services</h4>
+                    <ul class="menu-link-list">
+                      <li><a href="#">Wellbeing and counselling</a></li>
+                      <li><a href="#">Disability support</a></li>
+                      <li><a href="#">Careers and employability</a></li>
+                      <li><a href="#">Money advice</a></li>
+                      <li><a href="#">Academic skills</a></li>
+                    </ul>
+                  </section>
+                </div>
+                <aside class="menu-feature">
+                  <div class="feature-callout">
+                    <strong>Highlight a virtual tour</strong>
+                    <p>A visual callout works especially well here and reduces friction for mobile-first school leaver audiences.</p>
+                  </div>
+                  <section>
+                    <h4>Popular shortcuts</h4>
+                    <ul class="menu-feature-list">
+                      <li><a href="#">Virtual tour</a></li>
+                      <li><a href="#">Student stories</a></li>
+                      <li><a href="#">Careers outcomes</a></li>
+                    </ul>
+                  </section>
+                </aside>
+              </div>
+            </div>
+          </li>
+
+          <li class="nav-item" data-open="false">
+            <button class="nav-trigger" type="button" aria-expanded="false" aria-controls="menu-about">
+              About <span class="caret" aria-hidden="true"></span>
+            </button>
+            <div class="mega-menu" id="menu-about" role="region" aria-label="About menu">
+              <div class="menu-grid">
+                <section class="menu-card">
+                  <span class="menu-eyebrow">About us</span>
+                  <h3 class="menu-heading">Support reputation, trust, and governance</h3>
+                  <p class="menu-copy">This area provides institutional context for prospective students, parents, media, partners, and policymakers.</p>
+                </section>
+                <div class="menu-columns">
+                  <section class="menu-column">
+                    <h4>Institution</h4>
+                    <ul class="menu-link-list">
+                      <li><a href="#">University strategy</a></li>
+                      <li><a href="#">Leadership and governance</a></li>
+                      <li><a href="#">Faculties and schools</a></li>
+                      <li><a href="#">History and heritage</a></li>
+                      <li><a href="#">Sustainability</a></li>
+                    </ul>
+                  </section>
+                  <section class="menu-column">
+                    <h4>Public information</h4>
+                    <ul class="menu-link-list">
+                      <li><a href="#">Jobs</a></li>
+                      <li><a href="#">Press office</a></li>
+                      <li><a href="#">Policies and procedures</a></li>
+                      <li><a href="#">Freedom of information</a></li>
+                      <li><a href="#">Accessibility</a></li>
+                    </ul>
+                  </section>
+                </div>
+                <aside class="menu-feature">
+                  <div class="feature-callout">
+                    <strong>Keep trust links visible</strong>
+                    <p>Accessibility, policies, governance, and jobs tend to be high-intent destinations for external audiences.</p>
+                  </div>
+                  <section>
+                    <h4>Popular shortcuts</h4>
+                    <ul class="menu-feature-list">
+                      <li><a href="#">Contact us</a></li>
+                      <li><a href="#">Campus maps</a></li>
+                      <li><a href="#">Visit us</a></li>
+                    </ul>
+                  </section>
+                </aside>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <label class="search-wrap" aria-label="Site search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span class="sr-only">Search the site</span>
+          <input class="search-input" type="search" placeholder="Search courses, people, news…" />
+        </label>
+        <a class="cta" href="#">Apply now</a>
+        <button class="mobile-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">
+          <span class="sr-only">Open menu</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <line x1="4" y1="7" x2="20" y2="7"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="17" x2="20" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-overlay" data-open="false" hidden></div>
+
+  <aside class="mobile-drawer" id="mobile-menu" data-open="false" aria-hidden="true">
+    <div class="mobile-header">
+      <strong>Menu</strong>
+      <button class="mobile-close" type="button">
+        <span class="sr-only">Close menu</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="mobile-body">
+      <div class="mobile-search">
+        <label>
+          <span class="sr-only">Search the site</span>
+          <input type="search" placeholder="Search the site" />
+        </label>
+      </div>
+
+      <details class="mobile-section" open>
+        <summary>Study</summary>
+        <ul class="mobile-section-links">
+          <li><a href="#">Undergraduate courses</a></li>
+          <li><a href="#">Postgraduate study</a></li>
+          <li><a href="#">Open days</a></li>
+          <li><a href="#">Fees and funding</a></li>
+          <li><a href="#">Course finder</a></li>
+        </ul>
+      </details>
+
+      <details class="mobile-section">
+        <summary>Research</summary>
+        <ul class="mobile-section-links">
+          <li><a href="#">Research themes</a></li>
+          <li><a href="#">Institutes and centres</a></li>
+          <li><a href="#">Find a researcher</a></li>
+          <li><a href="#">PhD opportunities</a></li>
+        </ul>
+      </details>
+
+      <details class="mobile-section">
+        <summary>International</summary>
+        <ul class="mobile-section-links">
+          <li><a href="#">International study</a></li>
+          <li><a href="#">Country guides</a></li>
+          <li><a href="#">Visa guidance</a></li>
+          <li><a href="#">Scholarships</a></li>
+        </ul>
+      </details>
+
+      <details class="mobile-section">
+        <summary>Student life</summary>
+        <ul class="mobile-section-links">
+          <li><a href="#">Accommodation</a></li>
+          <li><a href="#">Student support</a></li>
+          <li><a href="#">Sport</a></li>
+          <li><a href="#">Virtual tour</a></li>
+        </ul>
+      </details>
+
+      <details class="mobile-section">
+        <summary>About</summary>
+        <ul class="mobile-section-links">
+          <li><a href="#">University strategy</a></li>
+          <li><a href="#">Leadership and governance</a></li>
+          <li><a href="#">Jobs</a></li>
+          <li><a href="#">Contact us</a></li>
+        </ul>
+      </details>
+
+      <div class="mobile-utility">
+        <a href="#">Current students</a>
+        <a href="#">Staff</a>
+        <a href="#">Alumni</a>
+        <a href="#">Business</a>
+        <a href="#">News and events</a>
+        <a href="#">Apply now</a>
+      </div>
+    </div>
+  </aside>
+
+  <main id="main-content">
+    <section class="hero">
+      <div>
+        <h1>A scalable university navigation system for very high traffic.</h1>
+        <p>This example is designed for a large UK university website with diverse audiences, deep information architecture, and the need for strong accessibility, mobile usability, and conversion to course discovery and applications.</p>
+        <div class="quick-links" aria-label="Quick links">
+          <a href="#">Find a course</a>
+          <a href="#">Book an open day</a>
+          <a href="#">International students</a>
+          <a href="#">Accommodation</a>
+        </div>
+      </div>
+      <div class="hero-panel" aria-label="Supporting information">
+        <div class="stat-card">
+          <strong>5M+</strong>
+          <span>Annual visitors can still navigate efficiently when top tasks, search, and cross-audience routes are kept visible.</span>
+        </div>
+        <div class="stat-card">
+          <strong>WCAG-ready</strong>
+          <span>Keyboard support, visible focus states, semantic landmarks, and mobile-first behaviour are built in.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-grid" aria-label="Example supporting content">
+      <article class="content-card">
+        <h2>Why this works for a large university</h2>
+        <p>The primary navigation is broad enough for major audience groups, while the mega menu exposes deeper paths without overwhelming the top level.</p>
+        <a href="#">Read IA notes →</a>
+      </article>
+      <article class="content-card">
+        <h2>Designed for conversion</h2>
+        <p>Course finder, open days, international guidance, and applications are surfaced consistently because they are common high-intent destinations.</p>
+        <a href="#">See conversion routes →</a>
+      </article>
+      <article class="content-card">
+        <h2>Mobile-first fallback</h2>
+        <p>On smaller screens, the desktop mega menu becomes a focused drawer with expandable sections, preserving depth without sacrificing usability.</p>
+        <a href="#">Review mobile behaviour →</a>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <strong>
+UoP</strong><br />
+        <small>Built as a responsive HTML/CSS/JS navigation example.</small>
+      </div>
+      <div>
+        <a href="#">Privacy</a> · <a href="#">Cookies</a> · <a href="#">Accessibility</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const navItems = [...document.querySelectorAll('.nav-item')];
+    const navTriggers = [...document.querySelectorAll('.nav-trigger')];
+    const mobileToggle = document.querySelector('.mobile-toggle');
+    const mobileDrawer = document.querySelector('.mobile-drawer');
+    const mobileOverlay = document.querySelector('.mobile-overlay');
+    const mobileClose = document.querySelector('.mobile-close');
+
+    function closeAllMenus() {
+      navItems.forEach((item) => {
+        item.dataset.open = 'false';
+        const trigger = item.querySelector('.nav-trigger');
+        trigger?.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function openMenu(item) {
+      closeAllMenus();
+      item.dataset.open = 'true';
+      item.querySelector('.nav-trigger')?.setAttribute('aria-expanded', 'true');
+    }
+
+    navTriggers.forEach((trigger) => {
+      const item = trigger.closest('.nav-item');
+      const menu = item?.querySelector('.mega-menu');
+
+      trigger.addEventListener('click', () => {
+        const isOpen = item.dataset.open === 'true';
+        if (isOpen) {
+          closeAllMenus();
+        } else {
+          openMenu(item);
+        }
+      });
+
+      item.addEventListener('mouseenter', () => {
+        if (window.innerWidth > 1024) openMenu(item);
+      });
+
+      item.addEventListener('mouseleave', () => {
+        if (window.innerWidth > 1024) closeAllMenus();
+      });
+
+      trigger.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          openMenu(item);
+          const firstLink = menu?.querySelector('a');
+          firstLink?.focus();
+        }
+        if (event.key === 'Escape') {
+          closeAllMenus();
+          trigger.focus();
+        }
+      });
+
+      menu?.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeAllMenus();
+          trigger.focus();
+        }
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.desktop-nav')) closeAllMenus();
+    });
+
+    function setMobileMenu(open) {
+      mobileDrawer.dataset.open = String(open);
+      mobileDrawer.setAttribute('aria-hidden', String(!open));
+      mobileOverlay.dataset.open = String(open);
+      mobileOverlay.hidden = !open;
+      mobileToggle.setAttribute('aria-expanded', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) {
+        mobileDrawer.querySelector('input')?.focus();
+      } else {
+        mobileToggle.focus();
+      }
+    }
+
+    mobileToggle.addEventListener('click', () => setMobileMenu(true));
+    mobileClose.addEventListener('click', () => setMobileMenu(false));
+    mobileOverlay.addEventListener('click', () => setMobileMenu(false));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeAllMenus();
+        if (mobileDrawer.dataset.open === 'true') setMobileMenu(false);
+      }
+    });
+  </script>
+</body>
+</html>
