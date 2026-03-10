@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Overlapping &amp; Hollowed Text</title>
+    <link href="https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<link href="https://assets.codepen.io/2509128/style.css" rel="stylesheet">
+
+<style>
+*, *::before, *::after {
+  font-family: inherit;
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  box-sizing: border-box;
+  font-family: 'Encode Sans Expanded', sans-serif;
+  font-size: 100%;
+}
+
+html body {
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+}
+
+a, a:link, a:visited {
+  text-decoration: none;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded&display=swap');
+
+main {
+	height: 100vh;
+	overflow: hidden;
+	background: radial-gradient(farthest-corner, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url(https://picsum.photos/1280/800) center/cover;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.wrapper {
+	font-size: 75px;
+	height: 3em;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	mix-blend-mode: screen;
+	
+	&.invert {
+		span {
+			color: black;
+			
+			&::before {
+				-webkit-text-stroke: .1em var(--color);
+			}
+		}
+	}
+	
+	span {
+		--color: #621360;
+		font-family: 'Encode Sans Expanded', sans-serif;
+		font-weight: 700;
+		font-style: italic;
+		display: block;
+		position: absolute;
+		color: var(--color);
+		letter-spacing: 0em;
+
+		&::before, &::after {
+			content: attr(data-text);
+			display: block;
+			position: relative;
+			padding: 0 .5em;
+			z-index: 1;
+		}
+
+		&::before {
+			position: absolute;
+			-webkit-text-stroke: .1em black;
+			z-index: 0;
+		}
+
+		&:first-child {
+			transform: translate(-1em, -.25em);
+		}
+
+		&:last-child {
+			--color: #ffffff;
+			transform: translate(-.5em, .25em);
+		}
+	}
+}
+
+</style>
+
+  </head>
+    
+  <body>
+  <main>
+	<div class="wrapper">
+		<span data-text="Title 2026"></span>
+		<span data-text="Title 2026"></span>
+	</div>
+	
+	<div class="wrapper invert">
+		<span data-text="Title 2026"></span>
+		<span data-text="Title 2026"></span>
+	</div>
+</main>
+    
+  </body>
+  
+</html>
