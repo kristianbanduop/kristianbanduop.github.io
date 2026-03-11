@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ravelin Sports Centre Memberships</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --purple: #621C61;
+        --bg-light: #F0F0F0;
+        --border-color: #000000;
+        --text-main: #000000;
+        --text-muted: #555555;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        background-color: #ffffff;
+        color: var(--text-main);
+        padding: 40px 20px;
+    }
+
+    .membership-container {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    /* Header Styles */
+    .header-section {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .subtitle-small {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+    }
+
+    .main-title {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .description {
+        font-size: 16px;
+        color: var(--text-muted);
+    }
+
+    /* Tabs */
+    .tabs-container {
+        display: flex;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 40px;
+    }
+
+    .tab {
+        padding: 16px 32px;
+        font-size: 18px;
+        font-weight: 400;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        outline: none;
+    }
+
+    .tab.active {
+        background-color: var(--bg-light);
+        font-weight: 600;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* Grid Layout */
+    .pricing-table {
+        width: 100%;
+    }
+
+    .grid-row {
+        display: grid;
+        grid-template-columns: 3fr 2fr 2fr 2fr;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .grid-row.header-row {
+        border-top: none;
+        align-items: end;
+        padding-bottom: 20px;
+    }
+
+    /* Columns Setup */
+    .col-header {
+        text-align: center;
+        padding: 0 16px;
+    }
+
+    .col-header h3 {
+        font-size: 20px;
+        font-weight: 400;
+        margin-bottom: 16px;
+    }
+
+    .btn-primary {
+        background-color: var(--purple);
+        color: white;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        font-size: 14px;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+    .price-display {
+        font-size: 28px;
+        font-weight: 400;
+        margin-bottom: 16px;
+    }
+
+    /* Toggle Switch */
+    .toggle-container {
+        display: inline-flex;
+        background-color: #E6E6E6;
+        border-radius: 20px;
+        padding: 4px;
+        width: 80%;
+        max-width: 180px;
+        margin: 0 auto;
+    }
+
+    .toggle-btn {
+        flex: 1;
+        padding: 6px 0;
+        text-align: center;
+        font-size: 12px;
+        cursor: pointer;
+        border-radius: 16px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+    }
+
+    .toggle-btn.active {
+        background-color: white;
+        color: var(--text-main);
+        font-weight: 600;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .product-comparison-title {
+        font-size: 16px;
+        font-weight: 700;
+        padding-bottom: 12px;
+    }
+
+    /* Feature Rows */
+    .feature-name-col {
+        padding: 16px 16px 16px 0;
+        background-color: white;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .feature-title-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .feature-desc {
+        display: none;
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-top: 12px;
+        line-height: 1.4;
+        max-width: 90%;
+    }
+
+    .grid-row.expanded .feature-desc {
+        display: block;
+    }
+
+    .chevron {
+        transition: transform 0.3s ease;
+    }
+
+    .grid-row.expanded .chevron {
+        transform: rotate(180deg);
+    }
+
+    .feature-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60px;
+    }
+
+    .bg-gray {
+        background-color: var(--bg-light);
+    }
+
+    .bg-white {
+        background-color: #ffffff;
+    }
+
+    /* Bottom Actions */
+    .bottom-actions {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-top: 32px;
+        padding-top: 32px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .btn-secondary {
+        background-color: white;
+        color: var(--purple);
+        border: 1px solid var(--purple);
+        padding: 12px 24px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .link-action {
+        color: var(--text-main);
+        text-decoration: none;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .link-action:hover {
+        text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+
+<div class="membership-container">
+    <div class="header-section">
+        <div class="subtitle-small">MEMBERSHIPS</div>
+        <h1 class="main-title">Ravelin Sports Centre memberships</h1>
+        <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+
+    <div class="tabs-container">
+        <button class="tab active" data-target="student">Student</button>
+        <button class="tab" data-target="staff">Staff</button>
+        <button class="tab" data-target="associate">Associate</button>
+        <button class="tab" data-target="public">Public</button>
+    </div>
+
+    <div class="tab-content active" id="student">
+        <div class="pricing-table">
+            
+            <div class="grid-row header-row">
+                <div class="product-comparison-title">Product comparison</div>
+                
+                <div class="col-header" data-tier="ultimate">
+                    <h3>Ultimate</h3>
+                    <button class="btn-primary">Get Ultimate membership</button>
+                    <div class="price-display" data-monthly="£26.99" data-annual="£269.90">£26.99</div>
+                    <div class="toggle-container">
+                        <button class="toggle-btn active" data-period="monthly">Monthly</button>
+                        <button class="toggle-btn" data-period="annual">Annual</button>
+                    </div>
+                </div>
+
+                <div class="col-header" data-tier="super">
+                    <h3>Super</h3>
+                    <button class="btn-primary">Get Super membership</button>
+                    <div class="price-display" data-monthly="£23.99" data-annual="£239.90">£23.99</div>
+                    <div class="toggle-container">
+                        <button class="toggle-btn active" data-period="monthly">Monthly</button>
+                        <button class="toggle-btn" data-period="annual">Annual</button>
+                    </div>
+                </div>
+
+                <div class="col-header" data-tier="core">
+                    <h3>Core</h3>
+                    <button class="btn-primary">Get Core membership</button>
+                    <div class="price-display" data-monthly="£17.99" data-annual="£179.90">£17.99</div>
+                    <div class="toggle-container">
+                        <button class="toggle-btn active" data-period="monthly">Monthly</button>
+                        <button class="toggle-btn" data-period="annual">Annual</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-row expanded">
+                <div class="feature-name-col">
+                    <div class="feature-title-wrap">
+                        Swimming access
+                        <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="feature-desc">Unlimited access to 25-metre eight-lane swimming pool, steam and sauna</div>
+                </div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+            </div>
+
+            <div class="grid-row">
+                <div class="feature-name-col">
+                    <div class="feature-title-wrap">
+                        Fitness classes
+                        <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="feature-desc">Access to all standard fitness classes.</div>
+                </div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+            </div>
+
+            <div class="grid-row">
+                <div class="feature-name-col">
+                    <div class="feature-title-wrap">
+                        Gym access
+                        <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="feature-desc">Full access to cardio and weight training areas.</div>
+                </div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+            </div>
+
+            <div class="grid-row">
+                <div class="feature-name-col">
+                    <div class="feature-title-wrap">
+                        Aqua classes
+                        <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="feature-desc">Access to specialized water-based fitness classes.</div>
+                </div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+            </div>
+
+            <div class="grid-row">
+                <div class="feature-name-col">
+                    <div class="feature-title-wrap">
+                        Climbing and bouldering access
+                        <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="feature-desc">Unlimited access to the climbing walls and bouldering cave.</div>
+                </div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+            </div>
+
+            <div class="grid-row">
+                <div class="feature-name-col">
+                    <div class="feature-title-wrap">
+                        Squash access
+                        <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="feature-desc">Court bookings included in membership.</div>
+                </div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+            </div>
+
+            <div class="grid-row">
+                <div class="feature-name-col">
+                    <div class="feature-title-wrap">
+                        % discount on courses and bookings
+                        <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="feature-desc">Exclusive member discounts on external bookings.</div>
+                </div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+            </div>
+
+            <div class="grid-row">
+                <div class="feature-name-col">
+                    <div class="feature-title-wrap">
+                        Access over 100 university gyms nationwide
+                        <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="feature-desc">BUCS UNIversal gym network access.</div>
+                </div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+            </div>
+
+             <div class="grid-row">
+                <div class="feature-name-col">
+                    <div class="feature-title-wrap">
+                        Designated under 16 swimmer included
+                        <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="feature-desc">Bring one under 16 dependent to swim sessions.</div>
+                </div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+            </div>
+
+            <div class="grid-row">
+                <div class="feature-name-col">
+                    <div class="feature-title-wrap">
+                        10% discount on University of Portsmouth Swim Academy lessons
+                        <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="feature-desc">Discount applied at checkout for swim courses.</div>
+                </div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+            </div>
+
+            <div class="grid-row" style="border-bottom: 1px solid var(--border-color);">
+                <div class="feature-name-col">
+                    <div class="feature-title-wrap">
+                        Free parking
+                        <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="feature-desc">Includes up to 3 hours of free parking per visit.</div>
+                </div>
+                <div class="feature-cell bg-gray"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                <div class="feature-cell bg-white"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+            </div>
+
+        </div>
+
+        <div class="bottom-actions">
+            <button class="btn-secondary">Manage membership</button>
+            <a href="#" class="link-action">Discover more about student memberships <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L1 9" stroke="black" stroke-width="1.5"/></svg></a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab Switching Logic
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            // Logic for switching tab content (If you duplicate the block for other tabs)
+            // const target = tab.getAttribute('data-target');
+            // tabContents.forEach(content => {
+            //     content.classList.remove('active');
+            //     if(content.id === target) content.classList.add('active');
+            // });
+        });
+    });
+
+    // Accordion Logic
+    const featureRows = document.querySelectorAll('.feature-name-col');
+    featureRows.forEach(row => {
+        row.addEventListener('click', () => {
+            row.parentElement.classList.toggle('expanded');
+        });
+    });
+
+    // Pricing Toggle Logic
+    const columns = document.querySelectorAll('.col-header');
+    columns.forEach(col => {
+        const toggleBtns = col.querySelectorAll('.toggle-btn');
+        const priceDisplay = col.querySelector('.price-display');
+
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toggleBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const period = btn.getAttribute('data-period');
+                priceDisplay.textContent = priceDisplay.getAttribute(`data-${period}`);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
