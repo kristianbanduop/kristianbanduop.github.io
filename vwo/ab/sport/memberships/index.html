@@ -217,7 +217,8 @@
         padding: 0 16px;
     }
 
-    .col-header h3 {
+    /* Updated heading level from h3 to h2 */
+    .col-header h2 {
         font-size: 20px;
         font-weight: 400;
         margin-bottom: 16px;
@@ -252,7 +253,8 @@
         text-align: center;
     }
 
-    .mobile-card h3 {
+    /* Updated heading level from h3 to h2 */
+    .mobile-card h2 {
         font-size: 24px;
         font-weight: 400;
         margin-bottom: 16px;
@@ -339,13 +341,13 @@
     </div>
 
     <div class="tabs-container" role="tablist" aria-label="Membership Categories">
-        <button class="tab" role="tab" aria-selected="true" id="tab-student" aria-controls="panel-student">Student</button>
-        <button class="tab" role="tab" aria-selected="false" id="tab-staff" aria-controls="panel-staff">Staff</button>
-        <button class="tab" role="tab" aria-selected="false" id="tab-associate" aria-controls="panel-associate">Associate</button>
-        <button class="tab" role="tab" aria-selected="false" id="tab-public" aria-controls="panel-public">Public</button>
+        <button class="tab" role="tab" aria-selected="true" tabindex="0" id="tab-student" aria-controls="panel-student">Student</button>
+        <button class="tab" role="tab" aria-selected="false" tabindex="-1" id="tab-staff" aria-controls="panel-staff">Staff</button>
+        <button class="tab" role="tab" aria-selected="false" tabindex="-1" id="tab-associate" aria-controls="panel-associate">Associate</button>
+        <button class="tab" role="tab" aria-selected="false" tabindex="-1" id="tab-public" aria-controls="panel-public">Public</button>
     </div>
 
-    <div id="panel-student" role="tabpanel" aria-labelledby="tab-student">
+    <div id="panel-student" role="tabpanel" aria-labelledby="tab-student" tabindex="0">
 
         <div class="desktop-view">
             <div class="pricing-table" role="table" aria-label="Membership comparison">
@@ -354,7 +356,7 @@
                     <div class="product-comparison-title" role="columnheader">Product comparison</div>
                     
                     <div class="col-header" role="columnheader">
-                        <h3>Ultimate</h3>
+                        <h2>Ultimate</h2>
                         <button class="btn-primary">Get Ultimate membership</button>
                         <div class="price-display" data-monthly="£26.99" data-annual="£269.90" aria-live="polite">£26.99</div>
                         <div class="toggle-container" role="group" aria-label="Pricing period for Ultimate">
@@ -364,7 +366,7 @@
                     </div>
 
                     <div class="col-header" role="columnheader">
-                        <h3>Super</h3>
+                        <h2>Super</h2>
                         <button class="btn-primary">Get Super membership</button>
                         <div class="price-display" data-monthly="£23.99" data-annual="£239.90" aria-live="polite">£23.99</div>
                         <div class="toggle-container" role="group" aria-label="Pricing period for Super">
@@ -374,7 +376,7 @@
                     </div>
 
                     <div class="col-header" role="columnheader">
-                        <h3>Core</h3>
+                        <h2>Core</h2>
                         <button class="btn-primary">Get Core membership</button>
                         <div class="price-display" data-monthly="£17.99" data-annual="£179.90" aria-live="polite">£17.99</div>
                         <div class="toggle-container" role="group" aria-label="Pricing period for Core">
@@ -556,7 +558,7 @@
         <div class="mobile-view">
             
             <div class="mobile-card">
-                <h3>Ultimate</h3>
+                <h2>Ultimate</h2>
                 <button class="btn-primary">Get Ultimate membership</button>
                 <div class="price-display" data-monthly="£26.99" data-annual="£269.90" aria-live="polite">£26.99</div>
                 <div class="toggle-container" role="group" aria-label="Pricing period for Ultimate">
@@ -635,7 +637,7 @@
             </div>
 
             <div class="mobile-card">
-                <h3>Super</h3>
+                <h2>Super</h2>
                 <button class="btn-primary">Get Super membership</button>
                 <div class="price-display" data-monthly="£23.99" data-annual="£239.90" aria-live="polite">£23.99</div>
                 <div class="toggle-container" role="group" aria-label="Pricing period for Super">
@@ -672,7 +674,7 @@
             </div>
 
             <div class="mobile-card">
-                <h3>Core</h3>
+                <h2>Core</h2>
                 <button class="btn-primary">Get Core membership</button>
                 <div class="price-display" data-monthly="£17.99" data-annual="£179.90" aria-live="polite">£17.99</div>
                 <div class="toggle-container" role="group" aria-label="Pricing period for Core">
@@ -707,12 +709,47 @@
 </div>
 
 <script>
-    // Tab Switching Logic (Visual & ARIA states)
+    // Tab Switching Logic with Keyboard Support (Roving Tabindex)
     const tabs = document.querySelectorAll('.tab');
-    tabs.forEach(tab => {
+    let tabFocus = 0;
+
+    // Helper function to activate a specific tab
+    function activateTab(index) {
+        tabs.forEach(t => {
+            t.setAttribute('aria-selected', 'false');
+            t.setAttribute('tabindex', '-1');
+        });
+        tabs[index].setAttribute('aria-selected', 'true');
+        tabs[index].setAttribute('tabindex', '0');
+        tabs[index].focus();
+        tabFocus = index;
+    }
+
+    tabs.forEach((tab, index) => {
+        // Handle Mouse Click
         tab.addEventListener('click', () => {
-            tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
-            tab.setAttribute('aria-selected', 'true');
+            activateTab(index);
+        });
+
+        // Handle Keyboard Arrow Keys
+        tab.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                e.preventDefault(); // Prevent standard page scroll
+                
+                if (e.key === 'ArrowRight') {
+                    tabFocus++;
+                    if (tabFocus >= tabs.length) {
+                        tabFocus = 0; // Loop back to start
+                    }
+                } else if (e.key === 'ArrowLeft') {
+                    tabFocus--;
+                    if (tabFocus < 0) {
+                        tabFocus = tabs.length - 1; // Loop to end
+                    }
+                }
+                
+                activateTab(tabFocus);
+            }
         });
     });
 
