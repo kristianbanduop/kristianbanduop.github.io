@@ -1,800 +1,746 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ravelin Sports Centre Memberships</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --purple: #621C61;
-        --bg-light: #F0F0F0;
-        --border-color: #000000;
-        --text-main: #000000;
-        --text-muted: #555555;
-        --focus-color: #005fcc;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: 'Inter', sans-serif;
-    }
+<div id="vwo-ravelin-membership-widget">
+    <style>
+        /* 1. Scoped Variables and Base Resets */
+        #vwo-ravelin-membership-widget {
+            --purple: #621C61;
+            --bg-light: #F0F0F0;
+            --border-color: #000000;
+            --text-main: #000000;
+            --text-muted: #555555;
+            --focus-color: #005fcc;
 
-    body {
-        background-color: #ffffff;
-        color: var(--text-main);
-        padding: 40px 20px;
-        line-height: 1.5;
-    }
-
-    .membership-container {
-        max-width: 1100px;
-        margin: 0 auto;
-    }
-
-    /* Accessibility Focus States */
-    button:focus-visible, a:focus-visible {
-        outline: 3px solid var(--focus-color);
-        outline-offset: 2px;
-        border-radius: 4px;
-    }
-
-    /* Header Styles */
-    .header-section {
-        text-align: center;
-        margin-bottom: 40px;
-    }
-
-    .subtitle-small {
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 12px;
-    }
-
-    .main-title {
-        font-size: 36px;
-        font-weight: 700;
-        margin-bottom: 16px;
-    }
-
-    .description {
-        font-size: 16px;
-        color: var(--text-muted);
-    }
-
-    /* Tabs */
-    .tabs-container {
-        display: flex;
-        border-bottom: 1px solid var(--border-color);
-        margin-bottom: 40px;
-        overflow-x: auto;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .tab {
-        padding: 16px 32px;
-        font-size: 18px;
-        font-weight: 400;
-        cursor: pointer;
-        background: transparent;
-        border: none;
-        outline: none;
-        min-height: 48px; /* Touch target size */
-    }
-
-    .tab[aria-selected="true"] {
-        background-color: var(--bg-light);
-        font-weight: 600;
-    }
-
-    /* Shared UI Elements */
-    .btn-primary {
-        background-color: var(--purple);
-        color: white;
-        width: 100%;
-        padding: 12px;
-        border: none;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        margin-bottom: 20px;
-        min-height: 44px;
-        border-radius: 2px;
-    }
-
-    .price-display {
-        font-size: 28px;
-        font-weight: 400;
-        margin-bottom: 16px;
-    }
-
-    .toggle-container {
-        display: inline-flex;
-        background-color: #E6E6E6;
-        border-radius: 24px;
-        padding: 4px;
-        width: 100%;
-        max-width: 180px;
-        margin: 0 auto;
-    }
-
-    .toggle-btn {
-        flex: 1;
-        padding: 8px 0;
-        text-align: center;
-        font-size: 14px;
-        cursor: pointer;
-        border-radius: 20px;
-        border: none;
-        background: transparent;
-        color: var(--text-muted);
-        min-height: 44px; /* WCAG touch target */
-        font-weight: 400;
-        transition: all 0.2s ease;
-    }
-
-    .toggle-btn[aria-pressed="true"] {
-        background-color: white;
-        color: var(--text-main);
-        font-weight: 600;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    /* Accordion Styles */
-    .feature-name-btn {
-        padding: 16px 16px 16px 0;
-        background-color: transparent;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        border: none;
-        text-align: left;
-        width: 100%;
-        min-height: 56px; /* Touch target */
-    }
-
-    .feature-title-wrap {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-weight: 700;
-        font-size: 14px;
-        width: 100%;
-    }
-
-    .feature-desc {
-        display: none;
-        font-size: 14px;
-        color: var(--text-muted);
-        margin-top: 12px;
-        line-height: 1.5;
-        max-width: 90%;
-        text-align: left;
-    }
-
-    .expanded .feature-desc {
-        display: block;
-    }
-
-    .chevron {
-        transition: transform 0.3s ease;
-    }
-
-    [aria-expanded="true"] .chevron {
-        transform: rotate(180deg);
-    }
-
-    /* Desktop View (Matrix) */
-    .desktop-view {
-        display: block;
-        width: 100%;
-    }
-
-    .pricing-table {
-        width: 100%;
-    }
-
-    .grid-row {
-        display: grid;
-        grid-template-columns: 3fr 2fr 2fr 2fr;
-        border-top: 1px solid var(--border-color);
-    }
-
-    .grid-row.header-row {
-        border-top: none;
-        align-items: end;
-        padding-bottom: 24px;
-    }
-
-    .col-header {
-        text-align: center;
-        padding: 0 16px;
-    }
-
-    /* Updated heading level from h3 to h2 */
-    .col-header h2 {
-        font-size: 20px;
-        font-weight: 400;
-        margin-bottom: 16px;
-    }
-
-    .product-comparison-title {
-        font-size: 16px;
-        font-weight: 700;
-        padding-bottom: 12px;
-    }
-
-    .feature-cell {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 60px;
-    }
-
-    .bg-gray { background-color: var(--bg-light); }
-    .bg-white { background-color: #ffffff; }
-
-    /* Mobile View (Cards) */
-    .mobile-view {
-        display: none;
-    }
-
-    .mobile-card {
-        border: 1px solid var(--border-color);
-        border-radius: 24px;
-        padding: 32px 24px;
-        margin-bottom: 24px;
-        text-align: center;
-    }
-
-    /* Updated heading level from h3 to h2 */
-    .mobile-card h2 {
-        font-size: 24px;
-        font-weight: 400;
-        margin-bottom: 16px;
-    }
-
-    .mobile-accordion-list {
-        margin-top: 32px;
-    }
-
-    .mobile-accordion-item {
-        border-top: 1px solid var(--border-color);
-    }
-
-    .mobile-accordion-item:last-child {
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .mobile-accordion-item .feature-name-btn {
-        padding: 20px 0;
-    }
-
-    /* Bottom Actions */
-    .bottom-actions {
-        display: flex;
-        align-items: center;
-        gap: 24px;
-        margin-top: 32px;
-        padding-top: 32px;
-        border-top: 1px solid var(--border-color);
-    }
-
-    .btn-secondary {
-        background-color: white;
-        color: var(--text-main);
-        border: 1px solid var(--text-main);
-        padding: 12px 24px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        min-height: 44px;
-        border-radius: 2px;
-    }
-
-    .link-action {
-        color: var(--text-main);
-        text-decoration: none;
-        font-size: 14px;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 0;
-    }
-
-    .link-action:hover {
-        text-decoration: underline;
-    }
-
-    /* Responsive Breakpoint */
-    @media (max-width: 850px) {
-        .desktop-view {
-            display: none;
+            /* Body replacements */
+            background-color: #ffffff;
+            color: var(--text-main);
+            padding: 40px 20px;
+            line-height: 1.5;
+            font-family: 'Open Sans', sans-serif;
+            box-sizing: border-box;
         }
-        .mobile-view {
+
+        /* Reset box-sizing only for elements inside the widget */
+        #vwo-ravelin-membership-widget *,
+        #vwo-ravelin-membership-widget *::before,
+        #vwo-ravelin-membership-widget *::after {
+            box-sizing: inherit;
+            margin: 0;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        /* 2. Scoped Accessibility Focus States */
+        #vwo-ravelin-membership-widget button:focus-visible, 
+        #vwo-ravelin-membership-widget a:focus-visible {
+            outline: 3px solid var(--focus-color);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* 3. Scoped Widget Styles */
+        #vwo-ravelin-membership-widget .membership-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        #vwo-ravelin-membership-widget .tabs-container {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #vwo-ravelin-membership-widget .tab {
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 400;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            outline: none;
+            min-height: 48px;
+        }
+
+        #vwo-ravelin-membership-widget .tab[aria-selected="true"] {
+            background-color: var(--bg-light);
+            font-weight: 600;
+        }
+
+        #vwo-ravelin-membership-widget .btn-primary {
+            background-color: var(--purple);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            min-height: 44px;
+            border-radius: 2px;
+        }
+
+        #vwo-ravelin-membership-widget .price-display {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 16px;
+        }
+
+        #vwo-ravelin-membership-widget .toggle-container {
+            display: inline-flex;
+            background-color: #E6E6E6;
+            border-radius: 24px;
+            padding: 4px;
+            width: 100%;
+            max-width: 180px;
+            margin: 0 auto;
+        }
+
+        #vwo-ravelin-membership-widget .toggle-btn {
+            flex: 1;
+            padding: 8px 0;
+            text-align: center;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            min-height: 44px;
+            font-weight: 400;
+            transition: all 0.2s ease;
+        }
+
+        #vwo-ravelin-membership-widget .toggle-btn[aria-pressed="true"] {
+            background-color: white;
+            color: var(--text-main);
+            font-weight: 600;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        #vwo-ravelin-membership-widget .feature-name-btn {
+            padding: 16px 16px 16px 0;
+            background-color: transparent;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: none;
+            text-align: left;
+            width: 100%;
+            min-height: 56px;
+        }
+
+        #vwo-ravelin-membership-widget .feature-title-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        #vwo-ravelin-membership-widget .feature-desc {
+            display: none;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 12px;
+            line-height: 1.5;
+            max-width: 90%;
+            text-align: left;
+        }
+
+        #vwo-ravelin-membership-widget .expanded .feature-desc {
             display: block;
         }
-        .tabs-container {
+
+        #vwo-ravelin-membership-widget .chevron {
+            transition: transform 0.3s ease;
+        }
+
+        #vwo-ravelin-membership-widget [aria-expanded="true"] .chevron {
+            transform: rotate(180deg);
+        }
+
+        #vwo-ravelin-membership-widget .desktop-view {
+            display: block;
+            width: 100%;
+        }
+
+        #vwo-ravelin-membership-widget .pricing-table {
+            width: 100%;
+        }
+
+        #vwo-ravelin-membership-widget .grid-row {
+            display: grid;
+            grid-template-columns: 3fr 2fr 2fr 2fr;
+            border-top: 1px solid var(--border-color);
+        }
+
+        #vwo-ravelin-membership-widget .grid-row.header-row {
+            border-top: none;
+            align-items: end;
+            padding-bottom: 24px;
+        }
+
+        #vwo-ravelin-membership-widget .col-header {
+            text-align: center;
+            padding: 0 16px;
+        }
+
+        #vwo-ravelin-membership-widget .col-header h2 {
+            font-size: 20px;
+            font-weight: 400;
+            margin-bottom: 16px;
+        }
+
+        #vwo-ravelin-membership-widget .product-comparison-title {
+            font-size: 16px;
+            font-weight: 700;
+            padding-bottom: 12px;
+        }
+
+        #vwo-ravelin-membership-widget .feature-cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60px;
+        }
+
+        #vwo-ravelin-membership-widget .bg-gray { background-color: var(--bg-light); }
+        #vwo-ravelin-membership-widget .bg-white { background-color: #ffffff; }
+
+        #vwo-ravelin-membership-widget .mobile-view {
+            display: none;
+        }
+
+        #vwo-ravelin-membership-widget .mobile-card {
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px 24px;
             margin-bottom: 24px;
+            text-align: center;
         }
-        .bottom-actions {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
+
+        #vwo-ravelin-membership-widget .mobile-card h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 16px;
         }
-    }
-</style>
-</head>
-<body>
 
-<div class="membership-container">
-    <div class="header-section">
-        <div class="subtitle-small" aria-hidden="true">MEMBERSHIPS</div>
-        <h1 class="main-title">Ravelin Sports Centre memberships</h1>
-        <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </div>
+        #vwo-ravelin-membership-widget .mobile-accordion-list {
+            margin-top: 32px;
+        }
 
-    <div class="tabs-container" role="tablist" aria-label="Membership Categories">
-        <button class="tab" role="tab" aria-selected="true" tabindex="0" id="tab-student" aria-controls="panel-student">Student</button>
-        <button class="tab" role="tab" aria-selected="false" tabindex="-1" id="tab-staff" aria-controls="panel-staff">Staff</button>
-        <button class="tab" role="tab" aria-selected="false" tabindex="-1" id="tab-associate" aria-controls="panel-associate">Associate</button>
-        <button class="tab" role="tab" aria-selected="false" tabindex="-1" id="tab-public" aria-controls="panel-public">Public</button>
-    </div>
+        #vwo-ravelin-membership-widget .mobile-accordion-item {
+            border-top: 1px solid var(--border-color);
+        }
 
-    <div id="panel-student" role="tabpanel" aria-labelledby="tab-student" tabindex="0">
+        #vwo-ravelin-membership-widget .mobile-accordion-item:last-child {
+            border-bottom: 1px solid var(--border-color);
+        }
 
-        <div class="desktop-view">
-            <div class="pricing-table" role="table" aria-label="Membership comparison">
-                
-                <div class="grid-row header-row" role="row">
-                    <div class="product-comparison-title" role="columnheader">Product comparison</div>
+        #vwo-ravelin-membership-widget .mobile-accordion-item .feature-name-btn {
+            padding: 20px 0;
+        }
+
+        #vwo-ravelin-membership-widget .bottom-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        #vwo-ravelin-membership-widget .btn-secondary {
+            background-color: white;
+            color: var(--text-main);
+            border: 1px solid var(--text-main);
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: 44px;
+            border-radius: 2px;
+        }
+
+        #vwo-ravelin-membership-widget .link-action {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+        }
+
+        #vwo-ravelin-membership-widget .link-action:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Breakpoint */
+        @media (max-width: 850px) {
+            #vwo-ravelin-membership-widget .desktop-view {
+                display: none;
+            }
+            #vwo-ravelin-membership-widget .mobile-view {
+                display: block;
+            }
+            #vwo-ravelin-membership-widget .tabs-container {
+                margin-bottom: 24px;
+            }
+            #vwo-ravelin-membership-widget .bottom-actions {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+        }
+    </style>
+
+    <div class="membership-container">
+        <div class="tabs-container" role="tablist" aria-label="Membership Categories">
+            <button class="tab" role="tab" aria-selected="true" tabindex="0" id="tab-student" aria-controls="panel-student">Student</button>
+            <button class="tab" role="tab" aria-selected="false" tabindex="-1" id="tab-staff" aria-controls="panel-staff">Staff</button>
+            <button class="tab" role="tab" aria-selected="false" tabindex="-1" id="tab-associate" aria-controls="panel-associate">Associate</button>
+            <button class="tab" role="tab" aria-selected="false" tabindex="-1" id="tab-public" aria-controls="panel-public">Public</button>
+        </div>
+
+        <div id="panel-student" role="tabpanel" aria-labelledby="tab-student" tabindex="0">
+
+            <div class="desktop-view">
+                <div class="pricing-table" role="table" aria-label="Membership comparison">
                     
-                    <div class="col-header" role="columnheader">
-                        <h2>Ultimate</h2>
-                        <button class="btn-primary">Get Ultimate membership</button>
-                        <div class="price-display" data-monthly="£26.99" data-annual="£269.90" aria-live="polite">£26.99</div>
-                        <div class="toggle-container" role="group" aria-label="Pricing period for Ultimate">
-                            <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
-                            <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
+                    <div class="grid-row header-row" role="row">
+                        <div class="product-comparison-title" role="columnheader">Features</div>
+                        
+                        <div class="col-header" role="columnheader">
+                            <h2>Ultimate</h2>
+                            <button class="btn-primary">Get Ultimate membership</button>
+                            <div class="price-display" data-monthly="£26.99" data-annual="£269.90" aria-live="polite">£26.99</div>
+                            <div class="toggle-container" role="group" aria-label="Pricing period for Ultimate">
+                                <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
+                                <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
+                            </div>
+                        </div>
+
+                        <div class="col-header" role="columnheader">
+                            <h2>Super</h2>
+                            <button class="btn-primary">Get Super membership</button>
+                            <div class="price-display" data-monthly="£23.99" data-annual="£239.90" aria-live="polite">£23.99</div>
+                            <div class="toggle-container" role="group" aria-label="Pricing period for Super">
+                                <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
+                                <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
+                            </div>
+                        </div>
+
+                        <div class="col-header" role="columnheader">
+                            <h2>Core</h2>
+                            <button class="btn-primary">Get Core membership</button>
+                            <div class="price-display" data-monthly="£17.99" data-annual="£179.90" aria-live="polite">£17.99</div>
+                            <div class="toggle-container" role="group" aria-label="Pricing period for Core">
+                                <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
+                                <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-header" role="columnheader">
-                        <h2>Super</h2>
-                        <button class="btn-primary">Get Super membership</button>
-                        <div class="price-display" data-monthly="£23.99" data-annual="£239.90" aria-live="polite">£23.99</div>
-                        <div class="toggle-container" role="group" aria-label="Pricing period for Super">
-                            <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
-                            <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
+                    <div class="grid-row expanded" role="row">
+                        <div role="cell">
+                            <button class="feature-name-btn" aria-expanded="true" aria-controls="desc-d1">
+                                <span class="feature-title-wrap">
+                                    Swimming access
+                                    <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                                </span>
+                                <span class="feature-desc" id="desc-d1">Unlimited access to 25-metre eight-lane swimming pool, steam and sauna</span>
+                            </button>
                         </div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                    </div>
+                    
+                    <div class="grid-row" role="row">
+                        <div role="cell">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d2">
+                                <span class="feature-title-wrap">
+                                    Fitness classes
+                                    <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                                </span>
+                                <span class="feature-desc" id="desc-d2">Access to all standard fitness classes.</span>
+                            </button>
+                        </div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
                     </div>
 
-                    <div class="col-header" role="columnheader">
-                        <h2>Core</h2>
-                        <button class="btn-primary">Get Core membership</button>
-                        <div class="price-display" data-monthly="£17.99" data-annual="£179.90" aria-live="polite">£17.99</div>
-                        <div class="toggle-container" role="group" aria-label="Pricing period for Core">
-                            <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
-                            <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
+                    <div class="grid-row" role="row">
+                        <div role="cell">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d3">
+                                <span class="feature-title-wrap">
+                                    Gym access
+                                    <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                                </span>
+                                <span class="feature-desc" id="desc-d3">Full access to cardio and weight training areas.</span>
+                            </button>
                         </div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
                     </div>
+
+                    <div class="grid-row" role="row">
+                        <div role="cell">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d4">
+                                <span class="feature-title-wrap">
+                                    Aqua classes
+                                    <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                                </span>
+                                <span class="feature-desc" id="desc-d4">Access to specialized water-based fitness classes.</span>
+                            </button>
+                        </div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                    </div>
+
+                    <div class="grid-row" role="row">
+                        <div role="cell">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d5">
+                                <span class="feature-title-wrap">
+                                    Climbing and bouldering access
+                                    <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                                </span>
+                                <span class="feature-desc" id="desc-d5">Unlimited access to the climbing walls and bouldering cave.</span>
+                            </button>
+                        </div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                    </div>
+
+                    <div class="grid-row" role="row">
+                        <div role="cell">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d6">
+                                <span class="feature-title-wrap">
+                                    Squash access
+                                    <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                                </span>
+                                <span class="feature-desc" id="desc-d6">Court bookings included in membership.</span>
+                            </button>
+                        </div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                    </div>
+
+                    <div class="grid-row" role="row">
+                        <div role="cell">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d7">
+                                <span class="feature-title-wrap">
+                                    % discount on courses and bookings
+                                    <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                                </span>
+                                <span class="feature-desc" id="desc-d7">Exclusive member discounts on external bookings.</span>
+                            </button>
+                        </div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                    </div>
+
+                    <div class="grid-row" role="row">
+                        <div role="cell">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d8">
+                                <span class="feature-title-wrap">
+                                    Access over 100 university gyms nationwide
+                                    <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                                </span>
+                                <span class="feature-desc" id="desc-d8">BUCS UNIversal gym network access.</span>
+                            </button>
+                        </div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                    </div>
+
+                     <div class="grid-row" role="row">
+                        <div role="cell">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d9">
+                                <span class="feature-title-wrap">
+                                    Designated under 16 swimmer included
+                                    <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                                </span>
+                                <span class="feature-desc" id="desc-d9">Bring one under 16 dependent to swim sessions.</span>
+                            </button>
+                        </div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                    </div>
+
+                    <div class="grid-row" role="row">
+                        <div role="cell">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d10">
+                                <span class="feature-title-wrap">
+                                    10% discount on University of Portsmouth Swim Academy lessons
+                                    <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                                </span>
+                                <span class="feature-desc" id="desc-d10">Discount applied at checkout for swim courses.</span>
+                            </button>
+                        </div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                    </div>
+
+                    <div class="grid-row" style="border-bottom: 1px solid var(--border-color);" role="row">
+                        <div role="cell">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d11">
+                                <span class="feature-title-wrap">
+                                    Free parking
+                                    <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
+                                </span>
+                                <span class="feature-desc" id="desc-d11">Includes up to 3 hours of free parking per visit.</span>
+                            </button>
+                        </div>
+                        <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                        <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+                    </div>
+
                 </div>
+            </div>
 
-                <div class="grid-row expanded" role="row">
-                    <div role="cell">
-                        <button class="feature-name-btn" aria-expanded="true" aria-controls="desc-d1">
-                            <span class="feature-title-wrap">
-                                Swimming access
-                                <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
-                            </span>
-                            <span class="feature-desc" id="desc-d1">Unlimited access to 25-metre eight-lane swimming pool, steam and sauna</span>
-                        </button>
-                    </div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                </div>
+            <div class="mobile-view">
                 
-                <div class="grid-row" role="row">
-                    <div role="cell">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d2">
-                            <span class="feature-title-wrap">
-                                Fitness classes
-                                <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
-                            </span>
-                            <span class="feature-desc" id="desc-d2">Access to all standard fitness classes.</span>
-                        </button>
+                <div class="mobile-card">
+                    <h2>Ultimate</h2>
+                    <button class="btn-primary">Get Ultimate membership</button>
+                    <div class="price-display" data-monthly="£26.99" data-annual="£269.90" aria-live="polite">£26.99</div>
+                    <div class="toggle-container" role="group" aria-label="Pricing period for Ultimate">
+                        <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
+                        <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
                     </div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
+
+                    <div class="mobile-accordion-list">
+                        <div class="mobile-accordion-item expanded">
+                            <button class="feature-name-btn" aria-expanded="true" aria-controls="desc-m-u1">
+                                <span class="feature-title-wrap">Swimming access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-u1">Unlimited access to 25-metre eight-lane swimming pool, steam and sauna</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u2">
+                                <span class="feature-title-wrap">Fitness classes <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-u2">Access to all standard fitness classes.</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u3">
+                                <span class="feature-title-wrap">Gym access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-u3">Full access to cardio and weight training areas.</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u4">
+                                <span class="feature-title-wrap">Aqua classes <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-u4">Access to specialized water-based fitness classes.</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u5">
+                                <span class="feature-title-wrap">Climbing and bouldering access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-u5">Unlimited access to the climbing walls and bouldering cave.</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u6">
+                                <span class="feature-title-wrap">Squash access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-u6">Court bookings included in membership.</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u7">
+                                <span class="feature-title-wrap">% discount on courses and bookings <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-u7">Exclusive member discounts on external bookings.</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u8">
+                                <span class="feature-title-wrap">Access over 100 university gyms nationwide <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-u8">BUCS UNIversal gym network access.</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u9">
+                                <span class="feature-title-wrap">Designated under 16 swimmer included <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-u9">Bring one under 16 dependent to swim sessions.</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u10">
+                                <span class="feature-title-wrap">10% discount on University of Portsmouth Swim Academy lessons <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-u10">Discount applied at checkout for swim courses.</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u11">
+                                <span class="feature-title-wrap">Free parking <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-u11">Includes up to 3 hours of free parking per visit.</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="grid-row" role="row">
-                    <div role="cell">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d3">
-                            <span class="feature-title-wrap">
-                                Gym access
-                                <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
-                            </span>
-                            <span class="feature-desc" id="desc-d3">Full access to cardio and weight training areas.</span>
-                        </button>
+                <div class="mobile-card">
+                    <h2>Super</h2>
+                    <button class="btn-primary">Get Super membership</button>
+                    <div class="price-display" data-monthly="£23.99" data-annual="£239.90" aria-live="polite">£23.99</div>
+                    <div class="toggle-container" role="group" aria-label="Pricing period for Super">
+                        <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
+                        <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
                     </div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
+
+                    <div class="mobile-accordion-list">
+                        <div class="mobile-accordion-item expanded">
+                            <button class="feature-name-btn" aria-expanded="true" aria-controls="desc-m-s1">
+                                <span class="feature-title-wrap">Swimming access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-s1">Unlimited access to 25-metre eight-lane swimming pool, steam and sauna</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-s2">
+                                <span class="feature-title-wrap">Fitness classes <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-s2">Access to all standard fitness classes.</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-s3">
+                                <span class="feature-title-wrap">Gym access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-s3">Full access to cardio and weight training areas.</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-s4">
+                                <span class="feature-title-wrap">Aqua classes <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-s4">Access to specialized water-based fitness classes.</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="grid-row" role="row">
-                    <div role="cell">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d4">
-                            <span class="feature-title-wrap">
-                                Aqua classes
-                                <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
-                            </span>
-                            <span class="feature-desc" id="desc-d4">Access to specialized water-based fitness classes.</span>
-                        </button>
+                <div class="mobile-card">
+                    <h2>Core</h2>
+                    <button class="btn-primary">Get Core membership</button>
+                    <div class="price-display" data-monthly="£17.99" data-annual="£179.90" aria-live="polite">£17.99</div>
+                    <div class="toggle-container" role="group" aria-label="Pricing period for Core">
+                        <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
+                        <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
                     </div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                </div>
 
-                <div class="grid-row" role="row">
-                    <div role="cell">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d5">
-                            <span class="feature-title-wrap">
-                                Climbing and bouldering access
-                                <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
-                            </span>
-                            <span class="feature-desc" id="desc-d5">Unlimited access to the climbing walls and bouldering cave.</span>
-                        </button>
+                    <div class="mobile-accordion-list">
+                        <div class="mobile-accordion-item expanded">
+                            <button class="feature-name-btn" aria-expanded="true" aria-controls="desc-m-c1">
+                                <span class="feature-title-wrap">Swimming access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-c1">Unlimited access to 25-metre eight-lane swimming pool, steam and sauna</span>
+                            </button>
+                        </div>
+                        <div class="mobile-accordion-item">
+                            <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-c2">
+                                <span class="feature-title-wrap">Fitness classes <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
+                                <span class="feature-desc" id="desc-m-c2">Access to all standard fitness classes.</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                </div>
-
-                <div class="grid-row" role="row">
-                    <div role="cell">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d6">
-                            <span class="feature-title-wrap">
-                                Squash access
-                                <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
-                            </span>
-                            <span class="feature-desc" id="desc-d6">Court bookings included in membership.</span>
-                        </button>
-                    </div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                </div>
-
-                <div class="grid-row" role="row">
-                    <div role="cell">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d7">
-                            <span class="feature-title-wrap">
-                                % discount on courses and bookings
-                                <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
-                            </span>
-                            <span class="feature-desc" id="desc-d7">Exclusive member discounts on external bookings.</span>
-                        </button>
-                    </div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                </div>
-
-                <div class="grid-row" role="row">
-                    <div role="cell">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d8">
-                            <span class="feature-title-wrap">
-                                Access over 100 university gyms nationwide
-                                <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
-                            </span>
-                            <span class="feature-desc" id="desc-d8">BUCS UNIversal gym network access.</span>
-                        </button>
-                    </div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                </div>
-
-                 <div class="grid-row" role="row">
-                    <div role="cell">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d9">
-                            <span class="feature-title-wrap">
-                                Designated under 16 swimmer included
-                                <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
-                            </span>
-                            <span class="feature-desc" id="desc-d9">Bring one under 16 dependent to swim sessions.</span>
-                        </button>
-                    </div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                </div>
-
-                <div class="grid-row" role="row">
-                    <div role="cell">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d10">
-                            <span class="feature-title-wrap">
-                                10% discount on University of Portsmouth Swim Academy lessons
-                                <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
-                            </span>
-                            <span class="feature-desc" id="desc-d10">Discount applied at checkout for swim courses.</span>
-                        </button>
-                    </div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                </div>
-
-                <div class="grid-row" style="border-bottom: 1px solid var(--border-color);" role="row">
-                    <div role="cell">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-d11">
-                            <span class="feature-title-wrap">
-                                Free parking
-                                <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg>
-                            </span>
-                            <span class="feature-desc" id="desc-d11">Includes up to 3 hours of free parking per visit.</span>
-                        </button>
-                    </div>
-                    <div class="feature-cell bg-gray" role="cell"><svg role="img" aria-label="Included" width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5L4.5 8.5L13 1" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
-                    <div class="feature-cell bg-white" role="cell"><svg role="img" aria-label="Not included" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1L11 11M11 1L1 11" stroke="black" stroke-width="1.5"/></svg></div>
                 </div>
 
             </div>
-        </div>
 
-
-        <div class="mobile-view">
+            <div class="bottom-actions">
+                <button class="btn-secondary">Manage membership</button>
+                <a href="#" class="link-action">Discover more about student memberships <svg width="6" height="10" viewBox="0 0 6 10" fill="none" aria-hidden="true"><path d="M1 1L5 5L1 9" stroke="black" stroke-width="1.5"/></svg></a>
+            </div>
             
-            <div class="mobile-card">
-                <h2>Ultimate</h2>
-                <button class="btn-primary">Get Ultimate membership</button>
-                <div class="price-display" data-monthly="£26.99" data-annual="£269.90" aria-live="polite">£26.99</div>
-                <div class="toggle-container" role="group" aria-label="Pricing period for Ultimate">
-                    <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
-                    <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
-                </div>
-
-                <div class="mobile-accordion-list">
-                    <div class="mobile-accordion-item expanded">
-                        <button class="feature-name-btn" aria-expanded="true" aria-controls="desc-m-u1">
-                            <span class="feature-title-wrap">Swimming access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-u1">Unlimited access to 25-metre eight-lane swimming pool, steam and sauna</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u2">
-                            <span class="feature-title-wrap">Fitness classes <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-u2">Access to all standard fitness classes.</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u3">
-                            <span class="feature-title-wrap">Gym access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-u3">Full access to cardio and weight training areas.</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u4">
-                            <span class="feature-title-wrap">Aqua classes <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-u4">Access to specialized water-based fitness classes.</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u5">
-                            <span class="feature-title-wrap">Climbing and bouldering access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-u5">Unlimited access to the climbing walls and bouldering cave.</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u6">
-                            <span class="feature-title-wrap">Squash access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-u6">Court bookings included in membership.</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u7">
-                            <span class="feature-title-wrap">% discount on courses and bookings <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-u7">Exclusive member discounts on external bookings.</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u8">
-                            <span class="feature-title-wrap">Access over 100 university gyms nationwide <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-u8">BUCS UNIversal gym network access.</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u9">
-                            <span class="feature-title-wrap">Designated under 16 swimmer included <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-u9">Bring one under 16 dependent to swim sessions.</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u10">
-                            <span class="feature-title-wrap">10% discount on University of Portsmouth Swim Academy lessons <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-u10">Discount applied at checkout for swim courses.</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-u11">
-                            <span class="feature-title-wrap">Free parking <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-u11">Includes up to 3 hours of free parking per visit.</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mobile-card">
-                <h2>Super</h2>
-                <button class="btn-primary">Get Super membership</button>
-                <div class="price-display" data-monthly="£23.99" data-annual="£239.90" aria-live="polite">£23.99</div>
-                <div class="toggle-container" role="group" aria-label="Pricing period for Super">
-                    <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
-                    <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
-                </div>
-
-                <div class="mobile-accordion-list">
-                    <div class="mobile-accordion-item expanded">
-                        <button class="feature-name-btn" aria-expanded="true" aria-controls="desc-m-s1">
-                            <span class="feature-title-wrap">Swimming access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-s1">Unlimited access to 25-metre eight-lane swimming pool, steam and sauna</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-s2">
-                            <span class="feature-title-wrap">Fitness classes <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-s2">Access to all standard fitness classes.</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-s3">
-                            <span class="feature-title-wrap">Gym access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-s3">Full access to cardio and weight training areas.</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-s4">
-                            <span class="feature-title-wrap">Aqua classes <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-s4">Access to specialized water-based fitness classes.</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mobile-card">
-                <h2>Core</h2>
-                <button class="btn-primary">Get Core membership</button>
-                <div class="price-display" data-monthly="£17.99" data-annual="£179.90" aria-live="polite">£17.99</div>
-                <div class="toggle-container" role="group" aria-label="Pricing period for Core">
-                    <button class="toggle-btn" aria-pressed="true" data-period="monthly">Monthly</button>
-                    <button class="toggle-btn" aria-pressed="false" data-period="annual">Annual</button>
-                </div>
-
-                <div class="mobile-accordion-list">
-                    <div class="mobile-accordion-item expanded">
-                        <button class="feature-name-btn" aria-expanded="true" aria-controls="desc-m-c1">
-                            <span class="feature-title-wrap">Swimming access <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-c1">Unlimited access to 25-metre eight-lane swimming pool, steam and sauna</span>
-                        </button>
-                    </div>
-                    <div class="mobile-accordion-item">
-                        <button class="feature-name-btn" aria-expanded="false" aria-controls="desc-m-c2">
-                            <span class="feature-title-wrap">Fitness classes <svg class="chevron" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true"><path d="M1 1.5L6 6.5L11 1.5" stroke="black" stroke-width="1.5"/></svg></span>
-                            <span class="feature-desc" id="desc-m-c2">Access to all standard fitness classes.</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
         </div>
-
-        <div class="bottom-actions">
-            <button class="btn-secondary">Manage membership</button>
-            <a href="#" class="link-action">Discover more about student memberships <svg width="6" height="10" viewBox="0 0 6 10" fill="none" aria-hidden="true"><path d="M1 1L5 5L1 9" stroke="black" stroke-width="1.5"/></svg></a>
-        </div>
-        
     </div>
 </div>
 
 <script>
-    // Tab Switching Logic with Keyboard Support (Roving Tabindex)
-    const tabs = document.querySelectorAll('.tab');
-    let tabFocus = 0;
+    // Using an IIFE (Immediately Invoked Function Expression) 
+    // to prevent variables from leaking into the host site's global window scope.
+    (function() {
+        const widgetContainer = document.getElementById('vwo-ravelin-membership-widget');
+        if (!widgetContainer) return; // Fail gracefully if missing
 
-    // Helper function to activate a specific tab
-    function activateTab(index) {
-        tabs.forEach(t => {
-            t.setAttribute('aria-selected', 'false');
-            t.setAttribute('tabindex', '-1');
-        });
-        tabs[index].setAttribute('aria-selected', 'true');
-        tabs[index].setAttribute('tabindex', '0');
-        tabs[index].focus();
-        tabFocus = index;
-    }
+        // Scope all selections to the widget container
+        const tabs = widgetContainer.querySelectorAll('.tab');
+        let tabFocus = 0;
 
-    tabs.forEach((tab, index) => {
-        // Handle Mouse Click
-        tab.addEventListener('click', () => {
-            activateTab(index);
-        });
-
-        // Handle Keyboard Arrow Keys
-        tab.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-                e.preventDefault(); // Prevent standard page scroll
-                
-                if (e.key === 'ArrowRight') {
-                    tabFocus++;
-                    if (tabFocus >= tabs.length) {
-                        tabFocus = 0; // Loop back to start
-                    }
-                } else if (e.key === 'ArrowLeft') {
-                    tabFocus--;
-                    if (tabFocus < 0) {
-                        tabFocus = tabs.length - 1; // Loop to end
-                    }
-                }
-                
-                activateTab(tabFocus);
-            }
-        });
-    });
-
-    // Accordion Logic (Works for Desktop Rows and Mobile List Items)
-    const featureButtons = document.querySelectorAll('.feature-name-btn');
-    featureButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const isExpanded = btn.getAttribute('aria-expanded') === 'true';
-            
-            // Toggle Visual Class on parent container
-            const parent = btn.closest('.grid-row, .mobile-accordion-item');
-            if(parent) {
-                parent.classList.toggle('expanded');
-            }
-            
-            // Toggle ARIA State for Accessibility
-            btn.setAttribute('aria-expanded', !isExpanded);
-        });
-    });
-
-    // Pricing Toggle Logic
-    const toggleContainers = document.querySelectorAll('.col-header, .mobile-card');
-    toggleContainers.forEach(container => {
-        const toggleBtns = container.querySelectorAll('.toggle-btn');
-        const priceDisplay = container.querySelector('.price-display');
-
-        if(toggleBtns.length > 0) {
-            toggleBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Reset all buttons in this group
-                    toggleBtns.forEach(b => {
-                        b.setAttribute('aria-pressed', 'false');
-                    });
-                    
-                    // Activate clicked button
-                    btn.setAttribute('aria-pressed', 'true');
-
-                    // Update Price Display
-                    const period = btn.getAttribute('data-period');
-                    priceDisplay.textContent = priceDisplay.getAttribute(`data-${period}`);
-                });
+        function activateTab(index) {
+            tabs.forEach(t => {
+                t.setAttribute('aria-selected', 'false');
+                t.setAttribute('tabindex', '-1');
             });
+            tabs[index].setAttribute('aria-selected', 'true');
+            tabs[index].setAttribute('tabindex', '0');
+            tabs[index].focus();
+            tabFocus = index;
         }
-    });
-</script>
 
-</body>
-</html>
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => {
+                activateTab(index);
+            });
+
+            tab.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                    e.preventDefault(); 
+                    if (e.key === 'ArrowRight') {
+                        tabFocus++;
+                        if (tabFocus >= tabs.length) { tabFocus = 0; }
+                    } else if (e.key === 'ArrowLeft') {
+                        tabFocus--;
+                        if (tabFocus < 0) { tabFocus = tabs.length - 1; }
+                    }
+                    activateTab(tabFocus);
+                }
+            });
+        });
+
+        const featureButtons = widgetContainer.querySelectorAll('.feature-name-btn');
+        featureButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+                const parent = btn.closest('.grid-row, .mobile-accordion-item');
+                if(parent) {
+                    parent.classList.toggle('expanded');
+                }
+                btn.setAttribute('aria-expanded', !isExpanded);
+            });
+        });
+
+        const toggleContainers = widgetContainer.querySelectorAll('.col-header, .mobile-card');
+        toggleContainers.forEach(container => {
+            const toggleBtns = container.querySelectorAll('.toggle-btn');
+            const priceDisplay = container.querySelector('.price-display');
+
+            if(toggleBtns.length > 0) {
+                toggleBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        toggleBtns.forEach(b => {
+                            b.setAttribute('aria-pressed', 'false');
+                        });
+                        btn.setAttribute('aria-pressed', 'true');
+                        const period = btn.getAttribute('data-period');
+                        priceDisplay.textContent = priceDisplay.getAttribute(`data-${period}`);
+                    });
+                });
+            }
+        });
+    })();
+</script>
