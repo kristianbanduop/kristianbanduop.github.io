@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sticky Button Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f5f2eb;
+    color: #1a1a1a;
+    min-height: 200vh;
+  }
+
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 64px;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: #f5f2eb;
+  }
+
+  /* Inline button: vivid blue, unmissable on the cream background */
+  #inline-cta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 1.75rem;
+    cursor: pointer;
+    display: inline-flex;
+    transition: background 0.2s, transform 0.15s;
+  }
+  #inline-cta:hover { background: #1d4ed8; }
+  #inline-cta:active { transform: scale(0.97); }
+
+  /* Header button: vivid blue on the dark header — same colour, always recognisable */
+  #header-cta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s;
+    pointer-events: none;
+  }
+  #header-cta.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  #header-cta:hover { background: #1d4ed8; }
+  #header-cta:active { transform: scale(0.97); }
+
+  .hero {
+    padding: 120px 2rem 80px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.4rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero p {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: #4a4a45;
+    margin-bottom: 2.5rem;
+    max-width: 52ch;
+  }
+
+  .scroll-hint {
+    margin-top: 3.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8125rem;
+    color: #888;
+  }
+
+  .arrow-down {
+    width: 14px;
+    height: 14px;
+    border-right: 1.5px solid #aaa;
+    border-bottom: 1.5px solid #aaa;
+    transform: rotate(45deg) translateY(-2px);
+    animation: bob 1.4s ease-in-out infinite;
+  }
+
+  @keyframes bob {
+    0%, 100% { transform: rotate(45deg) translateY(-2px); }
+    50%       { transform: rotate(45deg) translateY(2px); }
+  }
+
+  .content {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 4rem 2rem 6rem;
+  }
+
+  .content h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .content p {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: #4a4a45;
+    margin-bottom: 1.5rem;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #d8d4c8;
+    margin: 3rem 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">Meridian</span>
+  <button id="header-cta">Get started</button>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Beautiful things<br>take time to build.</h1>
+    <p>We help founders craft products that endure. Thoughtful design, deliberate engineering, and the patience to get it right.</p>
+    <button id="inline-cta">Get started</button>
+    <div class="scroll-hint">
+      <span>Scroll down</span>
+      <div class="arrow-down"></div>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>Our approach</h2>
+    <p>Good design is never accidental. It emerges from weeks of iteration, honest conversations, and the willingness to throw away work that almost works.</p>
+    <p>We take on a small number of clients each year — not because we lack capacity, but because deep collaboration requires presence.</p>
+    <hr class="divider">
+    <h2>What we make</h2>
+    <p>From early-stage product strategy to production-ready interfaces, we cover the full arc of digital product creation.</p>
+    <p>Our clients range from seed-stage startups to established companies looking to reset the clock on their product experience.</p>
+    <hr class="divider">
+    <h2>Ready to talk?</h2>
+    <p>If you've read this far, we probably have something to discuss. Reach out and let's find out.</p>
+  </section>
+</main>
+
+<script>
+  const inlineBtn = document.getElementById('inline-cta');
+  const headerBtn = document.getElementById('header-cta');
+
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (!entry.isIntersecting) {
+        headerBtn.classList.add('visible');
+      } else {
+        headerBtn.classList.remove('visible');
+      }
+    },
+    { threshold: 0, rootMargin: '-64px 0px 0px 0px' }
+  );
+
+  observer.observe(inlineBtn);
+</script>
+</body>
+</html>
