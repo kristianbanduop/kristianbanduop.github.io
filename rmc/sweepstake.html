@@ -163,7 +163,7 @@
     /* Wallchart - Group Stages */
     .groups-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 20px;
     }
     .group-table {
@@ -189,8 +189,8 @@
     .group-table th { color: var(--text-muted); font-size: 10px; }
     .group-table th:first-child, .group-table td:first-child { text-align: left; }
     .group-table tr:last-child td { border-bottom: none; }
-    .group-team-wrap { display: flex; align-items: center; gap: 8px; font-weight: 600; }
-    .group-team-wrap img { width: 18px; border-radius: 2px; }
+    .group-team-wrap { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+    .group-team-wrap img { width: 22px; border-radius: 3px; }
 
     /* Wallchart - Knockouts */
     .bracket-container {
@@ -204,12 +204,12 @@
       display: flex;
       flex-direction: column;
       gap: 15px;
-      min-width: 220px;
+      min-width: 240px;
     }
     .bracket-round h3 { font-size: 12px; color: var(--accent-magenta); text-transform: uppercase; text-align: center; margin-bottom: 15px; letter-spacing: 1px; }
-    .bracket-match { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
-    .bracket-team { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; font-weight: 600; align-items: center; }
-    .bracket-team img { width: 20px; border-radius: 3px; margin-right: 8px; }
+    .bracket-match { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+    .bracket-team { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; font-weight: 600; align-items: center; }
+    .bracket-team img { width: 22px; border-radius: 3px; margin-right: 10px; }
     .bracket-team.winner { color: var(--accent-green); }
 
     /* Tables & Stats */
@@ -356,7 +356,7 @@
           <h2><i class="fa-solid fa-table-cells" style="color: var(--accent-green);"></i> Group Stages</h2>
         </div>
         <div class="groups-grid" id="groups-container">
-          <p style="color: var(--text-muted); text-align: center; width: 100%; padding: 30px;">Fetching tournament groups...</p>
+          <p style="color: var(--text-muted); text-align: center; width: 100%; padding: 30px;">Fetching tournament groups from API...</p>
         </div>
       </div>
 
@@ -365,7 +365,7 @@
           <h2><i class="fa-solid fa-sitemap" style="color: var(--accent-purple);"></i> Knockout Bracket</h2>
         </div>
         <div class="bracket-container" id="bracket-container">
-          <p style="color: var(--text-muted); text-align: center; width: 100%; padding: 50px;">Fetching tournament bracket...</p>
+          <p style="color: var(--text-muted); text-align: center; width: 100%; padding: 50px;">Fetching tournament bracket from API...</p>
         </div>
       </div>
       
@@ -423,66 +423,63 @@
     // ==========================================
     // REPLACE WITH YOUR API SPORTS KEY!
     const API_KEY = '0fabdd8b0511990ca6ad7cc22e409798'; 
-    const leagueId = '1'; // Typically '1' for World Cup, verify with API-Sports closer to 2026.
+    const leagueId = '1'; 
     const seasonYear = '2026';
-    
-    // Fetch ALL matches for the season to build the bracket, spoon, and stats
     const apiUrl = `https://v3.football.api-sports.io/fixtures?league=${leagueId}&season=${seasonYear}`;
 
     // ==========================================
-    // ⚽ 2. ANONYMIZED SWEEPSTAKE DATA (48 TEAMS)
+    // ⚽ 2. SWEEPSTAKE DATA (FULLY POPULATED FROM YOUR SHEET)
     // ==========================================
-    // Developer note: Ranks are mocked to allow the "Upset" math to function correctly from Day 1.
-    // Replace "Name 1", "Name 2" with the RMC staff names once drawn.
+    // Estimated FIFA ranks applied to allow the Upset Engine to work immediately.
     const sweepstakeData = [
-      { name: "Name 1", team: "Argentina", iso: "ar", rank: 1 },
-      { name: "Name 2", team: "France", iso: "fr", rank: 2 },
-      { name: "Name 3", team: "England", iso: "gb-eng", rank: 3 },
-      { name: "Name 4", team: "Belgium", iso: "be", rank: 4 },
-      { name: "Name 5", team: "Brazil", iso: "br", rank: 5 },
-      { name: "Name 6", team: "Netherlands", iso: "nl", rank: 6 },
-      { name: "Name 7", team: "Portugal", iso: "pt", rank: 7 },
-      { name: "Name 8", team: "Spain", iso: "es", rank: 8 },
-      { name: "Name 9", team: "Italy", iso: "it", rank: 9 },
-      { name: "Name 10", team: "Croatia", iso: "hr", rank: 10 },
-      { name: "Name 11", team: "USA", iso: "us", rank: 11 },
-      { name: "Name 12", team: "Colombia", iso: "co", rank: 12 },
-      { name: "Name 13", team: "Morocco", iso: "ma", rank: 13 },
-      { name: "Name 14", team: "Mexico", iso: "mx", rank: 14 },
-      { name: "Name 15", team: "Uruguay", iso: "uy", rank: 15 },
-      { name: "Name 16", team: "Germany", iso: "de", rank: 16 },
-      { name: "Name 17", team: "Senegal", iso: "sn", rank: 17 },
-      { name: "Name 18", team: "Japan", iso: "jp", rank: 18 },
-      { name: "Name 19", team: "Switzerland", iso: "ch", rank: 19 },
-      { name: "Name 20", team: "Iran", iso: "ir", rank: 20 },
-      { name: "Name 21", team: "Denmark", iso: "dk", rank: 21 },
-      { name: "Name 22", team: "South Korea", iso: "kr", rank: 22 },
-      { name: "Name 23", team: "Australia", iso: "au", rank: 23 },
-      { name: "Name 24", team: "Ukraine", iso: "ua", rank: 24 },
-      { name: "Name 25", team: "Austria", iso: "at", rank: 25 },
-      { name: "Name 26", team: "Sweden", iso: "se", rank: 26 },
-      { name: "Name 27", team: "Hungary", iso: "hu", rank: 27 },
-      { name: "Name 28", team: "Tunisia", iso: "tn", rank: 28 },
-      { name: "Name 29", team: "Wales", iso: "gb-wls", rank: 29 },
-      { name: "Name 30", team: "Algeria", iso: "dz", rank: 30 },
-      { name: "Name 31", team: "Poland", iso: "pl", rank: 31 },
-      { name: "Name 32", team: "Ecuador", iso: "ec", rank: 32 },
-      { name: "Name 33", team: "Egypt", iso: "eg", rank: 33 },
-      { name: "Name 34", team: "Serbia", iso: "rs", rank: 34 },
-      { name: "Name 35", team: "Peru", iso: "pe", rank: 35 },
-      { name: "Name 36", team: "Scotland", iso: "gb-sct", rank: 36 },
-      { name: "Name 37", team: "Turkey", iso: "tr", rank: 37 },
-      { name: "Name 38", team: "Nigeria", iso: "ng", rank: 38 },
-      { name: "Name 39", team: "Chile", iso: "cl", rank: 39 },
-      { name: "Name 40", team: "Panama", iso: "pa", rank: 40 },
-      { name: "Name 41", team: "Canada", iso: "ca", rank: 41 },
-      { name: "Name 42", team: "Cameroon", iso: "cm", rank: 42 },
-      { name: "Name 43", team: "Ivory Coast", iso: "ci", rank: 43 },
-      { name: "Name 44", team: "Costa Rica", iso: "cr", rank: 44 },
-      { name: "Name 45", team: "Mali", iso: "ml", rank: 45 },
-      { name: "Name 46", team: "Qatar", iso: "qa", rank: 46 },
-      { name: "Name 47", team: "Saudi Arabia", iso: "sa", rank: 47 },
-      { name: "Name 48", team: "New Zealand", iso: "nz", rank: 48 }
+      { name: "Verity PC", team: "France", iso: "fr", rank: 2 },
+      { name: "Mark Barlow", team: "Spain", iso: "es", rank: 8 },
+      { name: "Emma Harris", team: "Argentina", iso: "ar", rank: 1 },
+      { name: "Ellie Newman", team: "England", iso: "gb-eng", rank: 3 },
+      { name: "Sophie Coward", team: "Portugal", iso: "pt", rank: 7 },
+      { name: "Jess Knapman", team: "Brazil", iso: "br", rank: 5 },
+      { name: "Liz Cruz", team: "Netherlands", iso: "nl", rank: 6 },
+      { name: "Sarah Shannon", team: "Morocco", iso: "ma", rank: 13 },
+      { name: "PS Med", team: "Belgium", iso: "be", rank: 4 },
+      { name: "Louise Adams", team: "Germany", iso: "de", rank: 16 },
+      { name: "River", team: "Croatia", iso: "hr", rank: 10 },
+      { name: "Julian Wooton", team: "Colombia", iso: "co", rank: 12 },
+      { name: "TBC", team: "Senegal", iso: "sn", rank: 17 },
+      { name: "Samie Howard", team: "Mexico", iso: "mx", rank: 14 },
+      { name: "Vicky White", team: "USA", iso: "us", rank: 11 },
+      { name: "Josh Cadman", team: "Uruguay", iso: "uy", rank: 15 },
+      { name: "Hannah Lloyd", team: "Japan", iso: "jp", rank: 18 },
+      { name: "TBC", team: "Switzerland", iso: "ch", rank: 19 },
+      { name: "Nicole Chapman", team: "Iran", iso: "ir", rank: 20 },
+      { name: "Louis Ormston", team: "Turkey", iso: "tr", rank: 37 },
+      { name: "Raquel", team: "Ecuador", iso: "ec", rank: 32 },
+      { name: "TBC", team: "Austria", iso: "at", rank: 25 },
+      { name: "Raechelle", team: "South Korea", iso: "kr", rank: 22 },
+      { name: "Michelle", team: "Australia", iso: "au", rank: 23 },
+      { name: "TBC", team: "Algeria", iso: "dz", rank: 30 },
+      { name: "TBC", team: "Egypt", iso: "eg", rank: 33 },
+      { name: "Marcus Ball", team: "Canada", iso: "ca", rank: 41 },
+      { name: "Sarah Brandan", team: "Norway", iso: "no", rank: 42 },
+      { name: "Clement", team: "Panama", iso: "pa", rank: 40 },
+      { name: "Oana", team: "Ivory Coast", iso: "ci", rank: 43 },
+      { name: "Kristian", team: "Sweden", iso: "se", rank: 26 },
+      { name: "Jason Miller", team: "Paraguay", iso: "py", rank: 44 },
+      { name: "Jeanette Eriksson", team: "Czechia", iso: "cz", rank: 39 },
+      { name: "Del", team: "Scotland", iso: "gb-sct", rank: 36 },
+      { name: "Tom Wenham Jones", team: "Tunisia", iso: "tn", rank: 28 },
+      { name: "Louise Meredith", team: "DR Congo", iso: "cd", rank: 45 },
+      { name: "Ben Hunt", team: "Uzbekistan", iso: "uz", rank: 46 },
+      { name: "Tim Babynka", team: "Qatar", iso: "qa", rank: 47 },
+      { name: "Meick", team: "Iraq", iso: "iq", rank: 48 },
+      { name: "Dan Brown", team: "Saudi Arabia", iso: "sa", rank: 38 },
+      { name: "TBC", team: "Jordan", iso: "jo", rank: 49 },
+      { name: "Laura Molyneaux", team: "Bosnia & Herzegovina", iso: "ba", rank: 50 },
+      { name: "Chris Warnes", team: "Cape Verde", iso: "cv", rank: 51 },
+      { name: "Emma", team: "Ghana", iso: "gh", rank: 52 },
+      { name: "Lou Threapleton", team: "Curacao", iso: "cw", rank: 53 },
+      { name: "Jack Traylen", team: "Haiti", iso: "ht", rank: 54 },
+      { name: "Charlie", team: "New Zealand", iso: "nz", rank: 55 },
+      { name: "Alex Grant", team: "South Africa", iso: "za", rank: 56 }
     ];
 
     // ==========================================
@@ -777,8 +774,11 @@
         const a = m.teams.away.name;
         if (!h || !a) return;
 
-        if (!groups[groupName][h]) groups[groupName][h] = { name: h, logo: m.teams.home.logo, p:0, w:0, d:0, l:0, gf:0, ga:0, pts:0 };
-        if (!groups[groupName][a]) groups[groupName][a] = { name: a, logo: m.teams.away.logo, p:0, w:0, d:0, l:0, gf:0, ga:0, pts:0 };
+        const ownerH = sweepstakeData.find(s => s.team === h)?.name || "TBC";
+        const ownerA = sweepstakeData.find(s => s.team === a)?.name || "TBC";
+
+        if (!groups[groupName][h]) groups[groupName][h] = { name: h, logo: m.teams.home.logo, owner: ownerH, p:0, w:0, d:0, l:0, gf:0, ga:0, pts:0 };
+        if (!groups[groupName][a]) groups[groupName][a] = { name: a, logo: m.teams.away.logo, owner: ownerA, p:0, w:0, d:0, l:0, gf:0, ga:0, pts:0 };
 
         if (m.fixture.status.short === 'FT') {
           groups[groupName][h].p++;
@@ -805,7 +805,7 @@
       const groupKeys = Object.keys(groups).sort();
 
       if (groupKeys.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%; padding: 30px;">Group stages not drawn yet.</p>';
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%; padding: 30px;">Group stages not drawn yet by FIFA.</p>';
         return;
       }
 
@@ -815,9 +815,9 @@
           t.gd = t.gf - t.ga;
           return t;
         }).sort((a, b) => {
-          if (b.pts !== a.pts) return b.pts - a.pts; // Pts descending
-          if (b.gd !== a.gd) return b.gd - a.gd;     // GD descending
-          return b.gf - a.gf;                        // GF descending
+          if (b.pts !== a.pts) return b.pts - a.pts; 
+          if (b.gd !== a.gd) return b.gd - a.gd;     
+          return b.gf - a.gf;                        
         });
 
         html += `<div class="group-table">
@@ -826,12 +826,17 @@
             <tr><th>Team</th><th>P</th><th>GD</th><th>Pts</th></tr>`;
         
         teams.forEach((t, i) => {
-          // In 48-team format, top 2 advance (plus 8 best 3rd placed). Highlighting top 2 for clarity.
           const isAdvancing = i < 2;
           const color = isAdvancing ? '#FFF' : 'var(--text-muted)';
           html += `<tr style="color: ${color};">
             <td style="text-align:left;">
-              <div class="group-team-wrap"><img src="${t.logo}" onerror="this.style.display='none'"> ${t.name}</div>
+              <div class="group-team-wrap">
+                <img src="${t.logo}" onerror="this.style.display='none'"> 
+                <div style="line-height: 1.2;">
+                  ${t.name}
+                  <div style="font-size: 9px; color: ${isAdvancing ? 'var(--accent-green)' : 'var(--text-muted)'};">${t.owner}</div>
+                </div>
+              </div>
             </td>
             <td>${t.p}</td>
             <td>${t.gd > 0 ? '+'+t.gd : t.gd}</td>
@@ -848,7 +853,6 @@
     function processKnockouts(matches) {
       const container = document.getElementById('bracket-container');
       
-      // Standard knockout phases including Round of 32 for the 48-team 2026 format
       const stages = ["Round of 32", "Round of 16", "Quarter-finals", "Semi-finals", "Final"];
       let html = '';
       let hasKnockouts = false;
@@ -864,14 +868,29 @@
           const homeWinner = m.goals.home > m.goals.away ? 'winner' : '';
           const awayWinner = m.goals.away > m.goals.home ? 'winner' : '';
           
+          const homeOwner = sweepstakeData.find(s => s.team === m.teams.home.name)?.name || "";
+          const awayOwner = sweepstakeData.find(s => s.team === m.teams.away.name)?.name || "";
+          
           html += `
             <div class="bracket-match">
               <div class="bracket-team ${homeWinner}">
-                <div><img src="${m.teams.home.logo}" onerror="this.style.display='none'"> ${m.teams.home.name || 'TBD'}</div>
+                <div style="display: flex; align-items: center;">
+                  <img src="${m.teams.home.logo}" onerror="this.style.display='none'"> 
+                  <div style="line-height: 1.2;">
+                    ${m.teams.home.name || 'TBD'}
+                    <div style="font-size: 9px; color: var(--accent-green); font-weight: normal;">${homeOwner}</div>
+                  </div>
+                </div>
                 <span>${m.goals.home ?? '-'}</span>
               </div>
               <div class="bracket-team ${awayWinner}">
-                <div><img src="${m.teams.away.logo}" onerror="this.style.display='none'"> ${m.teams.away.name || 'TBD'}</div>
+                <div style="display: flex; align-items: center;">
+                  <img src="${m.teams.away.logo}" onerror="this.style.display='none'"> 
+                  <div style="line-height: 1.2;">
+                    ${m.teams.away.name || 'TBD'}
+                    <div style="font-size: 9px; color: var(--accent-green); font-weight: normal;">${awayOwner}</div>
+                  </div>
+                </div>
                 <span>${m.goals.away ?? '-'}</span>
               </div>
             </div>
