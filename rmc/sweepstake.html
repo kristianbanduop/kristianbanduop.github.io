@@ -1,2 +1,388 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RMC World Cup 2026 Sweepstake</title>
+  <style>
+    :root {
+      /* University of Portsmouth inspired colours */
+      --primary: #3A1961; 
+      --primary-light: #522785;
+      --accent: #00D3B7;
+      --bg: #F4F6F9;
+      --card-bg: #FFFFFF;
+      --text: #333333;
+      --text-light: #777777;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    
+    body { background-color: var(--bg); color: var(--text); }
+
+    /* Header & Navigation */
+    header { background-color: var(--primary); color: white; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    header h1 { font-size: 28px; margin-bottom: 10px; font-weight: 700; }
+    header p { font-size: 14px; opacity: 0.8; }
+    
+    nav { display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+    nav button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: all 0.2s; font-weight: bold; }
+    nav button:hover, nav button.active { background: var(--accent); color: var(--primary); border-color: var(--accent); }
+
+    /* Main Container */
+    .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+    .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* TV Dashboard Layout */
+    .tv-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .tv-grid { grid-template-columns: 1fr; } }
+    
+    .card { background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .card h2 { color: var(--primary); border-bottom: 2px solid var(--bg); padding-bottom: 10px; margin-bottom: 15px; font-size: 20px; display: flex; justify-content: space-between; align-items: center;}
+    
+    .live-indicator { font-size: 12px; color: #e74c3c; background: #fadbd8; padding: 4px 8px; border-radius: 20px; font-weight: bold; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+    /* Match Items */
+    .match { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--bg); font-size: 18px; }
+    .match:last-child { border-bottom: none; }
+    .team-block { display: flex; align-items: center; gap: 10px; width: 40%; }
+    .team-block img { width: 30px; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    .score-block { font-weight: bold; font-size: 22px; background: var(--primary-light); color: white; padding: 5px 15px; border-radius: 5px; }
+    .chaos-stats { font-size: 12px; color: #555; margin-top: 5px; background: #f9f9f9; padding: 4px 8px; border-radius: 4px; display: inline-block; border: 1px solid #eee;}
+
+    /* Sweepstake Grid */
+    .search-bar { width: 100%; padding: 15px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 20px; }
+    .sweepstake-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+    .player-card { background: var(--card-bg); border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; }
+    .player-card:hover { transform: translateY(-3px); border-left: 4px solid var(--accent); }
+    .player-card img { width: 45px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    .player-info h3 { font-size: 16px; margin-bottom: 3px; }
+    .player-info p { font-size: 14px; color: var(--text-light); }
+    .status { font-size: 12px; padding: 3px 8px; border-radius: 12px; font-weight: bold; margin-top: 5px; display: inline-block; }
+    .status.active { background: #d4efdf; color: #1e8449; }
+    .status.eliminated { background: #fadbd8; color: #c0392b; }
+
+    /* Tables for Prizes */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background-color: var(--primary-light); color: white; font-weight: 600; }
+    tr:hover { background-color: #f1f1f1; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>RMC 🏆 World Cup 2026 Sweepstake</h1>
+    <p>University of Portsmouth • Recruitment Marketing & Communications</p>
+    <nav>
+      <button class="active" onclick="showTab('tv')">📺 TV Dashboard</button>
+      <button onclick="showTab('players')">👥 My Team / All Players</button>
+      <button onclick="showTab('prizes')">💰 Prizes & Rules</button>
+    </nav>
+  </header>
+
+  <div class="container">
+    
+    <div id="tv" class="tab-content active">
+      <div class="tv-grid">
+        <div class="card">
+          <h2>Live / Upcoming Matches <span class="live-indicator">Auto-Updating</span></h2>
+          <div id="match-container">
+            <p style="padding: 15px; color: #777;">Loading live match data...</p>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Tournament Stats</h2>
+          <p style="margin-bottom: 15px;"><strong>Total Pot:</strong> Up to £240.00</p>
+          <p style="margin-bottom: 15px;"><strong>Active Teams:</strong> <span id="active-count">48</span> / 48</p>
+          
+          <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+          
+          <h3 style="color: var(--primary); margin-bottom: 10px;">Top Chaos Contenders (Mock)</h3>
+          <ul style="list-style: none; line-height: 1.8; font-size: 14px;" id="chaos-list">
+            <li>🟨 <strong>Uruguay</strong> (Josh Cadman) - 8 Cards</li>
+            <li>🟥 <strong>Netherlands</strong> (Liz Cruz) - 2 Reds</li>
+            <li>🤦‍♂️ <strong>England</strong> (Ellie Newman) - 1 Own Goal</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="players" class="tab-content">
+      <div class="card">
+        <h2>Sweepstake Draw</h2>
+        <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Search for your name or team..." onkeyup="filterPlayers()">
+        <div class="sweepstake-grid" id="players-grid">
+          </div>
+      </div>
+    </div>
+
+    <div id="prizes" class="tab-content">
+      <div class="card">
+        <h2>Prize Breakdown</h2>
+        <p style="margin-bottom: 20px;">The pot structure scales depending on whether we sell out all 48 teams. The cash prizes operate on a roughly 70/30 split between the podium finishers and the side prizes.</p>
+        
+        <h3 style="color: var(--primary); margin-top: 20px;">£150 Pot (30 people @ £5)</h3>
+        <table>
+          <thead><tr><th>Prize Category</th><th>Amount</th><th>% of Pot</th></tr></thead>
+          <tbody>
+            <tr><td>Winner</td><td>£60</td><td>40.0%</td></tr>
+            <tr><td>Runner-up</td><td>£35</td><td>23.3%</td></tr>
+            <tr><td>Third place</td><td>£15</td><td>10.0%</td></tr>
+            <tr><td>Best Goal (FIFA award)</td><td>£15</td><td>10.0%</td></tr>
+            <tr><td>Biggest Shock (Ranking diff)</td><td>£10</td><td>6.7%</td></tr>
+            <tr><td>Wooden Spoon</td><td>£10</td><td>6.7%</td></tr>
+            <tr><td>Chaos Award (Most memeable/drama)</td><td>£5</td><td>3.3%</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="color: var(--primary); margin-top: 30px;">£240 Pot (All 48 teams bought for £5)</h3>
+        <table>
+          <thead><tr><th>Prize Category</th><th>Amount</th><th>% of Pot</th></tr></thead>
+          <tbody>
+            <tr><td>Winner</td><td>£100</td><td>41.7%</td></tr>
+            <tr><td>Runner-up</td><td>£55</td><td>22.9%</td></tr>
+            <tr><td>Third place</td><td>£25</td><td>10.4%</td></tr>
+            <tr><td>Best Goal (FIFA award)</td><td>£20</td><td>8.3%</td></tr>
+            <tr><td>Biggest Shock (Ranking diff)</td><td>£15</td><td>6.3%</td></tr>
+            <tr><td>Wooden Spoon</td><td>£15</td><td>6.3%</td></tr>
+            <tr><td>Chaos Award (Most memeable/drama)</td><td>£10</td><td>4.2%</td></tr>
+          </tbody>
+        </table>
+        
+        <div style="background: var(--bg); padding: 15px; margin-top: 20px; border-left: 4px solid var(--accent);">
+          <strong>Note on the Chaos Award:</strong> This is highly subjective, but memeable moments will do a fair amount of the heavy lifting. We may put this to an office poll when the tournament concludes!
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ==========================================
+    // ⚙️ 1. API CONFIGURATION
+    // ==========================================
+    const API_KEY = 'YOUR_API_SPORTS_KEY_HERE'; // <-- PASTE YOUR API KEY HERE
+    
+    // API-Sports variables. League 1 is usually World Cup, but double check their docs for 2026!
+    const leagueId = '1'; 
+    const seasonYear = '2026';
+    const apiUrl = `https://v3.football.api-sports.io/fixtures?league=${leagueId}&season=${seasonYear}&live=all`;
+
+    // ==========================================
+    // ⚽ 2. SWEEPSTAKE DATA
+    // ==========================================
+    // Developer Note: If the API returns "United States" instead of "USA", 
+    // simply update the 'team' string here to match exactly what the API outputs.
+    const sweepstakeData = [
+      { name: "Verity PC", team: "France", iso: "fr", status: "active" },
+      { name: "Mark Barlow", team: "Spain", iso: "es", status: "active" },
+      { name: "Emma Harris", team: "Argentina", iso: "ar", status: "active" },
+      { name: "Ellie Newman", team: "England", iso: "gb-eng", status: "active" },
+      { name: "Sophie Coward", team: "Portugal", iso: "pt", status: "active" },
+      { name: "Jess Knapman", team: "Brazil", iso: "br", status: "active" },
+      { name: "Liz Cruz", team: "Netherlands", iso: "nl", status: "active" },
+      { name: "Sarah Shannon", team: "Morocco", iso: "ma", status: "active" },
+      { name: "PS Med", team: "Belgium", iso: "be", status: "active" },
+      { name: "Louise Adams", team: "Germany", iso: "de", status: "active" },
+      { name: "River", team: "Croatia", iso: "hr", status: "active" },
+      { name: "Julian Wooton", team: "Colombia", iso: "co", status: "active" },
+      { name: "TBC", team: "Senegal", iso: "sn", status: "active" },
+      { name: "Samie Howard", team: "Mexico", iso: "mx", status: "active" },
+      { name: "Vicky White", team: "USA", iso: "us", status: "active" },
+      { name: "Josh Cadman", team: "Uruguay", iso: "uy", status: "active" },
+      { name: "Hannah Lloyd", team: "Japan", iso: "jp", status: "active" },
+      { name: "TBC", team: "Switzerland", iso: "ch", status: "active" },
+      { name: "Nicole Chapman", team: "Iran", iso: "ir", status: "active" },
+      { name: "Louis Ormston", team: "Turkey", iso: "tr", status: "active" },
+      { name: "Raquel", team: "Ecuador", iso: "ec", status: "active" },
+      { name: "TBC", team: "Austria", iso: "at", status: "active" },
+      { name: "Raechelle", team: "South Korea", iso: "kr", status: "active" },
+      { name: "Michelle", team: "Australia", iso: "au", status: "active" },
+      { name: "TBC", team: "Algeria", iso: "dz", status: "active" },
+      { name: "TBC", team: "Egypt", iso: "eg", status: "active" },
+      { name: "Marcus Ball", team: "Canada", iso: "ca", status: "active" },
+      { name: "Sarah Brandan", team: "Norway", iso: "no", status: "active" },
+      { name: "Clement", team: "Panama", iso: "pa", status: "active" },
+      { name: "Oanu", team: "Ivory Coast", iso: "ci", status: "active" },
+      { name: "Kristian", team: "Sweden", iso: "se", status: "active" },
+      { name: "Jason Miller", team: "Paraguay", iso: "py", status: "active" },
+      { name: "Jeanette Eriksson", team: "Czechia", iso: "cz", status: "active" },
+      { name: "Del", team: "Scotland", iso: "gb-sct", status: "active" },
+      { name: "Tom Wenham Jones", team: "Tunisia", iso: "tn", status: "active" },
+      { name: "Louise Meredith", team: "DR Congo", iso: "cd", status: "active" },
+      { name: "Ben Hunt", team: "Uzbekistan", iso: "uz", status: "active" },
+      { name: "Tim Babynka", team: "Qatar", iso: "qa", status: "active" },
+      { name: "Meick", team: "Iraq", iso: "iq", status: "active" },
+      { name: "Dan Brown", team: "Saudi Arabia", iso: "sa", status: "active" },
+      { name: "TBC", team: "Jordan", iso: "jo", status: "active" },
+      { name: "Laura Molyneaux", team: "Bosnia & Herzegovina", iso: "ba", status: "active" },
+      { name: "Chris Warnes", team: "Cape Verde", iso: "cv", status: "active" },
+      { name: "Emma", team: "Ghana", iso: "gh", status: "active" },
+      { name: "Lou Threapleton", team: "Curacao", iso: "cw", status: "active" },
+      { name: "Jack Traylen", team: "Haiti", iso: "ht", status: "active" },
+      { name: "Charlie", team: "New Zealand", iso: "nz", status: "active" },
+      { name: "Alex Grant", team: "South Africa", iso: "za", status: "active" }
+    ];
+
+    // ==========================================
+    // 🖥️ 3. UI NAVIGATION LOGIC
+    // ==========================================
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // ==========================================
+    // 👥 4. RENDER PLAYERS GRID
+    // ==========================================
+    function renderPlayers() {
+      const grid = document.getElementById('players-grid');
+      grid.innerHTML = '';
+      
+      sweepstakeData.forEach(player => {
+        // Using flagcdn for high-quality SVG flags based on ISO codes
+        const flagUrl = `https://flagcdn.com/w80/${player.iso}.png`;
+        const statusClass = player.status === 'active' ? 'active' : 'eliminated';
+        const statusText = player.status === 'active' ? 'Active' : 'Eliminated';
+
+        grid.innerHTML += `
+          <div class="player-card" data-name="${player.name.toLowerCase()}" data-team="${player.team.toLowerCase()}">
+            <img src="${flagUrl}" alt="${player.team} flag">
+            <div class="player-info">
+              <h3>${player.name}</h3>
+              <p><strong>${player.team}</strong></p>
+              <span class="status ${statusClass}">${statusText}</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function filterPlayers() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.player-card');
+      
+      cards.forEach(card => {
+        const name = card.getAttribute('data-name');
+        const team = card.getAttribute('data-team');
+        if (name.includes(query) || team.includes(query)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // ==========================================
+    // 📡 5. LIVE API INTEGRATION
+    // ==========================================
+    async function fetchLiveMatches() {
+      // Safety check so you don't burn API calls if you haven't put a key in yet
+      if (API_KEY === 'YOUR_API_SPORTS_KEY_HERE') {
+        document.getElementById('match-container').innerHTML = 
+          '<p style="padding: 15px; color: #e74c3c;">⚠️ Developer Note: Please insert your API-Sports key into the code to fetch live matches.</p>';
+        return;
+      }
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            'x-apisports-key': API_KEY,
+            'x-rapidapi-host': 'v3.football.api-sports.io'
+          }
+        });
+        
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        
+        const data = await response.json();
+        renderLiveMatches(data.response);
+
+      } catch (error) {
+        console.error("Error fetching live match data:", error);
+        document.getElementById('match-container').innerHTML = 
+          '<p style="padding: 15px; color: #e74c3c;">Failed to load data. API limits may have been reached.</p>';
+      }
+    }
+
+    function renderLiveMatches(matches) {
+      const matchContainer = document.getElementById('match-container');
+      matchContainer.innerHTML = '';
+
+      if (!matches || matches.length === 0) {
+        matchContainer.innerHTML = '<p style="padding: 15px;">No matches currently live. Check back near kick-off!</p>';
+        return;
+      }
+
+      matches.forEach(matchData => {
+        const fixture = matchData.fixture;
+        const teams = matchData.teams;
+        const goals = matchData.goals;
+        const events = matchData.events || []; 
+
+        // 🌶️ Extracting the Chaos Stats for the active match
+        let yellowCards = 0;
+        let redCards = 0;
+        let ownGoals = 0;
+
+        events.forEach(e => {
+          if (e.type === 'Card' && e.detail === 'Yellow Card') yellowCards++;
+          if (e.type === 'Card' && e.detail === 'Red Card') redCards++;
+          if (e.type === 'Goal' && e.detail === 'Own Goal') ownGoals++;
+        });
+
+        // Find the sweepstake owners
+        // Optional chaining handles slight name mismatches gracefully
+        const ownerHome = sweepstakeData.find(s => s.team === teams.home.name)?.name || "TBC";
+        const ownerAway = sweepstakeData.find(s => s.team === teams.away.name)?.name || "TBC";
+
+        matchContainer.innerHTML += `
+          <div class="match">
+            <div class="team-block">
+              <img src="${teams.home.logo}" alt="flag">
+              <div>
+                <div>${teams.home.name}</div>
+                <div style="font-size: 12px; color: #777;">(${ownerHome})</div>
+              </div>
+            </div>
+            
+            <div style="text-align: center;">
+              <div class="score-block">${goals.home ?? 0} - ${goals.away ?? 0}</div>
+              <div style="font-size: 12px; margin-top: 5px; color: #e74c3c; font-weight: bold;">
+                LIVE ${fixture.status.elapsed}'
+              </div>
+              <div class="chaos-stats">
+                🟨 ${yellowCards} | 🟥 ${redCards} | 🤦‍♂️ OG: ${ownGoals}
+              </div>
+            </div>
+
+            <div class="team-block" style="justify-content: flex-end; text-align: right;">
+              <div>
+                <div>${teams.away.name}</div>
+                <div style="font-size: 12px; color: #777;">(${ownerAway})</div>
+              </div>
+              <img src="${teams.away.logo}" alt="flag">
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // Initialize the dashboard on load
+    window.onload = () => {
+      renderPlayers();
+      fetchLiveMatches(); 
+      
+      // Poll every 10 minutes (600,000 ms) to keep the TV updated while preserving the 100/day API limit!
+      setInterval(fetchLiveMatches, 600000); 
+    };
+  </script>
+</body>
 </html>
