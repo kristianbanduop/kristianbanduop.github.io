@@ -160,21 +160,53 @@
     .score-box { font-size: 24px; font-weight: 900; color: #FFF; background: transparent; display: inline-block; margin-bottom: 4px; letter-spacing: 4px; }
     .match-time { font-size: 11px; color: var(--accent-magenta); font-weight: 800; }
 
-    /* Wallchart Bracket */
+    /* Wallchart - Group Stages */
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .group-table {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .group-table:hover { border-color: var(--accent-purple); transform: translateY(-3px); }
+    .group-table h3 {
+      color: var(--text-main);
+      margin-bottom: 10px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+    .group-table table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .group-table th, .group-table td { padding: 8px 4px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .group-table th { color: var(--text-muted); font-size: 10px; }
+    .group-table th:first-child, .group-table td:first-child { text-align: left; }
+    .group-table tr:last-child td { border-bottom: none; }
+    .group-team-wrap { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+    .group-team-wrap img { width: 18px; border-radius: 2px; }
+
+    /* Wallchart - Knockouts */
     .bracket-container {
       display: flex;
       justify-content: space-between;
       overflow-x: auto;
       padding-bottom: 20px;
+      gap: 20px;
     }
     .bracket-round {
       display: flex;
       flex-direction: column;
       gap: 15px;
       min-width: 220px;
-      padding: 0 10px;
     }
-    .bracket-round h3 { font-size: 12px; color: var(--accent-purple); text-transform: uppercase; text-align: center; margin-bottom: 15px; letter-spacing: 1px; }
+    .bracket-round h3 { font-size: 12px; color: var(--accent-magenta); text-transform: uppercase; text-align: center; margin-bottom: 15px; letter-spacing: 1px; }
     .bracket-match { background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
     .bracket-team { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; font-weight: 600; align-items: center; }
     .bracket-team img { width: 20px; border-radius: 3px; margin-right: 8px; }
@@ -227,7 +259,7 @@
     
     <nav class="nav-menu">
       <button class="nav-btn active" onclick="showTab('dashboard')"><i class="fa-solid fa-tv"></i> Live Data</button>
-      <button class="nav-btn" onclick="showTab('wallchart')"><i class="fa-solid fa-sitemap"></i> Wallchart Bracket</button>
+      <button class="nav-btn" onclick="showTab('wallchart')"><i class="fa-solid fa-sitemap"></i> Tournament Wallchart</button>
       <button class="nav-btn" onclick="showTab('players')"><i class="fa-solid fa-users"></i> The Draw</button>
       <button class="nav-btn" onclick="showTab('prizes')"><i class="fa-solid fa-trophy"></i> Prizes & Rules</button>
     </nav>
@@ -318,14 +350,25 @@
     </div>
 
     <div id="wallchart" class="tab-content">
-      <div class="card" style="min-height: 600px;">
+      
+      <div class="card">
         <div class="card-header">
-          <h2><i class="fa-solid fa-sitemap" style="color: var(--accent-green);"></i> Knockout Wallchart</h2>
+          <h2><i class="fa-solid fa-table-cells" style="color: var(--accent-green);"></i> Group Stages</h2>
+        </div>
+        <div class="groups-grid" id="groups-container">
+          <p style="color: var(--text-muted); text-align: center; width: 100%; padding: 30px;">Fetching tournament groups...</p>
+        </div>
+      </div>
+
+      <div class="card" style="min-height: 400px;">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-sitemap" style="color: var(--accent-purple);"></i> Knockout Bracket</h2>
         </div>
         <div class="bracket-container" id="bracket-container">
           <p style="color: var(--text-muted); text-align: center; width: 100%; padding: 50px;">Fetching tournament bracket...</p>
         </div>
       </div>
+      
     </div>
 
     <div id="players" class="tab-content">
@@ -389,7 +432,8 @@
     // ==========================================
     // ⚽ 2. ANONYMIZED SWEEPSTAKE DATA (48 TEAMS)
     // ==========================================
-    // Ranks are estimated/mocked to allow the "Upset" math to function immediately.
+    // Developer note: Ranks are mocked to allow the "Upset" math to function correctly from Day 1.
+    // Replace "Name 1", "Name 2" with the RMC staff names once drawn.
     const sweepstakeData = [
       { name: "Name 1", team: "Argentina", iso: "ar", rank: 1 },
       { name: "Name 2", team: "France", iso: "fr", rank: 2 },
@@ -502,7 +546,10 @@
         processTournamentStats(matches);
         processBiggestUpset(matches);
         processWoodenSpoon(matches);
-        processWallchart(matches);
+        
+        // Wallchart components
+        processGroups(matches);
+        processKnockouts(matches);
 
       } catch (error) {
         console.error("API Error:", error);
@@ -513,7 +560,6 @@
     function processLiveMatches(matches) {
       const matchContainer = document.getElementById('match-container');
       
-      // Filter for matches currently in play or starting today
       const liveStatus = ['1H', '2H', 'HT', 'ET', 'BT', 'P', 'SUSP', 'INT'];
       const todayStr = new Date().toISOString().split('T')[0];
       
@@ -583,18 +629,18 @@
       tbody.innerHTML = '';
 
       sortedChaos.forEach(c => {
-        if (c.pts === 0) return; // Don't show teams with 0 chaos
+        if (c.pts === 0) return; 
         tbody.innerHTML += `
           <tr>
-            <td><strong>${c.team}</strong> <span style="color: var(--text-muted); font-size: 11px;">(${c.name})</span></td>
+            <td><strong>${c.team}</strong> <br><span style="color: var(--text-muted); font-size: 11px;">(${c.name})</span></td>
             <td style="text-align: center;">${c.y}</td>
             <td style="text-align: center;">${c.r}</td>
             <td style="text-align: center;">${c.og}</td>
-            <td style="text-align: right; font-weight: 900; color: var(--accent-magenta);">${c.pts}</td>
+            <td style="text-align: right; font-weight: 900; color: var(--accent-magenta); font-size: 16px;">${c.pts}</td>
           </tr>
         `;
       });
-      if(tbody.innerHTML === '') tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">No chaos points recorded yet.</td></tr>';
+      if(tbody.innerHTML === '') tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: var(--text-muted); padding: 20px;">No chaos points recorded yet.</td></tr>';
     }
 
     // --- C. Biggest Upset Engine ---
@@ -607,15 +653,12 @@
         const awayRank = sweepstakeData.find(s => s.team === m.teams.away.name)?.rank;
         if (!homeRank || !awayRank) return;
 
-        // Completed Matches
         if (m.fixture.status.short === 'FT' || m.fixture.status.short === 'PEN') {
           let winnerRank = 0, loserRank = 0;
           if (m.goals.home > m.goals.away) { winnerRank = homeRank; loserRank = awayRank; }
           else if (m.goals.away > m.goals.home) { winnerRank = awayRank; loserRank = homeRank; }
           
           if (winnerRank > 0) {
-            // A higher rank number means a lower/worse team.
-            // If winner Rank (e.g. 40) > loser Rank (e.g. 5), difference is 35 (A huge upset).
             const diff = winnerRank - loserRank; 
             if (diff > biggestUpset.diff) {
               biggestUpset = { 
@@ -628,17 +671,14 @@
           }
         }
 
-        // Potential Upcoming Matches
         if (m.fixture.status.short === 'NS') {
           const diff = Math.abs(homeRank - awayRank);
-          // Only show it if it could topple the CURRENT biggest upset
           if (diff > biggestUpset.diff && diff > potentialUpset.diff) {
             potentialUpset = { diff: diff, match: m };
           }
         }
       });
 
-      // Render Current Upset
       const upDiv = document.getElementById('upset-completed');
       if (biggestUpset.match) {
         const wOwner = sweepstakeData.find(s => s.team === biggestUpset.winnerName)?.name || "TBC";
@@ -650,10 +690,9 @@
         upDiv.innerHTML = '<p class="sub-text">No upsets recorded yet.</p>';
       }
 
-      // Render Potential Upset
       const potDiv = document.getElementById('upset-potential');
       if (potentialUpset.match) {
-        const dateStr = new Date(potentialUpset.match.fixture.date).toLocaleDateString();
+        const dateStr = new Date(potentialUpset.match.fixture.date).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         potDiv.innerHTML = `
           <p style="font-size: 14px; font-weight: 800; color: #FFF;">${potentialUpset.match.teams.home.name} vs ${potentialUpset.match.teams.away.name}</p>
           <p class="sub-text">Diff: ${potentialUpset.diff} places | Playing on ${dateStr}</p>
@@ -682,22 +721,21 @@
         else { teamStats[h].pts += 1; teamStats[a].pts += 1; }
       });
 
-      // Calculate GD and sort
       let spoonTeam = null;
       Object.values(teamStats).forEach(t => t.gd = t.gf - t.ga);
       
       const ranked = Object.values(teamStats)
-        .filter(t => t.played > 0) // Only rank teams that have played
+        .filter(t => t.played > 0)
         .sort((a, b) => {
-          if (a.pts !== b.pts) return a.pts - b.pts; // Lowest points first
-          return a.gd - b.gd; // Then lowest Goal Difference
+          if (a.pts !== b.pts) return a.pts - b.pts; 
+          return a.gd - b.gd; 
         });
 
       const spoonDiv = document.getElementById('wooden-spoon');
       if (ranked.length > 0) {
         spoonTeam = ranked[0];
         spoonDiv.innerHTML = `
-          <p class="huge-text" style="color: #CD853F; font-size: 36px;">${spoonTeam.team}</p>
+          <p class="huge-text" style="color: #CD853F; font-size: 32px;">${spoonTeam.team}</p>
           <p class="sub-text" style="color: #FFF;">Owner: ${spoonTeam.name}</p>
           <p class="sub-text" style="margin-top: 5px;">${spoonTeam.pts} Pts | ${spoonTeam.gd} GD | Conceded ${spoonTeam.ga}</p>
         `;
@@ -723,19 +761,101 @@
       document.getElementById('stat-reds').innerText = r;
     }
 
-    // --- F. Wallchart Bracket Builder ---
-    function processWallchart(matches) {
+    // --- F. Wallchart: Group Stages ---
+    function processGroups(matches) {
+      const groups = {}; 
+
+      matches.forEach(m => {
+        const round = m.league.round || '';
+        const matchStr = round.match(/Group [A-L]/i);
+        if (!matchStr) return; 
+
+        const groupName = matchStr[0].toUpperCase();
+        if (!groups[groupName]) groups[groupName] = {};
+
+        const h = m.teams.home.name;
+        const a = m.teams.away.name;
+        if (!h || !a) return;
+
+        if (!groups[groupName][h]) groups[groupName][h] = { name: h, logo: m.teams.home.logo, p:0, w:0, d:0, l:0, gf:0, ga:0, pts:0 };
+        if (!groups[groupName][a]) groups[groupName][a] = { name: a, logo: m.teams.away.logo, p:0, w:0, d:0, l:0, gf:0, ga:0, pts:0 };
+
+        if (m.fixture.status.short === 'FT') {
+          groups[groupName][h].p++;
+          groups[groupName][a].p++;
+          groups[groupName][h].gf += m.goals.home;
+          groups[groupName][h].ga += m.goals.away;
+          groups[groupName][a].gf += m.goals.away;
+          groups[groupName][a].ga += m.goals.home;
+
+          if (m.goals.home > m.goals.away) {
+            groups[groupName][h].w++; groups[groupName][h].pts += 3;
+            groups[groupName][a].l++;
+          } else if (m.goals.away > m.goals.home) {
+            groups[groupName][a].w++; groups[groupName][a].pts += 3;
+            groups[groupName][h].l++;
+          } else {
+            groups[groupName][h].d++; groups[groupName][h].pts += 1;
+            groups[groupName][a].d++; groups[groupName][a].pts += 1;
+          }
+        }
+      });
+
+      const container = document.getElementById('groups-container');
+      const groupKeys = Object.keys(groups).sort();
+
+      if (groupKeys.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%; padding: 30px;">Group stages not drawn yet.</p>';
+        return;
+      }
+
+      let html = '';
+      groupKeys.forEach(gName => {
+        const teams = Object.values(groups[gName]).map(t => {
+          t.gd = t.gf - t.ga;
+          return t;
+        }).sort((a, b) => {
+          if (b.pts !== a.pts) return b.pts - a.pts; // Pts descending
+          if (b.gd !== a.gd) return b.gd - a.gd;     // GD descending
+          return b.gf - a.gf;                        // GF descending
+        });
+
+        html += `<div class="group-table">
+          <h3>${gName}</h3>
+          <table>
+            <tr><th>Team</th><th>P</th><th>GD</th><th>Pts</th></tr>`;
+        
+        teams.forEach((t, i) => {
+          // In 48-team format, top 2 advance (plus 8 best 3rd placed). Highlighting top 2 for clarity.
+          const isAdvancing = i < 2;
+          const color = isAdvancing ? '#FFF' : 'var(--text-muted)';
+          html += `<tr style="color: ${color};">
+            <td style="text-align:left;">
+              <div class="group-team-wrap"><img src="${t.logo}" onerror="this.style.display='none'"> ${t.name}</div>
+            </td>
+            <td>${t.p}</td>
+            <td>${t.gd > 0 ? '+'+t.gd : t.gd}</td>
+            <td style="font-weight:800; color: ${isAdvancing ? 'var(--accent-green)' : 'inherit'};">${t.pts}</td>
+          </tr>`;
+        });
+        html += `</table></div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // --- G. Wallchart: Knockouts Bracket ---
+    function processKnockouts(matches) {
       const container = document.getElementById('bracket-container');
       
-      // Define the stages API-Sports uses for knockouts
+      // Standard knockout phases including Round of 32 for the 48-team 2026 format
       const stages = ["Round of 32", "Round of 16", "Quarter-finals", "Semi-finals", "Final"];
       let html = '';
-
       let hasKnockouts = false;
 
       stages.forEach(stageName => {
         const stageMatches = matches.filter(m => m.league.round.includes(stageName));
-        if (stageMatches.length === 0) return; // Skip if API doesn't have this stage yet
+        if (stageMatches.length === 0) return; 
         
         hasKnockouts = true;
         html += `<div class="bracket-round"><h3>${stageName}</h3>`;
