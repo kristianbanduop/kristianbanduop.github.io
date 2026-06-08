@@ -4,23 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RMC World Cup 2026 Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      /* Theme Colors */
-      --bg-base: #0f172a;
-      --bg-panel: rgba(30, 41, 59, 0.7);
-      --bg-panel-solid: #1e293b;
-      --primary: #3A1961; 
-      --primary-glow: rgba(58, 25, 97, 0.6);
-      --accent: #00D3B7;
-      --accent-glow: rgba(0, 211, 183, 0.3);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --danger: #ef4444;
-      --danger-bg: rgba(239, 68, 68, 0.1);
-      --border: rgba(255, 255, 255, 0.08);
+      /* Official FIFA 2026 World Cup Inspired Branding */
+      --bg-base: #050505; /* Deep black */
+      --bg-panel: rgba(20, 20, 20, 0.7);
+      --bg-panel-solid: #111111;
+      
+      /* Vibrant 2026 Accents */
+      --accent-green: #00FF66;
+      --accent-magenta: #FF004D;
+      --accent-purple: #7000FF;
+      
+      --text-main: #FFFFFF;
+      --text-muted: #A0A0A0;
+      --border: rgba(255, 255, 255, 0.1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,14 +30,14 @@
       color: var(--text-main); 
       font-family: 'Inter', sans-serif;
       height: 100vh;
-      overflow: hidden; /* Prevent body scroll, handle scrolling in main content */
+      overflow: hidden; 
       display: flex;
       background-image: 
-        radial-gradient(circle at 100% 0%, var(--primary-glow) 0%, transparent 40%),
-        radial-gradient(circle at 0% 100%, var(--accent-glow) 0%, transparent 40%);
+        radial-gradient(circle at 100% 0%, rgba(112, 0, 255, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 0% 100%, rgba(0, 255, 102, 0.1) 0%, transparent 40%);
     }
 
-    /* ================= SIDEBAR LAYOUT ================= */
+    /* ================= SIDEBAR & NAVIGATION ================= */
     .sidebar {
       width: 280px;
       background-color: var(--bg-panel-solid);
@@ -46,20 +46,26 @@
       flex-direction: column;
       padding: 30px 20px;
       z-index: 10;
+      box-shadow: 5px 0 20px rgba(0,0,0,0.5);
     }
 
-    .brand { margin-bottom: 40px; text-align: center; }
-    .brand h1 { font-size: 24px; font-weight: 800; line-height: 1.2; letter-spacing: -0.5px; }
-    .brand span { color: var(--accent); }
-    .brand p { font-size: 12px; color: var(--text-muted); margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .sidebar-header {
+      display: flex;
+      flex-direction: column;
+    }
 
-    .nav-menu { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
+    .brand { margin-bottom: 30px; text-align: center; }
+    .brand h1 { font-size: 28px; font-weight: 900; line-height: 1.1; letter-spacing: -1px; text-transform: uppercase;}
+    .brand span { color: var(--accent-green); }
+    .brand p { font-size: 11px; color: var(--text-muted); margin-top: 8px; text-transform: uppercase; letter-spacing: 2px; }
+
+    .nav-menu { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
     .nav-btn {
       background: transparent;
       border: 1px solid transparent;
       color: var(--text-muted);
-      padding: 15px;
-      border-radius: 10px;
+      padding: 14px 16px;
+      border-radius: 12px;
       cursor: pointer;
       text-align: left;
       font-size: 15px;
@@ -71,17 +77,22 @@
     }
     .nav-btn i { font-size: 18px; width: 24px; text-align: center; }
     .nav-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
-    .nav-btn.active { background: var(--primary); color: white; border-color: var(--accent); box-shadow: 0 0 15px var(--primary-glow); }
+    .nav-btn.active { 
+      background: rgba(0, 255, 102, 0.1); 
+      color: var(--accent-green); 
+      border-color: rgba(0, 255, 102, 0.3); 
+    }
 
     .pot-widget {
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-purple), #2A0066);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
       padding: 20px;
       text-align: center;
+      margin-top: auto;
     }
-    .pot-widget p { font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
-    .pot-widget h2 { font-size: 32px; color: var(--accent); margin-top: 5px; }
+    .pot-widget p { font-size: 11px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
+    .pot-widget h2 { font-size: 36px; color: #FFFFFF; margin-top: 5px; font-weight: 900; }
 
     /* ================= MAIN CONTENT AREA ================= */
     .main-content {
@@ -98,11 +109,12 @@
     /* Reusable Card */
     .card {
       background: var(--bg-panel);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 30px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
       margin-bottom: 30px;
     }
     .card-header {
@@ -113,25 +125,25 @@
       padding-bottom: 15px;
       border-bottom: 1px solid var(--border);
     }
-    .card-header h2 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px;}
+    .card-header h2 { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 0.5px;}
 
     /* TV Grid */
     .tv-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
     @media (max-width: 1100px) { .tv-grid { grid-template-columns: 1fr; } }
 
     .live-badge {
-      background: var(--danger-bg);
-      color: var(--danger);
+      background: rgba(255, 0, 77, 0.15);
+      color: var(--accent-magenta);
       font-size: 11px;
-      padding: 4px 10px;
+      padding: 6px 12px;
       border-radius: 20px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 1px;
-      border: 1px solid var(--danger);
+      border: 1px solid var(--accent-magenta);
       animation: pulse 2s infinite;
     }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 0, 77, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(255, 0, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 0, 77, 0); } }
 
     /* Match Rows */
     .match-row {
@@ -139,86 +151,174 @@
       justify-content: space-between;
       align-items: center;
       padding: 20px;
-      background: rgba(0,0,0,0.2);
-      border-radius: 12px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 16px;
       margin-bottom: 15px;
       border: 1px solid transparent;
       transition: border-color 0.2s;
     }
-    .match-row:hover { border-color: var(--border); }
+    .match-row:hover { border-color: rgba(255,255,255,0.2); }
     .team-col { display: flex; align-items: center; gap: 15px; width: 35%; }
     .team-col.right { justify-content: flex-end; text-align: right; }
-    .team-col img { width: 45px; border-radius: 4px; }
-    .team-name { font-size: 18px; font-weight: 600; }
-    .owner-name { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .team-col img { width: 48px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .team-name { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+    .owner-name { font-size: 13px; color: var(--accent-green); margin-top: 4px; font-weight: 600;}
     
     .score-col { text-align: center; width: 30%; }
     .score-box {
-      font-size: 28px;
-      font-weight: 800;
-      background: var(--primary);
-      padding: 8px 20px;
-      border-radius: 8px;
+      font-size: 32px;
+      font-weight: 900;
+      color: #FFF;
+      background: transparent;
       display: inline-block;
-      margin-bottom: 8px;
-      letter-spacing: 2px;
+      margin-bottom: 4px;
+      letter-spacing: 4px;
     }
-    .match-time { font-size: 13px; color: var(--danger); font-weight: 800; }
-    .chaos-stats { font-size: 12px; color: var(--text-muted); margin-top: 8px; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 20px; display: inline-block;}
+    .match-time { font-size: 13px; color: var(--accent-magenta); font-weight: 800; }
+    .chaos-stats { font-size: 11px; color: #FFF; margin-top: 10px; background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; display: inline-block; font-weight: 600;}
 
     /* Players Grid */
-    .search-bar { width: 100%; padding: 18px 20px; font-size: 16px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: white; border-radius: 12px; margin-bottom: 30px; outline: none; }
-    .search-bar:focus { border-color: var(--accent); }
+    .search-bar { width: 100%; padding: 18px 20px; font-size: 16px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: white; border-radius: 12px; margin-bottom: 30px; outline: none; font-family: 'Inter'; }
+    .search-bar:focus { border-color: var(--accent-green); }
     
     .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
     .player-card {
-      background: rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.3);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 20px;
       display: flex;
       align-items: center;
       gap: 15px;
       transition: transform 0.2s, border-color 0.2s;
     }
-    .player-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+    .player-card:hover { transform: translateY(-4px); border-color: var(--accent-purple); }
     .player-card img { width: 50px; border-radius: 6px; }
-    .player-info h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .player-info h3 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
     .player-info p { font-size: 14px; color: var(--text-muted); }
-    .status-badge { font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 800; text-transform: uppercase; margin-top: 8px; display: inline-block; }
-    .status-badge.active { background: rgba(0, 211, 183, 0.1); color: var(--accent); }
-    .status-badge.eliminated { background: var(--danger-bg); color: var(--danger); }
+    .status-badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 800; text-transform: uppercase; margin-top: 8px; display: inline-block; letter-spacing: 1px;}
+    .status-badge.active { background: rgba(0, 255, 102, 0.15); color: var(--accent-green); }
+    .status-badge.eliminated { background: rgba(255, 0, 77, 0.15); color: var(--accent-magenta); }
 
     /* Tables */
     table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); }
-    th { color: var(--text-muted); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-    tr:hover td { background: rgba(255,255,255,0.02); }
-    td strong { color: white; font-weight: 600; }
+    th, td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--accent-purple); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
+    td strong { color: white; font-weight: 700; }
 
     .stats-list { list-style: none; }
-    .stats-list li { padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 14px; }
+    .stats-list li { padding: 15px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 15px; align-items: center;}
     .stats-list li:last-child { border-bottom: none; }
+    .stats-list li span { color: var(--text-muted); }
+    .stats-list li strong { font-weight: 800; color: #FFF; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 8px;}
+
+    /* ================= MOBILE RESPONSIVENESS ================= */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        height: auto;
+        overflow: auto; /* Allow scrolling on mobile */
+      }
+      
+      /* Transform Sidebar into a Top Nav */
+      .sidebar {
+        width: 100%;
+        padding: 15px 20px;
+        flex-direction: column;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(5, 5, 5, 0.95);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      }
+      
+      .sidebar-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+      
+      .brand { margin-bottom: 0; text-align: left; }
+      .brand h1 { font-size: 22px; }
+      .brand p { font-size: 9px; margin-top: 4px; }
+      
+      .pot-widget {
+        margin-top: 0;
+        padding: 8px 15px;
+        border-radius: 10px;
+        text-align: right;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .pot-widget p { font-size: 9px; color: var(--accent-green); }
+      .pot-widget h2 { font-size: 20px; margin-top: 0; }
+
+      .nav-menu {
+        flex-direction: row;
+        width: 100%;
+        overflow-x: auto;
+        gap: 8px;
+        margin-top: 15px;
+        padding-bottom: 5px;
+      }
+      
+      /* Hide scrollbar for clean mobile swiping */
+      .nav-menu::-webkit-scrollbar { display: none; }
+      .nav-menu { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      .nav-btn {
+        flex: 0 0 auto;
+        padding: 10px 16px;
+        font-size: 13px;
+        border-radius: 30px; /* Pill shape for mobile */
+      }
+
+      .main-content { padding: 20px 15px; overflow: visible; }
+      .card { padding: 20px; border-radius: 16px; }
+      .card-header h2 { font-size: 18px; }
+      
+      /* Mobile Match Row Stacking */
+      .match-row {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px 15px;
+      }
+      .team-col { width: 100%; justify-content: space-between; flex-direction: row-reverse; }
+      .team-col.right { flex-direction: row; }
+      .team-col img { width: 40px; }
+      .owner-name { font-size: 11px; }
+      .score-col { width: 100%; padding: 15px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+      .score-box { font-size: 26px; }
+      
+      table th, table td { padding: 12px 10px; font-size: 13px; }
+    }
   </style>
 </head>
 <body>
 
   <aside class="sidebar">
-    <div class="brand">
-      <h1>RMC <span>World Cup</span></h1>
-      <p>Sweepstake Command</p>
+    <div class="sidebar-header">
+      <div class="brand">
+        <h1>26 <span>WC</span> RMC</h1>
+        <p>Sweepstake Command</p>
+      </div>
+      <div class="pot-widget">
+        <p>Total Pot</p>
+        <h2>£240</h2>
+      </div>
     </div>
     
     <nav class="nav-menu">
-      <button class="nav-btn active" onclick="showTab('tv')"><i class="fa-solid fa-tv"></i> TV Dashboard</button>
+      <button class="nav-btn active" onclick="showTab('tv')"><i class="fa-solid fa-tv"></i> Dashboard</button>
       <button class="nav-btn" onclick="showTab('players')"><i class="fa-solid fa-users"></i> The Draw</button>
       <button class="nav-btn" onclick="showTab('prizes')"><i class="fa-solid fa-trophy"></i> Prizes & Rules</button>
     </nav>
-
-    <div class="pot-widget">
-      <p>Total Prize Pot</p>
-      <h2>£240</h2>
-    </div>
   </aside>
 
   <main class="main-content">
@@ -228,7 +328,7 @@
         
         <div class="card">
           <div class="card-header">
-            <h2><i class="fa-solid fa-satellite-dish" style="color: var(--accent);"></i> Match Center</h2>
+            <h2><i class="fa-solid fa-satellite-dish" style="color: var(--accent-green);"></i> Match Center</h2>
             <span class="live-badge">Live API Polling</span>
           </div>
           <div id="match-container">
@@ -239,7 +339,7 @@
         <div>
           <div class="card">
             <div class="card-header">
-              <h2><i class="fa-solid fa-chart-simple" style="color: var(--accent);"></i> Tournament Status</h2>
+              <h2><i class="fa-solid fa-chart-pie" style="color: var(--accent-purple);"></i> Tournament Data</h2>
             </div>
             <ul class="stats-list">
               <li><span>Active RMC Teams</span> <strong><span id="active-count">48</span> / 48</strong></li>
@@ -250,12 +350,12 @@
 
           <div class="card">
             <div class="card-header">
-              <h2><i class="fa-solid fa-bolt" style="color: #fbbf24;"></i> Chaos Index</h2>
+              <h2><i class="fa-solid fa-fire" style="color: var(--accent-magenta);"></i> Chaos Index</h2>
             </div>
             <ul class="stats-list" id="chaos-list">
-              <li><span>🟨 Uruguay (Josh Cadman)</span> <strong>8 Cards</strong></li>
-              <li><span>🟥 Netherlands (Liz Cruz)</span> <strong>2 Reds</strong></li>
-              <li><span>🤦‍♂️ England (Ellie Newman)</span> <strong>1 Own Goal</strong></li>
+              <li><span>🟨 Uruguay (Josh)</span> <strong>8 Cards</strong></li>
+              <li><span>🟥 Netherlands (Liz)</span> <strong>2 Reds</strong></li>
+              <li><span>🤦‍♂️ England (Ellie)</span> <strong style="color: var(--accent-magenta);">1 Own Goal</strong></li>
             </ul>
           </div>
         </div>
@@ -266,7 +366,7 @@
     <div id="players" class="tab-content">
       <div class="card">
         <div class="card-header">
-          <h2><i class="fa-solid fa-users-viewfinder" style="color: var(--accent);"></i> Department Draw</h2>
+          <h2><i class="fa-solid fa-users-viewfinder" style="color: var(--accent-green);"></i> Department Draw</h2>
         </div>
         <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Search for your name or assigned nation..." onkeyup="filterPlayers()">
         <div class="players-grid" id="players-grid">
@@ -277,39 +377,39 @@
     <div id="prizes" class="tab-content">
       <div class="card">
         <div class="card-header">
-          <h2><i class="fa-solid fa-sack-dollar" style="color: var(--accent);"></i> Prize Allocations</h2>
+          <h2><i class="fa-solid fa-sack-dollar" style="color: var(--accent-green);"></i> Prize Allocations</h2>
         </div>
-        <p style="color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">The pot structure scales depending on whether we sell out all 48 teams. The cash prizes operate on a roughly 70/30 split between the podium finishers and the side prizes.</p>
+        <p style="color: var(--text-muted); margin-bottom: 25px; line-height: 1.6;">The pot structure scales depending on whether we sell out all 48 teams. Cash prizes operate on a roughly 70/30 split between podium finishers and side prizes.</p>
         
-        <h3 style="color: white; margin: 30px 0 15px; font-size: 16px;">£240 Pot (All 48 teams bought for £5)</h3>
+        <h3 style="color: var(--accent-green); margin: 30px 0 15px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">£240 Pot (All 48 teams bought)</h3>
         <table>
           <thead><tr><th>Prize Category</th><th>Amount</th><th>% of Pot</th></tr></thead>
           <tbody>
-            <tr><td><strong>Winner</strong></td><td>£100</td><td>41.7%</td></tr>
-            <tr><td><strong>Runner-up</strong></td><td>£55</td><td>22.9%</td></tr>
-            <tr><td><strong>Third place</strong></td><td>£25</td><td>10.4%</td></tr>
+            <tr><td><strong>Winner</strong></td><td><strong style="color: var(--accent-green);">£100</strong></td><td>41.7%</td></tr>
+            <tr><td><strong>Runner-up</strong></td><td><strong>£55</strong></td><td>22.9%</td></tr>
+            <tr><td><strong>Third place</strong></td><td><strong>£25</strong></td><td>10.4%</td></tr>
             <tr><td>Best Goal (FIFA award)</td><td>£20</td><td>8.3%</td></tr>
             <tr><td>Biggest Shock (Ranking diff)</td><td>£15</td><td>6.3%</td></tr>
             <tr><td>Wooden Spoon</td><td>£15</td><td>6.3%</td></tr>
-            <tr><td>Chaos Award (Most memeable/drama)</td><td>£10</td><td>4.2%</td></tr>
+            <tr><td>Chaos Award (Drama/Memes)</td><td>£10</td><td>4.2%</td></tr>
           </tbody>
         </table>
 
-        <h3 style="color: var(--text-muted); margin: 40px 0 15px; font-size: 16px;">£150 Pot (Fallback - 30 people @ £5)</h3>
-        <table style="opacity: 0.7;">
+        <h3 style="color: var(--text-muted); margin: 40px 0 15px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">£150 Pot (Fallback - 30 people)</h3>
+        <table style="opacity: 0.6;">
           <thead><tr><th>Prize Category</th><th>Amount</th><th>% of Pot</th></tr></thead>
           <tbody>
-            <tr><td><strong>Winner</strong></td><td>£60</td><td>40.0%</td></tr>
-            <tr><td><strong>Runner-up</strong></td><td>£35</td><td>23.3%</td></tr>
-            <tr><td><strong>Third place</strong></td><td>£15</td><td>10.0%</td></tr>
-            <tr><td>Best Goal (FIFA award)</td><td>£15</td><td>10.0%</td></tr>
-            <tr><td>Biggest Shock / Spoon</td><td>£10 each</td><td>13.4%</td></tr>
+            <tr><td><strong>Winner</strong></td><td><strong>£60</strong></td><td>40.0%</td></tr>
+            <tr><td><strong>Runner-up</strong></td><td><strong>£35</strong></td><td>23.3%</td></tr>
+            <tr><td><strong>Third place</strong></td><td><strong>£15</strong></td><td>10.0%</td></tr>
+            <tr><td>Side Prizes (Goal/Shock/Spoon)</td><td>£10 - £15</td><td>~26%</td></tr>
             <tr><td>Chaos Award</td><td>£5</td><td>3.3%</td></tr>
           </tbody>
         </table>
         
-        <div style="background: rgba(0, 211, 183, 0.1); padding: 20px; border-radius: 8px; margin-top: 30px; border: 1px solid var(--accent);">
-          <strong style="color: var(--accent);">Note on the Chaos Award:</strong> This is highly subjective, but memeable moments will do a fair amount of the heavy lifting. We may put this to an office poll when the tournament concludes!
+        <div style="background: rgba(112, 0, 255, 0.15); padding: 20px; border-radius: 12px; margin-top: 30px; border: 1px solid var(--accent-purple);">
+          <strong style="color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px; font-size: 12px;">Note on the Chaos Award:</strong>
+          <p style="margin-top: 8px; font-size: 14px; color: rgba(255,255,255,0.8);">This is highly subjective. Memeable moments will do a fair amount of the heavy lifting. We may put this to an office poll when the tournament concludes!</p>
         </div>
       </div>
     </div>
@@ -322,12 +422,12 @@
     // ==========================================
     // Developer Note: Insert your API-Sports key here. 
     const API_KEY = '0fabdd8b0511990ca6ad7cc22e409798'; 
-    const leagueId = '1'; // Typically '1' for World Cup, verify closer to 2026.
+    const leagueId = '1'; 
     const seasonYear = '2026';
     const apiUrl = `https://v3.football.api-sports.io/fixtures?league=${leagueId}&season=${seasonYear}&live=all`;
 
     // ==========================================
-    // ⚽ 2. SWEEPSTAKE DATA (MAPPED FROM IMAGE)
+    // ⚽ 2. SWEEPSTAKE DATA
     // ==========================================
     const sweepstakeData = [
       { name: "Verity PC", team: "France", iso: "fr", status: "active" },
@@ -389,6 +489,11 @@
       
       document.getElementById(tabId).classList.add('active');
       event.currentTarget.classList.add('active');
+      
+      // Auto-scroll to top on mobile tab switch
+      if(window.innerWidth <= 768) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
 
     // ==========================================
@@ -437,7 +542,7 @@
     async function fetchLiveMatches() {
       if (API_KEY === 'YOUR_API_SPORTS_KEY_HERE') {
         document.getElementById('match-container').innerHTML = 
-          '<div style="text-align: center; padding: 40px 20px;"><i class="fa-solid fa-code" style="font-size: 30px; color: var(--text-muted); margin-bottom: 15px;"></i><p style="color: var(--text-muted);">Please insert your API-Sports key into the script to fetch live matches.</p></div>';
+          '<div style="text-align: center; padding: 40px 20px;"><i class="fa-solid fa-code" style="font-size: 30px; color: var(--accent-purple); margin-bottom: 15px;"></i><p style="color: var(--text-muted);">Please insert your API-Sports key into the script to fetch live matches.</p></div>';
         return;
       }
 
@@ -458,7 +563,7 @@
       } catch (error) {
         console.error("Error fetching live match data:", error);
         document.getElementById('match-container').innerHTML = 
-          '<p style="padding: 20px; color: var(--danger); text-align: center;">Failed to load data. API limit may be reached.</p>';
+          '<p style="padding: 20px; color: var(--accent-magenta); text-align: center; font-weight: 800;">Failed to load data. API limit may be reached.</p>';
       }
     }
 
@@ -467,7 +572,7 @@
       matchContainer.innerHTML = '';
 
       if (!matches || matches.length === 0) {
-        matchContainer.innerHTML = '<div style="text-align: center; padding: 50px 20px;"><i class="fa-regular fa-futbol" style="font-size: 40px; color: var(--text-muted); margin-bottom: 15px;"></i><p style="color: var(--text-muted);">No matches currently live. Check back near kick-off!</p></div>';
+        matchContainer.innerHTML = '<div style="text-align: center; padding: 50px 20px;"><i class="fa-regular fa-futbol" style="font-size: 40px; color: rgba(255,255,255,0.2); margin-bottom: 15px;"></i><p style="color: var(--text-muted); font-weight: 600;">No matches currently live.</p></div>';
         return;
       }
 
