@@ -5,54 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RMC World Cup 2026 Sweepstake</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --wc-navy:   #0A1628;
-      --wc-red:    #C8102E;
-      --wc-gold:   #F5A623;
-      --wc-teal:   #009B77;
-      --wc-light:  #EFF2F7;
-      --sidebar-w: 240px;
-      --card-bg:   #FFFFFF;
-      --text:      #1A2233;
-      --muted:     #6B7A99;
-      --border:    #E0E6F0;
-      --danger:    #C8102E;
-      --green:     #009B77;
+      /* TV-Optimized Dark Theme & High Contrast Palette */
+      --bg-main:    #0B0F19; /* Deep slate background */
+      --sidebar-bg: #06080D; /* Darker sidebar to anchor the layout */
+      --card-bg:    #121826; /* Elevated card background */
+      --card-head:  #1A2235; /* Header background for contrast */
+      
+      --text:       #F8FAFC; /* High contrast white for primary text */
+      --muted:      #94A3B8; /* Accessible light slate for secondary text */
+      --border:     #2A364F; /* Visible but subtle dividers */
+      
+      /* Vibrant, accessible accents */
+      --wc-red:     #FF4D4D; /* Bright coral/red */
+      --danger:     #FF4D4D;
+      --wc-gold:    #FFC107; /* Amber gold */
+      --wc-teal:    #20C997; /* Emerald teal */
+      --green:      #20C997;
+      
+      --sidebar-w:  280px; /* Slightly wider for larger fonts */
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 15px; }
+    
+    /* Bumped up base font size for TV legibility */
+    html { font-size: 18px; }
+    
     body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--wc-light);
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg-main);
       color: var(--text);
       display: flex;
       height: 100vh;
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* ─── SCROLLBAR ─────────────────────────────── */
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
     /* ─── SIDEBAR ────────────────────────────────── */
     .sidebar {
       width: var(--sidebar-w);
-      background: var(--wc-navy);
+      background: var(--sidebar-bg);
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
       z-index: 20;
-      box-shadow: 4px 0 20px rgba(0,0,0,0.25);
+      box-shadow: 4px 0 20px rgba(0,0,0,0.5);
       position: relative;
       overflow: hidden;
+      border-right: 1px solid var(--border);
     }
 
-    /* Decorative pitch lines on sidebar */
     .sidebar::before {
       content: '';
       position: absolute;
@@ -69,156 +81,160 @@
     }
 
     .brand {
-      padding: 22px 18px 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 26px 20px 20px;
+      border-bottom: 1px solid var(--border);
       position: relative;
     }
     .brand-eyebrow {
-      font-size: 9px;
+      font-size: 0.65rem;
       letter-spacing: 2.5px;
       text-transform: uppercase;
       color: var(--wc-gold);
-      font-weight: 700;
-      margin-bottom: 4px;
+      font-weight: 800;
+      margin-bottom: 6px;
     }
     .brand h1 {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
+      font-size: 2.2rem;
       color: #fff;
       letter-spacing: 1px;
       line-height: 1;
     }
     .brand h1 span { color: var(--wc-gold); }
     .brand-sub {
-      font-size: 10px;
-      color: rgba(255,255,255,0.4);
-      margin-top: 5px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 8px;
       letter-spacing: 0.5px;
+      font-weight: 500;
     }
 
-    .nav-menu { flex: 1; padding: 16px 10px; display: flex; flex-direction: column; gap: 3px; }
+    .nav-menu { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 6px; }
     .nav-btn {
       background: transparent;
       border: none;
-      color: rgba(255,255,255,0.55);
-      padding: 11px 14px;
+      color: var(--muted);
+      padding: 14px 16px;
       border-radius: 8px;
       cursor: pointer;
       text-align: left;
-      font-size: 13.5px;
-      font-weight: 600;
-      font-family: 'Inter', sans-serif;
-      transition: background 0.18s, color 0.18s;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
-      gap: 11px;
+      gap: 14px;
       position: relative;
     }
-    .nav-btn i { width: 18px; text-align: center; font-size: 15px; flex-shrink: 0; }
-    .nav-btn:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.9); }
+    .nav-btn i { width: 22px; text-align: center; font-size: 1.1rem; flex-shrink: 0; }
+    .nav-btn:hover { background: var(--card-head); color: var(--text); }
     .nav-btn.active {
       background: var(--wc-red);
       color: #fff;
-      box-shadow: 0 4px 14px rgba(200,16,46,0.45);
+      box-shadow: 0 4px 14px rgba(255,77,77,0.3);
     }
 
     .pot-widget {
-      margin: 14px;
-      background: rgba(245,166,35,0.12);
-      border: 1px solid rgba(245,166,35,0.3);
-      border-radius: 10px;
-      padding: 14px;
+      margin: 16px;
+      background: rgba(255,193,7,0.1);
+      border: 1px solid rgba(255,193,7,0.3);
+      border-radius: 12px;
+      padding: 18px;
       text-align: center;
     }
-    .pot-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 3px; }
-    .pot-amount { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--wc-gold); letter-spacing: 2px; }
+    .pot-label { font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--wc-gold); margin-bottom: 4px; font-weight: 700; }
+    .pot-amount { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: #fff; letter-spacing: 2px; }
 
     .update-badge {
-      font-size: 10px;
-      color: rgba(255,255,255,0.3);
+      font-size: 0.7rem;
+      color: var(--muted);
       text-align: center;
-      padding: 0 14px 14px;
+      padding: 0 16px 20px;
+      font-weight: 500;
     }
-    .update-badge span { color: var(--wc-teal); font-weight: 600; }
+    .update-badge span { color: var(--wc-teal); font-weight: 800; }
 
     /* ─── MAIN ───────────────────────────────────── */
     .main-content {
       flex: 1;
-      padding: 24px 28px;
+      padding: 32px 40px;
       overflow-y: auto;
       scroll-behavior: smooth;
     }
 
-    .tab-content { display: none; animation: fadeIn 0.25s ease; }
+    .tab-content { display: none; animation: fadeIn 0.3s ease; }
     .tab-content.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     /* ─── PAGE HEADER ────────────────────────────── */
     .page-header {
-      margin-bottom: 22px;
+      margin-bottom: 28px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
     }
     .page-header h2 {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 32px;
-      color: var(--wc-navy);
-      letter-spacing: 0.5px;
+      font-size: 2.8rem;
+      color: var(--text);
+      letter-spacing: 1px;
       line-height: 1;
     }
-    .page-header p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .page-header p { font-size: 0.9rem; color: var(--muted); margin-top: 6px; font-weight: 500; }
     .live-pill {
-      font-size: 10px;
-      font-weight: 700;
+      font-size: 0.75rem;
+      font-weight: 800;
       letter-spacing: 1px;
       text-transform: uppercase;
       color: var(--danger);
-      background: #fde8eb;
-      border: 1px solid rgba(200,16,46,0.2);
-      padding: 5px 12px;
+      background: rgba(255, 77, 77, 0.15);
+      border: 1px solid rgba(255, 77, 77, 0.3);
+      padding: 6px 16px;
       border-radius: 20px;
       animation: pulse 2.2s infinite;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 8px;
     }
-    .live-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--danger); display: inline-block; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+    .live-pill::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--danger); display: inline-block; box-shadow: 0 0 8px var(--danger); }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
 
     /* ─── CARDS ──────────────────────────────────── */
     .card {
       background: var(--card-bg);
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(10,22,40,0.06);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       border: 1px solid var(--border);
-      margin-bottom: 22px;
+      margin-bottom: 28px;
+      overflow: hidden;
     }
     .card-head {
-      padding: 16px 20px 14px;
+      background: var(--card-head);
+      padding: 20px 24px;
       border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     .card-head h3 {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--wc-navy);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
-    .card-head h3 i { color: var(--wc-red); font-size: 14px; }
-    .card-body { padding: 18px 20px; }
+    .card-head h3 i { color: var(--wc-red); font-size: 1.1rem; }
+    .card-body { padding: 24px; }
 
     /* ─── DASHBOARD LAYOUT ───────────────────────── */
-    .dash-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 22px; }
-    .dash-main { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    .dash-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
+    .dash-main { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1200px) {
       .dash-row { grid-template-columns: 1fr; }
       .dash-main { grid-template-columns: 1fr; }
     }
@@ -226,209 +242,221 @@
     /* ─── HIGHLIGHT BOXES (Giant Killer etc) ──────── */
     .hl-card {
       background: var(--card-bg);
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(10,22,40,0.06);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       border: 1px solid var(--border);
       overflow: hidden;
     }
     .hl-header {
-      background: var(--wc-navy);
-      color: white;
-      padding: 10px 16px;
-      font-size: 12px;
-      font-weight: 700;
+      background: var(--card-head);
+      color: var(--text);
+      padding: 14px 20px;
+      font-size: 0.9rem;
+      font-weight: 800;
       letter-spacing: 0.5px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
     }
     .hl-header i { color: var(--wc-gold); }
-    .hl-body { padding: 16px; }
+    .hl-body { padding: 20px; }
     .hl-section-label {
-      font-size: 10px;
-      font-weight: 700;
+      font-size: 0.7rem;
+      font-weight: 800;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 6px;
+      color: var(--wc-teal);
+      margin-bottom: 8px;
     }
-    .hl-divider { border: none; border-top: 1px dashed var(--border); margin: 14px 0; }
-    .hl-big { font-size: 19px; font-weight: 800; color: var(--wc-navy); line-height: 1.2; }
-    .hl-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .hl-divider { border: none; border-top: 1px dashed var(--border); margin: 18px 0; }
+    .hl-big { font-size: 1.4rem; font-weight: 900; color: var(--text); line-height: 1.2; }
+    .hl-sub { font-size: 0.85rem; color: var(--muted); margin-top: 6px; font-weight: 500; }
 
     .spoon-card {
-      background: linear-gradient(135deg, #fff8f0, #ffeede);
-      border: 1px solid #f5c88a;
-      border-radius: 12px;
-      padding: 18px;
+      background: linear-gradient(135deg, #2D1B11, #1A0F0A);
+      border: 1px solid #63361E;
+      border-radius: 16px;
+      padding: 24px;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
-    .spoon-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #b35900; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-    .spoon-big { font-size: 22px; font-weight: 800; color: #c85c00; }
-    .spoon-sub { font-size: 12px; color: #a0651a; margin-top: 4px; }
+    .spoon-label { font-size: 0.75rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #FFAA66; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .spoon-big { font-size: 1.6rem; font-weight: 900; color: #FFD4A3; }
+    .spoon-sub { font-size: 0.9rem; color: #D48C5B; margin-top: 6px; font-weight: 500; }
 
     /* ─── MATCH ITEMS ────────────────────────────── */
     .match {
       display: flex;
       align-items: center;
-      padding: 13px 0;
+      padding: 18px 0;
       border-bottom: 1px solid var(--border);
-      gap: 8px;
+      gap: 12px;
     }
     .match:last-child { border-bottom: none; }
-    .match-team { flex: 1; display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .match-team { flex: 1; display: flex; align-items: center; gap: 14px; min-width: 0; }
     .match-team.right { flex-direction: row-reverse; text-align: right; }
-    .match-team img { width: 30px; height: 22px; object-fit: cover; border-radius: 3px; flex-shrink: 0; box-shadow: 0 1px 5px rgba(0,0,0,0.12); }
-    .match-team-name { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .match-owner { font-size: 11px; color: var(--muted); }
+    .match-team img { width: 42px; height: 30px; object-fit: cover; border-radius: 4px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+    .match-team-name { font-weight: 800; font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+    .match-owner { font-size: 0.8rem; color: var(--muted); font-weight: 500; margin-top: 2px; }
     .score-block {
-      background: var(--wc-navy);
+      background: var(--bg-main);
+      border: 1px solid var(--border);
       color: #fff;
-      font-weight: 800;
-      font-size: 17px;
-      padding: 5px 14px;
-      border-radius: 7px;
-      letter-spacing: 3px;
+      font-weight: 900;
+      font-size: 1.3rem;
+      padding: 8px 20px;
+      border-radius: 8px;
+      letter-spacing: 4px;
       white-space: nowrap;
       flex-shrink: 0;
       text-align: center;
-      min-width: 80px;
+      min-width: 100px;
     }
-    .score-time { font-size: 10px; color: var(--danger); font-weight: 700; text-align: center; margin-top: 3px; }
+    .score-time { font-size: 0.75rem; color: var(--danger); font-weight: 800; text-align: center; margin-top: 6px; text-transform: uppercase; }
 
     /* ─── TABLES ─────────────────────────────────── */
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
     th {
-      font-size: 10px;
-      font-weight: 700;
+      font-size: 0.7rem;
+      font-weight: 800;
       letter-spacing: 1px;
       text-transform: uppercase;
       color: var(--muted);
-      background: #f8fafd;
-      padding: 8px 10px;
-      border-bottom: 1px solid var(--border);
+      background: var(--card-head);
+      padding: 12px 14px;
+      border-bottom: 2px solid var(--border);
       white-space: nowrap;
     }
-    td { padding: 10px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    td { padding: 14px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); font-weight: 600; }
     tr:last-child td { border-bottom: none; }
-    tbody tr:hover td { background: #f5f8ff; }
+    tbody tr:hover td { background: rgba(255,255,255,0.03); }
 
     /* ─── GROUPS GRID ────────────────────────────── */
-    .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
     .group-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 12px;
       overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .group-card-head {
-      background: var(--wc-navy);
+      background: var(--card-head);
       color: #fff;
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 18px;
+      font-size: 1.4rem;
       letter-spacing: 1px;
-      padding: 8px 14px;
+      padding: 12px 18px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
     }
     .group-card-head .group-badge {
       background: var(--wc-gold);
-      color: var(--wc-navy);
-      width: 24px;
-      height: 24px;
+      color: var(--bg-main);
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
-      font-family: 'Inter', sans-serif;
-      font-weight: 800;
+      font-size: 0.9rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
     }
     .group-card table th,
-    .group-card table td { padding: 7px 10px; font-size: 12px; }
-    .group-card table th { font-size: 9px; }
-    .group-team-name { font-weight: 600; font-size: 12px; }
-    .group-owner { font-size: 9px; color: var(--muted); }
-    .group-promoted { background: rgba(0,155,119,0.07); }
+    .group-card table td { padding: 10px 14px; font-size: 0.9rem; }
+    .group-card table th { font-size: 0.65rem; }
+    .group-team-name { font-weight: 800; font-size: 0.95rem; }
+    .group-owner { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+    .group-promoted td { background: rgba(32, 201, 151, 0.08); }
 
     /* ─── BRACKET ────────────────────────────────── */
-    .bracket-wrapper { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 16px; }
-    .bracket-col { min-width: 210px; flex-shrink: 0; }
+    .bracket-wrapper { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; }
+    .bracket-col { min-width: 240px; flex-shrink: 0; }
     .bracket-col-title {
       text-align: center;
-      font-size: 10px;
-      font-weight: 700;
+      font-size: 0.75rem;
+      font-weight: 800;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: var(--muted);
-      padding: 0 0 10px;
-      border-bottom: 2px solid var(--wc-red);
-      margin-bottom: 12px;
+      color: var(--text);
+      padding: 0 0 12px;
+      border-bottom: 3px solid var(--wc-red);
+      margin-bottom: 16px;
     }
     .bracket-match {
-      background: #f8fafd;
+      background: var(--card-head);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
     .b-team {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 7px 10px;
-      font-size: 12px;
-      font-weight: 600;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-weight: 700;
       border-bottom: 1px solid var(--border);
+      color: var(--text);
     }
     .b-team:last-child { border-bottom: none; }
-    .b-team.winner { background: rgba(0,155,119,0.1); color: var(--green); }
-    .b-team img { width: 18px; height: 13px; object-fit: cover; border-radius: 2px; margin-right: 7px; }
+    .b-team.winner { background: rgba(32, 201, 151, 0.15); color: var(--green); }
+    .b-team img { width: 22px; height: 16px; object-fit: cover; border-radius: 2px; margin-right: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.5); }
     .b-team-name { display: flex; align-items: center; }
-    .b-owner { font-size: 9px; font-weight: 400; color: var(--muted); margin-left: 4px; }
-    .b-score { font-weight: 800; font-size: 14px; }
+    .b-owner { font-size: 0.7rem; font-weight: 600; color: var(--muted); margin-left: 6px; }
+    .b-score { font-weight: 900; font-size: 1.1rem; }
 
     /* ─── DRAW GRID ──────────────────────────────── */
     .search-bar {
       width: 100%;
-      padding: 12px 16px;
-      font-size: 14px;
-      font-family: 'Inter', sans-serif;
+      padding: 16px 20px;
+      font-size: 1rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 18px;
+      border-radius: 12px;
+      margin-bottom: 24px;
       outline: none;
-      background: var(--card-bg);
-      transition: border-color 0.2s, box-shadow 0.2s;
+      background: var(--bg-main);
+      color: var(--text);
+      transition: all 0.2s;
     }
-    .search-bar:focus { border-color: var(--wc-teal); box-shadow: 0 0 0 3px rgba(0,155,119,0.15); }
+    .search-bar::placeholder { color: var(--muted); }
+    .search-bar:focus { border-color: var(--wc-teal); box-shadow: 0 0 0 3px rgba(32,201,151,0.2); }
 
-    .sweepstake-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+    .sweepstake-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
     .player-card {
-      background: var(--card-bg);
+      background: var(--card-head);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 13px 15px;
+      border-radius: 12px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
-      gap: 13px;
-      transition: transform 0.18s, box-shadow 0.18s;
+      gap: 16px;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
-    .player-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(10,22,40,0.1); border-left: 4px solid var(--wc-teal); }
-    .player-card img { width: 44px; height: 30px; object-fit: cover; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.12); flex-shrink: 0; }
-    .player-info h3 { font-size: 14px; font-weight: 700; color: var(--wc-navy); }
-    .player-info .player-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .player-info .player-rank { font-size: 10px; color: var(--wc-teal); font-weight: 600; margin-top: 1px; }
+    .player-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); border-color: var(--wc-teal); border-left: 6px solid var(--wc-teal); }
+    .player-card img { width: 54px; height: 38px; object-fit: cover; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); flex-shrink: 0; }
+    .player-info h3 { font-size: 1.1rem; font-weight: 800; color: var(--text); }
+    .player-info .player-meta { font-size: 0.85rem; color: var(--muted); margin-top: 4px; font-weight: 500; }
+    .player-info .player-meta strong { color: var(--text); }
+    .player-info .player-rank { font-size: 0.75rem; color: var(--wc-teal); font-weight: 800; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
     .rank-badge {
-      background: var(--wc-navy);
+      background: var(--bg-main);
       color: var(--wc-gold);
-      font-size: 10px;
-      font-weight: 800;
-      padding: 3px 8px;
+      font-size: 0.85rem;
+      font-weight: 900;
+      padding: 6px 12px;
       border-radius: 20px;
+      border: 1px solid rgba(255,193,7,0.3);
       margin-left: auto;
       white-space: nowrap;
     }
@@ -436,40 +464,40 @@
     /* ─── PRIZES ─────────────────────────────────── */
     .prize-table-wrap { overflow-x: auto; }
     .chaos-rules {
-      background: linear-gradient(135deg, #e8f8f3, #d4f0e7);
-      border: 1px solid var(--wc-teal);
-      border-radius: 10px;
-      padding: 18px 20px;
-      margin-top: 24px;
+      background: rgba(32, 201, 151, 0.08);
+      border: 1px solid rgba(32, 201, 151, 0.3);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-top: 32px;
     }
-    .chaos-rules h4 { color: #006b52; font-size: 14px; margin-bottom: 10px; }
-    .chaos-rules ul { padding-left: 18px; color: #006b52; font-size: 13.5px; line-height: 2; }
+    .chaos-rules h4 { color: #6EE7B7; font-size: 1.1rem; margin-bottom: 12px; font-weight: 800; }
+    .chaos-rules ul { padding-left: 20px; color: #A7F3D0; font-size: 0.95rem; line-height: 2; font-weight: 500; }
+    .chaos-rules strong { color: #fff; }
 
     /* ─── CHAOS TABLE ────────────────────────────── */
-    .chaos-pts { font-weight: 700; color: var(--danger); }
+    .chaos-pts { font-weight: 900; color: var(--wc-red); font-size: 1.1rem; }
 
     /* ─── MOBILE ─────────────────────────────────── */
     @media (max-width: 768px) {
       body { flex-direction: column; height: auto; overflow-y: auto; }
-      .sidebar { width: 100%; height: auto; }
+      .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
       .sidebar::before { display: none; }
-      .brand { flex-direction: row; align-items: center; gap: 12px; padding: 14px 16px; }
+      .brand { flex-direction: row; align-items: center; gap: 16px; padding: 18px 20px; }
       .pot-widget { display: none; }
       .update-badge { display: none; }
-      .nav-menu { flex-direction: row; overflow-x: auto; padding: 8px; gap: 4px; }
-      .nav-btn { padding: 9px 13px; white-space: nowrap; font-size: 12px; }
-      .main-content { padding: 16px; }
+      .nav-menu { flex-direction: row; overflow-x: auto; padding: 12px; gap: 8px; }
+      .nav-btn { padding: 12px 18px; white-space: nowrap; font-size: 0.85rem; }
+      .main-content { padding: 20px; }
       .dash-row, .dash-main { grid-template-columns: 1fr; }
       .match { flex-wrap: wrap; }
-      .match-team, .match-team.right { flex: 100%; flex-direction: row; }
-      .score-block { width: 100%; margin: 4px 0; }
-      .sweepstake-grid { grid-template-columns: 1fr 1fr; }
+      .match-team, .match-team.right { flex: 100%; flex-direction: row; justify-content: flex-start; text-align: left; }
+      .score-block { width: 100%; margin: 8px 0; }
+      .sweepstake-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ═══════════ SIDEBAR ═══════════ -->
   <aside class="sidebar">
     <div class="brand">
       <div class="brand-eyebrow">RMC Sweepstake ⚽</div>
@@ -500,10 +528,8 @@
     <div class="update-badge" id="last-update-label">Auto-refreshes every <span>10 min</span></div>
   </aside>
 
-  <!-- ═══════════ MAIN CONTENT ═══════════ -->
   <main class="main-content">
 
-    <!-- ─── DASHBOARD ─── -->
     <div id="dashboard" class="tab-content active">
       <div class="page-header">
         <div>
@@ -513,16 +539,15 @@
         <div class="live-pill">Live Updating</div>
       </div>
 
-      <!-- Row 1: Upset tracker + Wooden Spoon -->
       <div class="dash-row">
         <div class="hl-card">
           <div class="hl-header"><i class="fa-solid fa-bolt"></i> The Giant Killer — Biggest Upset</div>
           <div class="hl-body">
             <div class="hl-section-label">🏆 Current Record Upset</div>
-            <div id="upset-completed"><p class="hl-big" style="font-size:15px; color:var(--muted);">Awaiting match data…</p></div>
+            <div id="upset-completed"><p class="hl-big" style="font-size:1.1rem; color:var(--muted);">Awaiting match data…</p></div>
             <hr class="hl-divider">
             <div class="hl-section-label">⚡ Upcoming Threat (nearest KO)</div>
-            <div id="upset-potential"><p style="font-size:13px; color:var(--muted);">Scanning fixtures…</p></div>
+            <div id="upset-potential"><p style="font-size:0.9rem; color:var(--muted); font-weight: 500;">Scanning fixtures…</p></div>
           </div>
         </div>
 
@@ -535,15 +560,14 @@
         </div>
       </div>
 
-      <!-- Row 2: Matches + Chaos Index -->
       <div class="dash-main">
         <div class="card">
           <div class="card-head">
             <h3><i class="fa-solid fa-satellite-dish"></i> Live &amp; Today's Matches</h3>
-            <span class="live-pill" style="font-size:9px;">Auto-Updating</span>
+            <span class="live-pill" style="font-size:0.65rem;">Auto-Updating</span>
           </div>
           <div class="card-body" id="match-container">
-            <p style="text-align:center; padding:20px; color:var(--muted);">Loading match data…</p>
+            <p style="text-align:center; padding:30px; color:var(--muted); font-weight:600;">Loading match data…</p>
           </div>
         </div>
 
@@ -563,18 +587,17 @@
                 </tr>
               </thead>
               <tbody id="chaos-table-body">
-                <tr><td colspan="5" style="text-align:center; color:var(--muted); padding:20px;">Calculating…</td></tr>
+                <tr><td colspan="5" style="text-align:center; color:var(--muted); padding:30px; font-weight:600;">Calculating…</td></tr>
               </tbody>
             </table>
           </div>
-          <div style="padding:10px 14px; font-size:10px; color:var(--muted); font-style:italic; border-top:1px solid var(--border);">
+          <div style="padding:14px 20px; font-size:0.75rem; color:var(--muted); font-weight:500; font-style:italic; border-top:1px solid var(--border);">
             ★ 25 pts pending from Post-Final Meme Poll — could change everything.
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ─── WALLCHART ─── -->
     <div id="wallchart" class="tab-content">
       <div class="page-header">
         <div>
@@ -583,11 +606,11 @@
         </div>
       </div>
 
-      <div class="card" style="margin-bottom:22px;">
+      <div class="card" style="margin-bottom:28px;">
         <div class="card-head"><h3><i class="fa-solid fa-table-cells"></i> Group Stage</h3></div>
         <div class="card-body">
           <div class="groups-grid" id="groups-container">
-            <p style="color:var(--muted);">Loading groups…</p>
+            <p style="color:var(--muted); font-weight: 600;">Loading groups…</p>
           </div>
         </div>
       </div>
@@ -596,13 +619,12 @@
         <div class="card-head"><h3><i class="fa-solid fa-trophy"></i> Knockout Bracket</h3></div>
         <div class="card-body">
           <div class="bracket-wrapper" id="bracket-container">
-            <p style="color:var(--muted); padding:20px;">Knockout data will appear once the group stage concludes.</p>
+            <p style="color:var(--muted); padding:30px; font-weight: 600;">Knockout data will appear once the group stage concludes.</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ─── THE DRAW ─── -->
     <div id="draw" class="tab-content">
       <div class="page-header">
         <div>
@@ -619,7 +641,6 @@
       </div>
     </div>
 
-    <!-- ─── PRIZES ─── -->
     <div id="prizes" class="tab-content">
       <div class="page-header">
         <div>
@@ -636,9 +657,9 @@
               <tr><th>Prize</th><th>Amount</th><th>% of Pot</th><th>Awarded When</th></tr>
             </thead>
             <tbody>
-              <tr><td><strong>🥇 Winner</strong></td><td><strong style="color:var(--wc-navy);">£100</strong></td><td>41.7%</td><td>After the Final</td></tr>
-              <tr><td><strong>🥈 Runner-up</strong></td><td><strong>£55</strong></td><td>22.9%</td><td>After the Final</td></tr>
-              <tr><td><strong>🥉 Third Place</strong></td><td><strong>£25</strong></td><td>10.4%</td><td>After the Final</td></tr>
+              <tr><td><strong>🥇 Winner</strong></td><td><strong style="color:var(--wc-gold); font-size:1.1rem;">£100</strong></td><td>41.7%</td><td>After the Final</td></tr>
+              <tr><td><strong>🥈 Runner-up</strong></td><td><strong style="color:#fff;">£55</strong></td><td>22.9%</td><td>After the Final</td></tr>
+              <tr><td><strong>🥉 Third Place</strong></td><td><strong style="color:#fff;">£25</strong></td><td>10.4%</td><td>After the Final</td></tr>
               <tr><td>⚽ Best Goal (FIFA award)</td><td>£20</td><td>8.3%</td><td>After the Final</td></tr>
               <tr><td>⚡ Biggest Shock (Ranking diff)</td><td>£15</td><td>6.3%</td><td>After the tournament</td></tr>
               <tr><td>🥄 Wooden Spoon (Lowest Pts / Worst GD)</td><td>£15</td><td>6.3%</td><td>After all group games</td></tr>
@@ -672,100 +693,68 @@
 
   // ====================================================
   // ⚽  SWEEPSTAKE DATA
-  //
-  //  • `name`  — Participant name (update manually)
-  //  • `team`  — Must match the API team name exactly
-  //  • `iso`   — ISO 3166-1 alpha-2 code (for flagcdn)
-  //  • `swRank`— Sweepstake rank 1-48 (draw order / FIFA rank-based)
-  //  • `fifaRank` — Official FIFA World Ranking (approx June 2025)
-  //  • `group` — World Cup 2026 confirmed group
-  //
-  //  FIFA World Ranking source: https://www.fifa.com/fifa-world-ranking
-  //  Group draw source: https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_draw
   // ====================================================
-  // ─────────────────────────────────────────────────────────────────
-  //  2026 FIFA World Cup — confirmed group draw (Dec 2024 ceremony)
-  //  Sources: wikipedia.org/wiki/2026_FIFA_World_Cup_draw
-  //           fifa.com/fifa-world-ranking (April 2025 release)
-  //
-  //  swRank  1–48 = sweepstake draw order (based on FIFA rank seed tier)
-  //  fifaRank = official FIFA World Ranking position
-  //
-  //  ⚠️  48 unique participants, 12 groups of 4, groups A–L.
-  //      Update `name` fields manually before sharing.
-  // ─────────────────────────────────────────────────────────────────
   const sweepstakeData = [
     // ── GROUP A ──────────────────────────────────────────────────
-    { name: "Name 1",  team: "Argentina",            iso: "ar",     swRank:  1, fifaRank:  1, group: "A" },
-    { name: "Name 2",  team: "Canada",               iso: "ca",     swRank: 23, fifaRank: 44, group: "A" },
-    { name: "Name 3",  team: "Chile",                iso: "cl",     swRank: 33, fifaRank: 48, group: "A" },
-    { name: "Name 4",  team: "Peru",                 iso: "pe",     swRank: 40, fifaRank: 72, group: "A" },
-
+    { name: "Jamie Howard", team: "Mexico", iso: "mx", swRank: 21, fifaRank: 15, group: "A" },
+    { name: "Raechelle", team: "South Korea", iso: "kr", swRank: 22, fifaRank: 20, group: "A" },
+    { name: "Alex Grant", team: "South Africa", iso: "za", swRank: 35, fifaRank: 38, group: "A" },
+    { name: "Jeanette Eriksson", team: "Czechia", iso: "cz", swRank: 47, fifaRank: 26, group: "A" },
     // ── GROUP B ──────────────────────────────────────────────────
-    { name: "Name 5",  team: "Spain",                iso: "es",     swRank:  2, fifaRank:  2, group: "B" },
-    { name: "Name 6",  team: "Croatia",              iso: "hr",     swRank:  9, fifaRank: 10, group: "B" },
-    { name: "Name 7",  team: "Morocco",              iso: "ma",     swRank: 12, fifaRank: 14, group: "B" },
-    { name: "Name 8",  team: "Iceland",              iso: "is",     swRank: 41, fifaRank: 68, group: "B" },
-
+    { name: "Marcus Ball", team: "Canada", iso: "ca", swRank: 30, fifaRank: 27, group: "B" },
+    { name: "Hannah Lloyd", team: "Switzerland", iso: "ch", swRank: 15, fifaRank: 17, group: "B" },
+    { name: "Laura Molyneaux", team: "Bosnia and Herzegovina", iso: "ba", swRank: 32, fifaRank: 25, group: "B" },
+    { name: "Tim Babaryka", team: "Qatar", iso: "qa", swRank: 39, fifaRank: 41, group: "B" },
     // ── GROUP C ──────────────────────────────────────────────────
-    { name: "Name 9",  team: "France",               iso: "fr",     swRank:  3, fifaRank:  3, group: "C" },
-    { name: "Name 10", team: "Colombia",             iso: "co",     swRank: 11, fifaRank: 12, group: "C" },
-    { name: "Name 11", team: "Senegal",              iso: "sn",     swRank: 16, fifaRank: 18, group: "C" },
-    { name: "Name 12", team: "Ecuador",              iso: "ec",     swRank: 36, fifaRank: 57, group: "C" },
-
+    { name: "Jess Knapman", team: "Brazil", iso: "br", swRank: 4, fifaRank: 6, group: "C" },
+    { name: "Sarah Shannon", team: "Morocco", iso: "ma", swRank: 14, fifaRank: 11, group: "C" },
+    { name: "Del", team: "Scotland", iso: "gb-sct", swRank: 37, fifaRank: 34, group: "C" },
+    { name: "Jack Traylen", team: "Haiti", iso: "ht", swRank: 46, fifaRank: 48, group: "C" },
     // ── GROUP D ──────────────────────────────────────────────────
-    { name: "Name 13", team: "England",              iso: "gb-eng", swRank:  4, fifaRank:  4, group: "D" },
-    { name: "Name 14", team: "Netherlands",          iso: "nl",     swRank:  6, fifaRank:  7, group: "D" },
-    { name: "Name 15", team: "Egypt",                iso: "eg",     swRank: 30, fifaRank: 39, group: "D" },
-    { name: "Name 16", team: "Uruguay",              iso: "uy",     swRank: 15, fifaRank: 17, group: "D" },
-
+    { name: "Vicky White", team: "United States", iso: "us", swRank: 20, fifaRank: 14, group: "D" },
+    { name: "Michelle", team: "Australia", iso: "au", swRank: 27, fifaRank: 24, group: "D" },
+    { name: "Jason Miller", team: "Paraguay", iso: "py", swRank: 26, fifaRank: 31, group: "D" },
+    { name: "Louis Ormston", team: "Turkey", iso: "tr", swRank: 24, fifaRank: 28, group: "D" },
     // ── GROUP E ──────────────────────────────────────────────────
-    { name: "Name 17", team: "Brazil",               iso: "br",     swRank:  5, fifaRank:  5, group: "E" },
-    { name: "Name 18", team: "Japan",                iso: "jp",     swRank: 17, fifaRank: 19, group: "E" },
-    { name: "Name 19", team: "Serbia",               iso: "rs",     swRank: 22, fifaRank: 28, group: "E" },
-    { name: "Name 20", team: "Costa Rica",           iso: "cr",     swRank: 44, fifaRank: 76, group: "E" },
-
+    { name: "Louise Adams", team: "Germany", iso: "de", swRank: 7, fifaRank: 8, group: "E" },
+    { name: "Raquel", team: "Ecuador", iso: "ec", swRank: 19, fifaRank: 19, group: "E" },
+    { name: "Oana matty", team: "Ivory Coast", iso: "ci", swRank: 31, fifaRank: 35, group: "E" },
+    { name: "Lou Threapleton", team: "Curacao", iso: "cw", swRank: 45, fifaRank: 47, group: "E" },
     // ── GROUP F ──────────────────────────────────────────────────
-    { name: "Name 21", team: "Portugal",             iso: "pt",     swRank:  7, fifaRank:  6, group: "F" },
-    { name: "Name 22", team: "Mexico",               iso: "mx",     swRank: 13, fifaRank: 15, group: "F" },
-    { name: "Name 23", team: "South Korea",          iso: "kr",     swRank: 21, fifaRank: 22, group: "F" },
-    { name: "Name 24", team: "New Zealand",          iso: "nz",     swRank: 47, fifaRank: 94, group: "F" },
-
+    { name: "Liz Cruz", team: "Netherlands", iso: "nl", swRank: 8, fifaRank: 7, group: "F" },
+    { name: "Josh Cadman", team: "Japan", iso: "jp", swRank: 18, fifaRank: 21, group: "F" },
+    { name: "Tom Wenham Jones", team: "Tunisia", iso: "tn", swRank: 33, fifaRank: 36, group: "F" },
+    { name: "Kristian Band", team: "Sweden", iso: "se", swRank: 25, fifaRank: 23, group: "F" },
     // ── GROUP G ──────────────────────────────────────────────────
-    { name: "Name 25", team: "Germany",              iso: "de",     swRank:  8, fifaRank: 13, group: "G" },
-    { name: "Name 26", team: "United States",        iso: "us",     swRank: 10, fifaRank: 11, group: "G" },
-    { name: "Name 27", team: "Tunisia",              iso: "tn",     swRank: 29, fifaRank: 34, group: "G" },
-    { name: "Name 28", team: "Venezuela",            iso: "ve",     swRank: 39, fifaRank: 66, group: "G" },
-
+    { name: "PJ McD", team: "Belgium", iso: "be", swRank: 9, fifaRank: 9, group: "G" },
+    { name: "Dan Brown", team: "Egypt", iso: "eg", swRank: 28, fifaRank: 32, group: "G" },
+    { name: "Nicole Chapman", team: "Iran", iso: "ir", swRank: 23, fifaRank: 18, group: "G" },
+    { name: "Charlie", team: "New Zealand", iso: "nz", swRank: 44, fifaRank: 46, group: "G" },
     // ── GROUP H ──────────────────────────────────────────────────
-    { name: "Name 29", team: "Belgium",              iso: "be",     swRank: 14, fifaRank:  3, group: "H" },
-    { name: "Name 30", team: "Switzerland",          iso: "ch",     swRank: 18, fifaRank: 20, group: "H" },
-    { name: "Name 31", team: "Algeria",              iso: "dz",     swRank: 31, fifaRank: 36, group: "H" },
-    { name: "Name 32", team: "Ghana",                iso: "gh",     swRank: 45, fifaRank: 59, group: "H" },
-
+    { name: "Mark Barlow", team: "Spain", iso: "es", swRank: 1, fifaRank: 2, group: "H" },
+    { name: "Kayleigh Edwards", team: "Uruguay", iso: "uy", swRank: 13, fifaRank: 16, group: "H" },
+    { name: "Chris Warnes", team: "Cape Verde", iso: "cv", swRank: 42, fifaRank: 40, group: "H" },
+    { name: "Dan Brown", team: "Saudi Arabia", iso: "sa", swRank: 40, fifaRank: 43, group: "H" },
     // ── GROUP I ──────────────────────────────────────────────────
-    { name: "Name 33", team: "Turkey",               iso: "tr",     swRank: 24, fifaRank: 26, group: "I" },
-    { name: "Name 34", team: "Austria",              iso: "at",     swRank: 25, fifaRank: 25, group: "I" },
-    { name: "Name 35", team: "Australia",            iso: "au",     swRank: 26, fifaRank: 23, group: "I" },
-    { name: "Name 36", team: "South Africa",         iso: "za",     swRank: 38, fifaRank: 67, group: "I" },
-
+    { name: "Verity PC", team: "France", iso: "fr", swRank: 2, fifaRank: 1, group: "I" },
+    { name: "Sarah Brandon", team: "Norway", iso: "no", swRank: 10, fifaRank: 29, group: "I" },
+    { name: "TBC", team: "Senegal", iso: "sn", swRank: 17, fifaRank: 12, group: "I" },
+    { name: "Mel CK", team: "Iraq", iso: "iq", swRank: 48, fifaRank: 42, group: "I" },
     // ── GROUP J ──────────────────────────────────────────────────
-    { name: "Name 37", team: "Ukraine",              iso: "ua",     swRank: 20, fifaRank: 24, group: "J" },
-    { name: "Name 38", team: "Paraguay",             iso: "py",     swRank: 37, fifaRank: 64, group: "J" },
-    { name: "Name 39", team: "Iraq",                 iso: "iq",     swRank: 48, fifaRank: 88, group: "J" },
-    { name: "Name 40", team: "Panama",               iso: "pa",     swRank: 42, fifaRank: 55, group: "J" },
-
+    { name: "Emma Harris", team: "Argentina", iso: "ar", swRank: 5, fifaRank: 3, group: "J" },
+    { name: "Ben Hunt", team: "Algeria", iso: "dz", swRank: 29, fifaRank: 33, group: "J" },
+    { name: "Caroline", team: "Austria", iso: "at", swRank: 16, fifaRank: 22, group: "J" },
+    { name: "TBC", team: "Jordan", iso: "jo", swRank: 41, fifaRank: 45, group: "J" },
     // ── GROUP K ──────────────────────────────────────────────────
-    { name: "Name 41", team: "Saudi Arabia",         iso: "sa",     swRank: 27, fifaRank: 56, group: "K" },
-    { name: "Name 42", team: "Ivory Coast",          iso: "ci",     swRank: 34, fifaRank: 52, group: "K" },
-    { name: "Name 43", team: "Qatar",                iso: "qa",     swRank: 43, fifaRank: 37, group: "K" },
-    { name: "Name 44", team: "Honduras",             iso: "hn",     swRank: 46, fifaRank: 82, group: "K" },
-
+    { name: "Sophie Coward", team: "Portugal", iso: "pt", swRank: 6, fifaRank: 5, group: "K" },
+    { name: "Julian Wooton", team: "Colombia", iso: "co", swRank: 11, fifaRank: 13, group: "K" },
+    { name: "Louise Meredith", team: "DR Congo", iso: "cd", swRank: 43, fifaRank: 39, group: "K" },
+    { name: "Ben Hunt", team: "Uzbekistan", iso: "uz", swRank: 38, fifaRank: 44, group: "K" },
     // ── GROUP L ──────────────────────────────────────────────────
-    { name: "Name 45", team: "Sweden",               iso: "se",     swRank: 19, fifaRank: 27, group: "L" },
-    { name: "Name 46", team: "Bosnia & Herzegovina", iso: "ba",     swRank: 32, fifaRank: 65, group: "L" },
-    { name: "Name 47", team: "Nigeria",              iso: "ng",     swRank: 35, fifaRank: 40, group: "L" },
-    { name: "Name 48", team: "DR Congo",             iso: "cd",     swRank: 28, fifaRank: 62, group: "L" },
+    { name: "Ellie Newman", team: "England", iso: "gb-eng", swRank: 3, fifaRank: 4, group: "L" },
+    { name: "River", team: "Croatia", iso: "hr", swRank: 12, fifaRank: 10, group: "L" },
+    { name: "Clement", team: "Panama", iso: "pa", swRank: 36, fifaRank: 30, group: "L" },
+    { name: "Emma Harris", team: "Ghana", iso: "gh", swRank: 34, fifaRank: 37, group: "L" },
   ];
 
   // ====================================================
@@ -785,7 +774,6 @@
   function renderPlayers() {
     const grid = document.getElementById('players-grid');
     grid.innerHTML = '';
-    // Remove duplicate names (edge case from data above)
     const seen = new Set();
     sweepstakeData.forEach(p => {
       if (seen.has(p.team)) return;
@@ -814,7 +802,7 @@
   }
 
   // ====================================================
-  // 🏗️ BUILD GROUP STAGE (static draw data — API overwrites)
+  // 🏗️ BUILD GROUP STAGE (static draw data)
   // ====================================================
   function initMockGroups() {
     const container = document.getElementById('groups-container');
@@ -838,8 +826,8 @@
       grouped[g].forEach(t => {
         html += `<tr>
           <td>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <img src="https://flagcdn.com/w80/${t.iso}.png" style="width:18px; height:12px; object-fit:cover; border-radius:2px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <img src="https://flagcdn.com/w80/${t.iso}.png" style="width:22px; height:16px; object-fit:cover; border-radius:2px; box-shadow:0 1px 4px rgba(0,0,0,0.5);">
               <div>
                 <div class="group-team-name">${t.team}</div>
                 <div class="group-owner">${t.name}</div>
@@ -855,7 +843,7 @@
   }
 
   // ====================================================
-  // 📡 API FETCH — rate-limited, capped at 10-min intervals
+  // 📡 API FETCH
   // ====================================================
   async function fetchTournamentData() {
     document.getElementById('last-update-label').innerHTML =
@@ -863,7 +851,7 @@
 
     if (API_KEY === 'YOUR_API_SPORTS_KEY_HERE') {
       document.getElementById('match-container').innerHTML =
-        '<p style="padding:20px; color:var(--danger); text-align:center;">⚠️ Add your API-Sports key in the script to go live.</p>';
+        '<p style="padding:30px; color:var(--danger); text-align:center; font-weight:700;">⚠️ Add your API-Sports key in the script to go live.</p>';
       initMockGroups();
       return;
     }
@@ -887,7 +875,7 @@
     } catch (err) {
       console.error('API Error:', err);
       document.getElementById('match-container').innerHTML =
-        '<p style="padding:20px; color:var(--danger); text-align:center;">Could not fetch data. Retrying in 10 min.</p>';
+        '<p style="padding:30px; color:var(--danger); text-align:center; font-weight:700;">Could not fetch data. Retrying in 10 min.</p>';
       initMockGroups();
     }
   }
@@ -911,14 +899,13 @@
     const relevant = matches.filter(m =>
       liveStatus.includes(m.fixture.status.short) || m.fixture.date.startsWith(today)
     ).sort((a, b) => {
-      // Live first, then by time
       const aLive = liveStatus.includes(a.fixture.status.short) ? 0 : 1;
       const bLive = liveStatus.includes(b.fixture.status.short) ? 0 : 1;
       return aLive - bLive || new Date(a.fixture.date) - new Date(b.fixture.date);
     });
 
     if (relevant.length === 0) {
-      mc.innerHTML = '<p style="text-align:center; color:var(--muted); padding:30px;">No matches today. Check back tomorrow ⚽</p>';
+      mc.innerHTML = '<p style="text-align:center; color:var(--muted); padding:40px; font-weight:600;">No matches today. Check back tomorrow ⚽</p>';
       return;
     }
 
@@ -985,7 +972,7 @@
 
     const hasData = top5.some(c => c.pts > 0);
     if (!hasData) {
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:16px;">No chaos points yet — the tournament is young 😇</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:30px; font-weight:600;">No chaos points yet — the tournament is young 😇</td></tr>';
       return;
     }
 
@@ -994,7 +981,7 @@
       const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
       tbody.innerHTML += `
         <tr>
-          <td><strong>${medal} ${c.team}</strong><br><span style="font-size:10px; color:var(--muted);">${c.name}</span></td>
+          <td><strong style="color:var(--text);">${medal} ${c.team}</strong><br><span style="font-size:0.75rem; color:var(--muted); font-weight:500;">${c.name}</span></td>
           <td style="text-align:center;">${c.y}</td>
           <td style="text-align:center;">${c.r}</td>
           <td style="text-align:center;">${c.og}</td>
@@ -1025,7 +1012,7 @@
         else if (m.goals.away > m.goals.home)  { winnerRank = aRank; loserRank = hRank; winnerName = m.teams.away.name; loserName = m.teams.home.name; }
 
         if (winnerRank > 0) {
-          const diff = winnerRank - loserRank; // positive = lower ranked beat higher ranked = upset
+          const diff = winnerRank - loserRank;
           if (diff > biggest.diff) {
             biggest = { diff, match: m, winner: winnerName, loser: loserName };
           }
@@ -1038,7 +1025,6 @@
       }
     });
 
-    // Upcoming: sort by nearest KO date, filter those that could beat the current upset
     upcoming.sort((a, b) => new Date(a.match.fixture.date) - new Date(b.match.fixture.date));
     const threatMatch = upcoming.find(u => u.gap > biggest.diff);
 
@@ -1047,10 +1033,10 @@
       const wOwner = findOwner(biggest.winner);
       upDiv.innerHTML = `
         <p class="hl-big">${biggest.winner} beat ${biggest.loser}</p>
-        <p class="hl-sub">FIFA Rank gap: <strong>${biggest.diff}</strong> places &nbsp;·&nbsp; Owner: ${wOwner}</p>
+        <p class="hl-sub">FIFA Rank gap: <strong style="color:var(--text);">${biggest.diff}</strong> places &nbsp;·&nbsp; Owner: ${wOwner}</p>
       `;
     } else {
-      upDiv.innerHTML = '<p class="hl-big" style="font-size:15px;">No results yet — first match coming soon.</p>';
+      upDiv.innerHTML = '<p class="hl-big" style="font-size:1.1rem; color:var(--muted);">No results yet — first match coming soon.</p>';
     }
 
     const potDiv = document.getElementById('upset-potential');
@@ -1058,11 +1044,11 @@
       const dt = new Date(threatMatch.match.fixture.date);
       const dtStr = dt.toLocaleString([], { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
       potDiv.innerHTML = `
-        <p class="hl-big" style="font-size:15px;">${threatMatch.home} vs ${threatMatch.away}</p>
-        <p class="hl-sub">Gap: <strong>${threatMatch.gap}</strong> ranks &nbsp;·&nbsp; KO: ${dtStr}</p>
+        <p class="hl-big" style="font-size:1.1rem;">${threatMatch.home} vs ${threatMatch.away}</p>
+        <p class="hl-sub">Gap: <strong style="color:var(--text);">${threatMatch.gap}</strong> ranks &nbsp;·&nbsp; KO: ${dtStr}</p>
       `;
     } else {
-      potDiv.innerHTML = '<p style="font-size:12px; color:var(--muted);">No upcoming fixture threatens the record.</p>';
+      potDiv.innerHTML = '<p style="font-size:0.9rem; color:var(--muted); font-weight:500;">No upcoming fixture threatens the record.</p>';
     }
   }
 
@@ -1101,12 +1087,12 @@
 
     document.getElementById('wooden-spoon').innerHTML = `
       <div class="spoon-big">${spoon.team}</div>
-      <div class="spoon-sub">${spoon.pts} pts &nbsp;·&nbsp; GD ${spoon.gd > 0 ? '+' : ''}${spoon.gd} &nbsp;·&nbsp; Owner: ${spoon.name}</div>
+      <div class="spoon-sub">${spoon.pts} pts &nbsp;·&nbsp; GD ${spoon.gd > 0 ? '+' : ''}${spoon.gd} &nbsp;·&nbsp; Owner: <strong style="color:#FFAA66;">${spoon.name}</strong></div>
     `;
   }
 
   // ====================================================
-  // 🗃️ E. GROUP STAGE (API-driven, falls back to static draw)
+  // 🗃️ E. GROUP STAGE
   // ====================================================
   function processGroups(matches) {
     const groups = {};
@@ -1167,8 +1153,8 @@
           : t.logo;
         html += `<tr ${promoted}>
           <td>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <img src="${flag}" style="width:18px; height:12px; object-fit:cover; border-radius:2px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <img src="${flag}" style="width:22px; height:16px; object-fit:cover; border-radius:2px; box-shadow:0 1px 4px rgba(0,0,0,0.5);">
               <div>
                 <div class="group-team-name" style="color:${i<2?'var(--green)':'var(--text)'};">${t.name}</div>
                 <div class="group-owner">${t.owner}</div>
@@ -1177,7 +1163,7 @@
           </td>
           <td>${t.p}</td>
           <td>${t.gd >= 0 ? '+' + t.gd : t.gd}</td>
-          <td style="font-weight:800;">${t.pts}</td>
+          <td style="font-weight:900; font-size:1.05rem;">${t.pts}</td>
         </tr>`;
       });
       html += '</tbody></table></div>';
