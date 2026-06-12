@@ -229,7 +229,7 @@
       <div class="pot-amount">£240</div>
     </div>
 
-    <div class="update-badge" id="last-update-label">Data checks every <span>10 min</span></div>
+    <div class="update-badge" id="last-update-label">Data checks every <span>5 min</span></div>
   </aside>
 
   <main class="main-content">
@@ -399,12 +399,12 @@
 
   <script>
   // ====================================================
-  // ⚙️  CONFIG
+  // ⚙️  CONFIG — data via your Cloudflare Worker relay
+  // (football-data.org blocks direct browser calls, so a tiny free
+  //  relay sits in between — see worker.js for 5-minute setup steps)
+  // Paste your worker URL below, e.g. 'https://rmc-sweepstake.yourname.workers.dev'
   // ====================================================
-  const API_KEY     = '0fabdd8b0511990ca6ad7cc22e409798';
-  const LEAGUE_ID   = '1';       
-  const SEASON      = '2026';
-  const API_BASE    = 'https://v3.football.api-sports.io';
+  const PROXY_BASE = 'https://sweepstake.kristian-band.workers.dev/';
 
   // ====================================================
   // ⚽  SWEEPSTAKE DATA
@@ -549,66 +549,65 @@
   // 📡 API FETCH WITH CACHING & BATCHING
   // ====================================================
   async function fetchTournamentData() {
-    const CACHE_KEY = 'rmc_wc26_cache';
-    const CACHE_LIFETIME = 10 * 60 * 1000; // 10 minutes
+    const CACHE_KEY = 'rmc_wc26_fd_cache_v1';
+    const CACHE_LIFETIME = 5 * 60 * 1000; // 5 minutes
     const now = Date.now();
+
+    if (!PROXY_BASE || PROXY_BASE === 'PASTE_YOUR_WORKER_URL_HERE') {
+      document.getElementById('match-container').innerHTML = `
+        <div style="padding:30px; text-align:center; color:var(--muted); font-weight:600; line-height:1.7;">
+          <p style="color:var(--wc-gold); font-weight:800; margin-bottom:8px;">⚙️ One-time setup needed (~5 min)</p>
+          <p>1. Create a free Cloudflare Worker at <strong style="color:var(--text);">dash.cloudflare.com</strong> and paste in the code from <strong style="color:var(--text);">worker.js</strong> (full steps are at the top of that file).</p>
+          <p>2. Paste the worker's URL into <strong style="color:var(--text);">PROXY_BASE</strong> at the top of this file's script.</p>
+        </div>`;
+      return;
+    }
 
     const ukTimeString = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' });
     document.getElementById('last-update-label').innerHTML = `Last refreshed: <span>${ukTimeString}</span>`;
 
     try {
       let allMatches = [];
-      let detailedMatches = [];
-      
+      let standings = [];
+
       const cachedDataRaw = localStorage.getItem(CACHE_KEY);
       const cachedData = cachedDataRaw ? JSON.parse(cachedDataRaw) : null;
 
-      if (cachedData && (now - cachedData.timestamp < CACHE_LIFETIME)) {
+      if (cachedData && (now - cachedData.timestamp < CACHE_LIFETIME) && (cachedData.matches || []).length > 0) {
         console.log("Using cached API data...");
         allMatches = cachedData.matches || [];
-        detailedMatches = cachedData.detailed || [];
+        standings = cachedData.standings || [];
       } else {
         console.log("Fetching fresh API data...");
-        
-        // Fetch master schedule
-        const fixturesRes = await apiFetch(`${API_BASE}/fixtures?league=${LEAGUE_ID}&season=${SEASON}`);
-        allMatches = fixturesRes?.response || [];
+        const [mRes, sRes] = await Promise.all([
+          apiFetch('/competitions/WC/matches'),
+          apiFetch('/competitions/WC/standings'),
+        ]);
+        allMatches = (mRes?.matches || []).map(adaptMatch);
+        standings = sRes?.standings || [];
 
-        // Filter out matches that actually need their deep 'events' data loaded
-        const eventsRelevantStatus = ['1H', '2H', 'HT', 'ET', 'BT', 'P', 'SUSP', 'INT', 'FT', 'AET', 'PEN'];
-        const matchesNeedingEvents = allMatches.filter(m => eventsRelevantStatus.includes(m.fixture.status.short));
-        
-        // Batch them in groups of 20 (API-Football restriction)
-        for (let i = 0; i < matchesNeedingEvents.length; i += 20) {
-          const batchIds = matchesNeedingEvents.slice(i, i + 20).map(m => m.fixture.id).join('-');
-          if (batchIds) {
-            const detailsRes = await apiFetch(`${API_BASE}/fixtures?ids=${batchIds}`);
-            if (detailsRes?.response) {
-              detailedMatches.push(...detailsRes.response);
-            }
-          }
+        if (allMatches.length > 0) {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            timestamp: now,
+            matches: allMatches,
+            standings: standings
+          }));
         }
-
-        localStorage.setItem(CACHE_KEY, JSON.stringify({
-          timestamp: now,
-          matches: allMatches,
-          detailed: detailedMatches
-        }));
       }
 
       processLiveMatches(allMatches);
       processUpcomingMatches(allMatches);
-      processChaosIndex(detailedMatches); 
       processBiggestUpset(allMatches);
       processWoodenSpoon(allMatches);
-      processGroups(allMatches);
+      processGroups(standings);
       processKnockouts(allMatches);
+      await processChaosIndex(allMatches);
 
     } catch (err) {
       console.error('API Error:', err);
       // Hard reset the UI containers so they don't stay stuck on "Loading..."
       document.getElementById('match-container').innerHTML = 
-        '<p style="padding:30px; color:var(--danger); text-align:center; font-weight:700;">Could not fetch match data. Verify API key limits.</p>';
+        `<p style="padding:30px; color:var(--danger); text-align:center; font-weight:700;">Could not fetch match data.<br><span style="font-size:0.8rem; font-weight:500; color:var(--muted);">${err.message}</span></p>`;
       document.getElementById('upcoming-container').innerHTML = 
         '<p style="text-align:center; color:var(--muted); padding:30px; font-weight:600;">Unable to load schedule.</p>';
       document.getElementById('upset-potential').innerHTML = 
@@ -621,10 +620,62 @@
     }
   }
 
-  async function apiFetch(url) {
-    const res = await fetch(url, { headers: { 'x-apisports-key': API_KEY } });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
+  async function apiFetch(path) {
+    // Plain GET with no custom headers — no CORS preflight needed.
+    const base = PROXY_BASE.replace(/\/+$/, '');
+    const res = await fetch(`${base}${path}`);
+    let data = null;
+    try { data = await res.json(); } catch (e) { /* non-JSON error body */ }
+    if (!res.ok) throw new Error(data?.message || `HTTP ${res.status}`);
+    return data;
+  }
+
+  // ====================================================
+  // 🔌 ADAPTER — football-data.org -> the shape this page renders
+  // ====================================================
+  const STAGE_TO_ROUND = {
+    LAST_32: 'Round of 32',
+    LAST_16: 'Round of 16',
+    QUARTER_FINALS: 'Quarter-finals',
+    SEMI_FINALS: 'Semi-finals',
+    THIRD_PLACE: '3rd Place',
+    FINAL: 'Final',
+  };
+
+  function mapStatusShort(m) {
+    switch (m.status) {
+      case 'IN_PLAY':   return '1H';
+      case 'PAUSED':    return 'HT';
+      case 'SUSPENDED': return 'SUSP';
+      case 'FINISHED':
+        if (m.score?.duration === 'PENALTY_SHOOTOUT') return 'PEN';
+        if (m.score?.duration === 'EXTRA_TIME')       return 'AET';
+        return 'FT';
+      case 'POSTPONED':
+      case 'CANCELLED': return 'PST';
+      default:          return 'NS'; // SCHEDULED / TIMED
+    }
+  }
+
+  function adaptMatch(m) {
+    const round = m.stage === 'GROUP_STAGE'
+      ? (m.group || 'Group Stage')               // e.g. "Group A"
+      : (STAGE_TO_ROUND[m.stage] || m.stage || '');
+    const w = m.score?.winner;
+    return {
+      fixture: {
+        id: m.id,
+        date: m.utcDate,
+        status: { short: mapStatusShort(m), elapsed: m.minute ?? null },
+      },
+      league: { round },
+      teams: {
+        home: { name: canonTeam(m.homeTeam?.name, m.homeTeam?.shortName), logo: m.homeTeam?.crest || '' },
+        away: { name: canonTeam(m.awayTeam?.name, m.awayTeam?.shortName), logo: m.awayTeam?.crest || '' },
+      },
+      goals: { home: m.score?.fullTime?.home ?? null, away: m.score?.fullTime?.away ?? null },
+      winner: w === 'HOME_TEAM' ? 'home' : w === 'AWAY_TEAM' ? 'away' : null,
+    };
   }
 
   // ====================================================
@@ -660,8 +711,10 @@
       
       const statusLabel = m.fixture.status.short === 'NS'
         ? new Date(m.fixture.date).toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' })
-        : m.fixture.status.short === 'FT' ? 'Full Time'
-        : `${m.fixture.status.elapsed}'`;
+        : ['FT', 'AET', 'PEN'].includes(m.fixture.status.short) ? 'Full Time'
+        : m.fixture.status.short === 'HT' ? 'Half Time'
+        : m.fixture.status.elapsed ? `${m.fixture.status.elapsed}'`
+        : 'LIVE';
 
       mc.innerHTML += `
         <div class="match">
@@ -742,20 +795,55 @@
   // ====================================================
   // 🔥 B. CHAOS INDEX
   // ====================================================
-  function processChaosIndex(detailedMatches) {
+  async function processChaosIndex(matches) {
+    const EVENTS_KEY = 'rmc_wc26_events_v1';
+    let cache = {};
+    try { cache = JSON.parse(localStorage.getItem(EVENTS_KEY)) || {}; } catch (e) { cache = {}; }
+
+    const finished = matches.filter(m => ['FT', 'AET', 'PEN'].includes(m.fixture.status.short));
+    const pending = finished.filter(m => !cache[m.fixture.id]);
+
+    // Card/own-goal data lives in per-match details. Fetch a few new ones per
+    // page load (free plan = 10 requests/min) and keep them forever — a
+    // finished match's events never change.
+    const MAX_DETAILS_PER_LOAD = 7;
+    for (const m of pending.slice(0, MAX_DETAILS_PER_LOAD)) {
+      try {
+        const d = await apiFetch(`/matches/${m.fixture.id}`);
+        const src = d?.match || d || {};
+        cache[m.fixture.id] = {
+          home: m.teams.home.name,
+          away: m.teams.away.name,
+          bookings: (src.bookings || []).map(b => ({ team: b.team?.name, card: b.card })),
+          // In the source data an own goal is credited to the team it counted
+          // FOR — the guilty team is the other one, flipped at tally time.
+          ownGoalsFor: (src.goals || []).filter(g => g.type === 'OWN').map(g => ({ team: g.team?.name })),
+        };
+        await new Promise(r => setTimeout(r, 700)); // stay under the rate limit
+      } catch (e) {
+        console.warn('Chaos detail fetch stopped:', e.message);
+        break; // rate-limited or unavailable — try again next refresh
+      }
+    }
+    try { localStorage.setItem(EVENTS_KEY, JSON.stringify(cache)); } catch (e) {}
+
     const data = {};
     sweepstakeData.forEach(t => {
       if (!data[t.team]) data[t.team] = { name: t.name, team: t.team, y: 0, r: 0, og: 0, pts: 0 };
     });
 
-    detailedMatches.forEach(m => {
-      if (!m.events) return;
-      m.events.forEach(e => {
-        const t = e.team?.name;
+    Object.values(cache).forEach(ev => {
+      (ev.bookings || []).forEach(b => {
+        const t = canonTeam(b.team);
         if (!data[t]) return;
-        if (e.type === 'Card' && e.detail === 'Yellow Card') { data[t].y++; data[t].pts += 1; }
-        if (e.type === 'Card' && (e.detail === 'Red Card' || e.detail === 'Second Yellow card')) { data[t].r++; data[t].pts += 5; }
-        if (e.type === 'Goal' && e.detail === 'Own Goal') { data[t].og++; data[t].pts += 3; }
+        if (b.card === 'YELLOW') { data[t].y++; data[t].pts += 1; }
+        else { data[t].r++; data[t].pts += 5; } // RED or YELLOW_RED
+      });
+      (ev.ownGoalsFor || []).forEach(g => {
+        const benefitted = canonTeam(g.team);
+        const guilty = benefitted === ev.home ? ev.away : ev.home;
+        if (!data[guilty]) return;
+        data[guilty].og++; data[guilty].pts += 3;
       });
     });
 
@@ -763,9 +851,10 @@
     const tbody = document.getElementById('chaos-table-body');
     tbody.innerHTML = '';
 
+    const stillScanning = finished.filter(m => !cache[m.fixture.id]).length;
     const hasData = top5.some(c => c.pts > 0);
     if (!hasData) {
-      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:30px; font-weight:600;">No chaos points yet — the tournament is young 😇</td></tr>';
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:30px; font-weight:600;">${stillScanning > 0 ? `Scanning match events… ${stillScanning} to go (updates each refresh)` : 'No chaos points yet — the tournament is young 😇'}</td></tr>`;
       return;
     }
 
@@ -782,6 +871,9 @@
         </tr>
       `;
     });
+    if (stillScanning > 0) {
+      tbody.innerHTML += `<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:10px; font-size:0.75rem; font-weight:500;">Still scanning ${stillScanning} match${stillScanning === 1 ? '' : 'es'} — totals will top up on the next refresh.</td></tr>`;
+    }
   }
 
   // ====================================================
@@ -792,8 +884,8 @@
     let upcoming = [];
 
     matches.forEach(m => {
-      const hData = sweepstakeData.find(s => s.team === m.teams.home.name);
-      const aData = sweepstakeData.find(s => s.team === m.teams.away.name);
+      const hData = sweepstakeData.find(s => s.team === canonTeam(m.teams.home.name));
+      const aData = sweepstakeData.find(s => s.team === canonTeam(m.teams.away.name));
       if (!hData || !aData) return;
 
       const hRank = hData.fifaRank;
@@ -856,7 +948,9 @@
 
     matches.forEach(m => {
       if (!['FT','AET','PEN'].includes(m.fixture.status.short)) return;
-      const h = m.teams.home.name, a = m.teams.away.name;
+      // The wooden spoon is decided on group games only.
+      if (!/^group/i.test(m.league?.round || '')) return;
+      const h = canonTeam(m.teams.home.name), a = canonTeam(m.teams.away.name);
       if (!stats[h] || !stats[a]) return;
 
       stats[h].played++; stats[a].played++;
@@ -887,78 +981,47 @@
   // ====================================================
   // 🗃️ E. GROUP STAGE
   // ====================================================
-  function processGroups(matches) {
-    const groups = {};
-    let apiHasGroups = false;
-
-    matches.forEach(m => {
-      const round = m.league?.round || '';
-      const gMatch = round.match(/Group ([A-L])/i);
-      if (!gMatch) return;
-
-      apiHasGroups = true;
-      const g = gMatch[1].toUpperCase();
-      if (!groups[g]) groups[g] = {};
-
-      const addTeam = (tObj, goalsFor, goalsAgainst, status, won, drew, lost) => {
-        const n = tObj.name;
-        if (!groups[g][n]) {
-          const iso = sweepstakeData.find(s => s.team === n)?.iso || '';
-          groups[g][n] = { name: n, logo: tObj.logo, iso, owner: findOwner(n), p:0, w:0, d:0, l:0, gf:0, ga:0, pts:0 };
-        }
-        if (status === 'FT' || status === 'AET' || status === 'PEN') {
-          groups[g][n].p++;
-          groups[g][n].gf += goalsFor ?? 0;
-          groups[g][n].ga += goalsAgainst ?? 0;
-          if (won)  { groups[g][n].w++; groups[g][n].pts += 3; }
-          if (drew) { groups[g][n].d++; groups[g][n].pts += 1; }
-          if (lost)   groups[g][n].l++;
-        }
-      };
-
-      const st = m.fixture.status.short;
-      const gh = m.goals.home ?? 0, ga = m.goals.away ?? 0;
-      const hWon = gh > ga, aWon = ga > gh, drew = gh === ga && st !== 'NS';
-      addTeam(m.teams.home, gh, ga, st, hWon, drew, aWon);
-      addTeam(m.teams.away, ga, gh, st, aWon, drew, hWon);
-    });
-
-    if (!apiHasGroups) { initMockGroups(); return; }
+  function processGroups(standings) {
+    const tables = (standings || []).filter(s => s.type === 'TOTAL' && s.group && Array.isArray(s.table));
+    if (tables.length === 0) { initMockGroups(); return; }
 
     const container = document.getElementById('groups-container');
     let html = '';
-    Object.keys(groups).sort().forEach(g => {
-      const teams = Object.values(groups[g])
-        .map(t => ({ ...t, gd: t.gf - t.ga }))
-        .sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
-
-      html += `
-        <div class="group-card">
-          <div class="group-card-head"><span class="group-badge">${g}</span> GROUP ${g}</div>
-          <table>
-            <thead><tr><th>Team</th><th>P</th><th>GD</th><th>Pts</th></tr></thead>
-            <tbody>
-      `;
-      teams.forEach((t, i) => {
-        const promoted = i < 2 ? 'class="group-promoted"' : '';
-        const flag = t.iso ? `https://flagcdn.com/w80/${t.iso}.png` : t.logo;
-        html += `<tr ${promoted}>
-          <td>
-            <div style="display:flex; align-items:center; gap:10px;">
-              <img src="${flag}" style="width:22px; height:16px; object-fit:cover; border-radius:2px; box-shadow:0 1px 4px rgba(0,0,0,0.5);">
-              <div>
-                <div class="group-team-name" style="color:${i<2?'var(--green)':'var(--text)'};">${t.name}</div>
-                <div class="group-owner">${t.owner}</div>
+    tables
+      .map(s => ({ ...s, letter: s.group.replace(/^GROUP[_ ]/i, '').trim().toUpperCase() }))
+      .sort((a, b) => a.letter.localeCompare(b.letter))
+      .forEach(s => {
+        const g = s.letter;
+        html += `
+          <div class="group-card">
+            <div class="group-card-head"><span class="group-badge">${g}</span> GROUP ${g}</div>
+            <table>
+              <thead><tr><th>Team</th><th>P</th><th>GD</th><th>Pts</th></tr></thead>
+              <tbody>
+        `;
+        s.table.forEach(row => {
+          const name = canonTeam(row.team?.name, row.team?.shortName);
+          const entry = sweepstakeData.find(x => x.team === name);
+          const flag = entry?.iso ? `https://flagcdn.com/w80/${entry.iso}.png` : (row.team?.crest || '');
+          const promoted = row.position <= 2; // top 2 advance (+ 8 best 3rds)
+          const gd = row.goalDifference ?? 0;
+          html += `<tr ${promoted ? 'class="group-promoted"' : ''}>
+            <td>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <img src="${flag}" style="width:22px; height:16px; object-fit:cover; border-radius:2px; box-shadow:0 1px 4px rgba(0,0,0,0.5);">
+                <div>
+                  <div class="group-team-name" style="color:${promoted ? 'var(--green)' : 'var(--text)'};">${name}</div>
+                  <div class="group-owner">${findOwner(name)}</div>
+                </div>
               </div>
-            </div>
-          </td>
-          <td>${t.p}</td>
-          <td>${t.gd >= 0 ? '+' + t.gd : t.gd}</td>
-          <td style="font-weight:900; font-size:1.05rem;">${t.pts}</td>
-        </tr>`;
+            </td>
+            <td>${row.playedGames ?? 0}</td>
+            <td>${gd >= 0 ? '+' + gd : gd}</td>
+            <td style="font-weight:900; font-size:1.05rem;">${row.points ?? 0}</td>
+          </tr>`;
+        });
+        html += '</tbody></table></div>';
       });
-      html += '</tbody></table></div>';
-    });
     container.innerHTML = html;
   }
 
@@ -980,14 +1043,20 @@
     let hasKO = false;
 
     stageMap.forEach(({ key, label }) => {
-      const stage = matches.filter(m => (m.league?.round || '').includes(key));
+      const stage = matches.filter(m => {
+        const round = m.league?.round || '';
+        if (key === 'Final') return round.includes('Final') && !round.includes('3rd') && !/third/i.test(round);
+        return round.includes(key);
+      });
       if (stage.length === 0) return;
       hasKO = true;
 
       html += `<div class="bracket-col"><div class="bracket-col-title">${label}</div>`;
       stage.forEach(m => {
-        const hWin  = (m.goals.home ?? -1) > (m.goals.away ?? -1);
-        const aWin  = (m.goals.away ?? -1) > (m.goals.home ?? -1);
+        // Prefer the official winner (correct for penalty shootouts), fall
+        // back to comparing goals.
+        const hWin = m.winner ? m.winner === 'home' : (m.goals.home ?? -1) > (m.goals.away ?? -1);
+        const aWin = m.winner ? m.winner === 'away' : (m.goals.away ?? -1) > (m.goals.home ?? -1);
         const oH    = findOwner(m.teams.home.name);
         const oA    = findOwner(m.teams.away.name);
 
@@ -1021,8 +1090,40 @@
   // ====================================================
   // 🔧 HELPERS
   // ====================================================
+  // The data source's team names don't always match ours (e.g. "USA",
+  // "Czech Republic", "Korea Republic"). Map source names -> our names.
+  const TEAM_ALIASES = {
+    'USA': 'United States',
+    'United States of America': 'United States',
+    'Czech Republic': 'Czechia',
+    'Türkiye': 'Turkey',
+    'Turkiye': 'Turkey',
+    'Korea Republic': 'South Korea',
+    'IR Iran': 'Iran',
+    'Bosnia & Herzegovina': 'Bosnia and Herzegovina',
+    'Bosnia-Herzegovina': 'Bosnia and Herzegovina',
+    'Congo DR': 'DR Congo',
+    'DR Congo': 'DR Congo',
+    'Cape Verde Islands': 'Cape Verde',
+    'Cabo Verde': 'Cape Verde',
+    "Côte d'Ivoire": 'Ivory Coast',
+    "Cote d'Ivoire": 'Ivory Coast',
+    'Curaçao': 'Curacao',
+  };
+  const TEAM_SET = new Set(sweepstakeData.map(s => s.team));
+  // Accepts one or more candidate names (e.g. name + shortName) and returns
+  // our canonical sweepstake name if any of them match.
+  function canonTeam(...names) {
+    for (const n of names) {
+      if (!n) continue;
+      if (TEAM_SET.has(n)) return n;
+      if (TEAM_ALIASES[n]) return TEAM_ALIASES[n];
+    }
+    return names.find(Boolean) || 'TBD';
+  }
+
   function findOwner(teamName) {
-    return sweepstakeData.find(s => s.team === teamName)?.name || 'TBC';
+    return sweepstakeData.find(s => s.team === canonTeam(teamName))?.name || 'TBC';
   }
 
   // ====================================================
@@ -1032,7 +1133,7 @@
     renderPlayers();
     initMockGroups();
     fetchTournamentData();
-    setInterval(fetchTournamentData, 10 * 60 * 1000); 
+    setInterval(fetchTournamentData, 5 * 60 * 1000); 
   });
   </script>
 </body>
