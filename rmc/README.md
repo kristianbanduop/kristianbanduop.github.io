@@ -22,6 +22,8 @@ There is no build step, no framework, and no database. The whole site is **one H
 
 A nice side effect: the API token lives only inside the Worker, not in the HTML file that gets shared around.
 
+The Worker also relays a second, token-free source: **ESPN's public World Cup scoreboard feed** (`site.api.espn.com`), used only for the Chaos Award. football-data.org's free tier doesn't include card or own-goal events, so those come from ESPN instead (see the Chaos Award section below).
+
 ---
 
 ## The files
@@ -90,15 +92,17 @@ The render functions were originally written for a different API's data shape, s
 - **Knockout bracket** (`processKnockouts`) — Round of 32 through to the Final, winners highlighted using the official winner field. The 3rd-place match is kept out of the Final column.
 - **Biggest Shock** (`processBiggestUpset`) — for each finished match between two sweepstake teams, computes the FIFA-rank gap when the lower-ranked side won; shows the record holder and the next fixture that could beat it.
 - **Wooden Spoon** (`processWoodenSpoon`) — fewest points then worst goal difference, **counting group-stage matches only**, matching the prize rules.
-- **Chaos Award** (`processChaosIndex`) — yellow card 1 pt, red / second yellow 5 pts, own goal 3 pts. See below, it works differently from the rest.
+- **Chaos Award** (`processChaosIndex`) — yellow card 1 pt, red / second yellow 5 pts, own goal 3 pts. Uses its own data source (ESPN) — see below.
 
 ### How the Chaos Award gets its data
-Cards and own-goals only exist in *per-match* API responses (`/matches/{id}`), and the free plan allows 10 requests/minute. So instead of fetching all matches every time, the page:
-1. keeps a permanent per-browser cache of match events in `localStorage` (a finished match's events never change),
-2. on each refresh, fetches details for up to **7 newly finished matches**, with a short delay between calls,
-3. tallies the chaos table from the cache.
+football-data.org's **free tier does not include bookings or goalscorer events** — its `/matches/{id}` responses come back without them. So this feature uses a different source: ESPN's public World Cup scoreboard feed, relayed through the same Worker at `/espn/scoreboard`.
 
-In normal use, chaos points appear within a refresh or two of full time. A brand-new browser opened late in the tournament will show a "still scanning X matches" note and catch up over a few refreshes. Own goals are attributed to the guilty team (the API credits them to the team they counted *for*, so the code flips it).
+One request with a date range covering the whole tournament (`?dates=20260611-20260719&limit=950`) returns every match with a `details` array of key events — yellow cards, red cards, and own goals, updating live during matches. The page:
+1. fetches that single response every 5 minutes (cached in `localStorage`, and edge-cached 2 minutes by the Worker so colleagues share one call),
+2. slims it down to just the card/own-goal events (the raw feed is huge — odds, broadcasters, etc.),
+3. tallies the chaos table from it.
+
+Details worth knowing: ESPN logs a **second yellow** as both a yellow *and* a red for the same player at the same minute, so the code skips the paired yellow to score it as 5 pts (not 1 + 5), matching the prize rules. **Own goals** are attributed to the guilty team (ESPN credits them to the team they counted *for*, so the code flips it). If ESPN is briefly unreachable, the last cached tally is shown, and it runs independently of football-data.org — one source going down doesn't take out the other.
 
 ### Static tabs
 The Draw tab (player cards with search) and the Rules/Prizes tab are rendered from `sweepstakeData` and hard-coded HTML — no API involved. The prize amounts and chaos scoring explanation live in the HTML table on the Rules tab; if you change the rules, update both that table and (for chaos) the scoring constants in `processChaosIndex`.
@@ -107,12 +111,13 @@ The Draw tab (player cards with search) and the Rules/Prizes tab are rendered fr
 
 ## The Worker, briefly
 
-`worker.js` is ~50 lines:
+`worker.js` is ~70 lines:
 - answers CORS preflight (`OPTIONS`) requests,
-- only accepts `GET`, and only for the three endpoint shapes the page uses (`/competitions/WC/matches`, `/competitions/WC/standings`, `/matches/{id}`) — so the token can't be borrowed for anything else,
-- forwards the request to football-data.org with the `X-Auth-Token` header added,
-- asks Cloudflare to edge-cache the response for 120 seconds,
-- returns the response with `Access-Control-Allow-Origin: *`.
+- only accepts `GET`, and only for the endpoint shapes the page uses (`/competitions/WC/matches`, `/competitions/WC/standings`, `/matches/{id}`, and `/espn/scoreboard`) — so the token can't be borrowed for anything else,
+- forwards football-data.org requests with the `X-Auth-Token` header added,
+- forwards `/espn/scoreboard` (no token needed) to ESPN's World Cup feed, passing through only validated `dates` and `limit` query params,
+- asks Cloudflare to edge-cache responses for 120 seconds,
+- returns responses with `Access-Control-Allow-Origin: *`.
 
 ---
 
@@ -122,8 +127,7 @@ The Draw tab (player cards with search) and the Rules/Prizes tab are rendered fr
 |---|---|---|
 | Cloudflare edge cache (Worker) | 2 min | Many colleagues = many API calls |
 | Browser `localStorage` (page data) | 5 min | One person reloading repeatedly |
-| Browser `localStorage` (chaos match events) | Forever | Re-fetching events that can't change |
-| Chaos detail throttle | Max 7 calls/load, 0.7 s apart | The 10-requests/minute API limit |
+| Browser `localStorage` (chaos/ESPN events) | 5 min | One person reloading repeatedly |
 
 ---
 
@@ -136,7 +140,7 @@ The Draw tab (player cards with search) and the Rules/Prizes tab are rendered fr
 | Red error showing an API message | That message comes straight from football-data.org (e.g. invalid token, rate limit). Token problems are fixed in the **Worker**, not the HTML. |
 | A team shows owner "TBC" | Name mismatch — add the API's spelling to `TEAM_ALIASES`. |
 | Group tables all zeros | Normal before the API publishes standings; it's the static fallback. |
-| Chaos numbers seem behind | It tops up 7 matches per refresh — wait for the next 5-minute cycle, or note in the table footer says how many are left to scan. |
+| Chaos table says “data unavailable” | The `/espn/scoreboard` route on the Worker is failing — most likely the Worker hasn't been redeployed with the latest `worker.js`. Open the Worker URL + `/espn/scoreboard?dates=20260611-20260719&limit=950` in a browser; you should see JSON with an `events` array. The last cached tally keeps showing in the meantime. |
 | Stale data after editing the file | Old data may be cached: in DevTools → Application → Local Storage, delete the `rmc_wc26_*` keys, or just wait 5 minutes. |
 
 ---
@@ -148,6 +152,6 @@ When passing this to a new owner, transfer (or have them recreate) two free acco
 1. **football-data.org account** — owns the API token. A new owner can register their own account and put their token into the Worker's `FD_TOKEN`. If the old token may have leaked, regenerate it from the account dashboard.
 2. **Cloudflare account** — owns the Worker. Either add the new owner to the account, or they re-deploy `worker.js` under their own account (5 minutes) and update `PROXY_BASE` in the HTML to the new URL.
 
-For a future tournament, the things to update are: the `sweepstakeData` array (teams, owners, groups, FIFA ranks), the competition code in the Worker's `ALLOWED` list and the page's two fetch paths (`WC` covers the World Cup; football-data.org uses e.g. `EC` for the Euros), the prize/rules HTML, and any round names in `processKnockouts` if the tournament format differs.
+For a future tournament, the things to update are: the `sweepstakeData` array (teams, owners, groups, FIFA ranks), the competition code in the Worker's `ALLOWED` list and the page's two fetch paths (`WC` covers the World Cup; football-data.org uses e.g. `EC` for the Euros), the ESPN league slug in the Worker's `ESPN_BASE` (`fifa.world` for the World Cup; e.g. `uefa.euro` for the Euros) and the `ESPN_DATE_RANGE` constant in `processChaosIndex`, the prize/rules HTML, and any round names in `processKnockouts` if the tournament format differs.
 
 Built with plain HTML/CSS/JS — no dependencies to update, nothing to install. Enjoy. ⚽

@@ -601,7 +601,6 @@
       processWoodenSpoon(allMatches);
       processGroups(standings);
       processKnockouts(allMatches);
-      await processChaosIndex(allMatches);
 
     } catch (err) {
       console.error('API Error:', err);
@@ -614,10 +613,12 @@
         '<p style="font-size:0.9rem; color:var(--muted); font-weight:500;">Fixture scan failed.</p>';
       document.getElementById('upset-completed').innerHTML = 
         '<p class="hl-big" style="font-size:1.1rem; color:var(--muted);">Awaiting match data…</p>';
-      document.getElementById('chaos-table-body').innerHTML = 
-        '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:30px; font-weight:600;">Calculation failed.</td></tr>';
       initMockGroups();
     }
+
+    // Chaos Award uses its own data source (ESPN via the worker), so it runs
+    // even if football-data.org is down — and vice versa.
+    await processChaosIndex();
   }
 
   async function apiFetch(path) {
@@ -795,66 +796,107 @@
   // ====================================================
   // 🔥 B. CHAOS INDEX
   // ====================================================
-  async function processChaosIndex(matches) {
-    const EVENTS_KEY = 'rmc_wc26_events_v1';
-    let cache = {};
-    try { cache = JSON.parse(localStorage.getItem(EVENTS_KEY)) || {}; } catch (e) { cache = {}; }
+  // Card and own-goal events come from ESPN's public World Cup scoreboard
+  // feed (relayed through the same Cloudflare Worker at /espn/scoreboard).
+  // football-data.org's free tier doesn't include bookings or goalscorers,
+  // which is why this feature has its own data source. One request covers
+  // the entire tournament, so there's no per-match scanning or rate-limit
+  // juggling — live matches' cards are counted as they happen too.
+  async function processChaosIndex() {
+    const tbody = document.getElementById('chaos-table-body');
+    const CHAOS_CACHE_KEY = 'rmc_wc26_chaos_espn_v1';
+    const CHAOS_TTL = 5 * 60 * 1000; // matches the page's refresh cycle
+    const ESPN_DATE_RANGE = '20260611-20260719'; // whole tournament (update for future tournaments)
 
-    const finished = matches.filter(m => ['FT', 'AET', 'PEN'].includes(m.fixture.status.short));
-    const pending = finished.filter(m => !cache[m.fixture.id]);
+    localStorage.removeItem('rmc_wc26_events_v1'); // retire the old per-match event cache
 
-    // Card/own-goal data lives in per-match details. Fetch a few new ones per
-    // page load (free plan = 10 requests/min) and keep them forever — a
-    // finished match's events never change.
-    const MAX_DETAILS_PER_LOAD = 7;
-    for (const m of pending.slice(0, MAX_DETAILS_PER_LOAD)) {
+    // ESPN payloads are huge (odds, broadcasters, links...), so only the
+    // fields the tally needs are kept and cached.
+    const slimEvent = (ev) => {
+      const comp = ev.competitions?.[0] || {};
+      return {
+        competitors: (comp.competitors || []).map(c => ({
+          id: c.team?.id,
+          names: [c.team?.displayName, c.team?.shortDisplayName, c.team?.name],
+        })),
+        details: (comp.details || []).map(d => ({
+          teamId: d.team?.id,
+          yellow: d.yellowCard === true || /yellow card/i.test(d.type?.text || ''),
+          red: d.redCard === true || /red card/i.test(d.type?.text || ''),
+          og: d.ownGoal === true || /own goal/i.test(d.type?.text || ''),
+          athleteId: d.athletesInvolved?.[0]?.id ?? null,
+          clock: d.clock?.value ?? null,
+        })),
+      };
+    };
+
+    let events = null;
+    let cached = null;
+    try { cached = JSON.parse(localStorage.getItem(CHAOS_CACHE_KEY)); } catch (e) { cached = null; }
+
+    if (cached && (Date.now() - cached.timestamp < CHAOS_TTL) && (cached.events || []).length > 0) {
+      events = cached.events;
+    } else {
       try {
-        const d = await apiFetch(`/matches/${m.fixture.id}`);
-        const src = d?.match || d || {};
-        cache[m.fixture.id] = {
-          home: m.teams.home.name,
-          away: m.teams.away.name,
-          bookings: (src.bookings || []).map(b => ({ team: b.team?.name, card: b.card })),
-          // In the source data an own goal is credited to the team it counted
-          // FOR — the guilty team is the other one, flipped at tally time.
-          ownGoalsFor: (src.goals || []).filter(g => g.type === 'OWN').map(g => ({ team: g.team?.name })),
-        };
-        await new Promise(r => setTimeout(r, 700)); // stay under the rate limit
+        const d = await apiFetch(`/espn/scoreboard?dates=${ESPN_DATE_RANGE}&limit=950`);
+        const raw = d?.events || [];
+        if (raw.length > 0) {
+          events = raw.map(slimEvent);
+          try { localStorage.setItem(CHAOS_CACHE_KEY, JSON.stringify({ timestamp: Date.now(), events })); } catch (e) {}
+        }
       } catch (e) {
-        console.warn('Chaos detail fetch stopped:', e.message);
-        break; // rate-limited or unavailable — try again next refresh
+        console.warn('Chaos (ESPN) fetch failed:', e.message);
       }
+      // Fetch failed or returned nothing — fall back to a stale cache if we have one.
+      if (!events && cached && (cached.events || []).length > 0) events = cached.events;
     }
-    try { localStorage.setItem(EVENTS_KEY, JSON.stringify(cache)); } catch (e) {}
+
+    if (!events) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:30px; font-weight:600;">Chaos data unavailable right now — will retry on the next refresh.</td></tr>';
+      return;
+    }
 
     const data = {};
     sweepstakeData.forEach(t => {
       if (!data[t.team]) data[t.team] = { name: t.name, team: t.team, y: 0, r: 0, og: 0, pts: 0 };
     });
 
-    Object.values(cache).forEach(ev => {
-      (ev.bookings || []).forEach(b => {
-        const t = canonTeam(b.team);
-        if (!data[t]) return;
-        if (b.card === 'YELLOW') { data[t].y++; data[t].pts += 1; }
-        else { data[t].r++; data[t].pts += 5; } // RED or YELLOW_RED
-      });
-      (ev.ownGoalsFor || []).forEach(g => {
-        const benefitted = canonTeam(g.team);
-        const guilty = benefitted === ev.home ? ev.away : ev.home;
-        if (!data[guilty]) return;
-        data[guilty].og++; data[guilty].pts += 3;
+    events.forEach(ev => {
+      const nameById = {};
+      ev.competitors.forEach(c => { nameById[c.id] = canonTeam(...c.names); });
+      const ids = ev.competitors.map(c => c.id);
+
+      // A second-yellow red is usually logged by ESPN as BOTH a yellow and a
+      // red for the same player at the same minute. The prize rules score a
+      // second yellow as 5 pts (not 1 + 5), so those paired yellows are skipped.
+      const redKeys = new Set(
+        ev.details.filter(d => d.red && d.athleteId != null).map(d => `${d.athleteId}|${d.clock}`)
+      );
+
+      ev.details.forEach(d => {
+        if (d.red) {
+          const t = nameById[d.teamId];
+          if (data[t]) { data[t].r++; data[t].pts += 5; }
+        } else if (d.yellow) {
+          if (d.athleteId != null && redKeys.has(`${d.athleteId}|${d.clock}`)) return;
+          const t = nameById[d.teamId];
+          if (data[t]) { data[t].y++; data[t].pts += 1; }
+        } else if (d.og) {
+          // ESPN logs an own goal against the team it counted FOR —
+          // the guilty team is the other one in the match.
+          const otherId = ids.find(id => id !== d.teamId);
+          const guilty = nameById[otherId];
+          if (data[guilty]) { data[guilty].og++; data[guilty].pts += 3; }
+        }
       });
     });
 
     const top5 = Object.values(data).sort((a, b) => b.pts - a.pts).slice(0, 5);
-    const tbody = document.getElementById('chaos-table-body');
     tbody.innerHTML = '';
 
-    const stillScanning = finished.filter(m => !cache[m.fixture.id]).length;
     const hasData = top5.some(c => c.pts > 0);
     if (!hasData) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:30px; font-weight:600;">${stillScanning > 0 ? `Scanning match events… ${stillScanning} to go (updates each refresh)` : 'No chaos points yet — the tournament is young 😇'}</td></tr>`;
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:30px; font-weight:600;">No chaos points yet — the tournament is young 😇</td></tr>';
       return;
     }
 
@@ -871,9 +913,6 @@
         </tr>
       `;
     });
-    if (stillScanning > 0) {
-      tbody.innerHTML += `<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:10px; font-size:0.75rem; font-weight:500;">Still scanning ${stillScanning} match${stillScanning === 1 ? '' : 'es'} — totals will top up on the next refresh.</td></tr>`;
-    }
   }
 
   // ====================================================

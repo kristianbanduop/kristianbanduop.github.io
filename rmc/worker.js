@@ -5,6 +5,11 @@
 // (no CORS headers), so this tiny relay sits in between:
 //   your page  ->  this worker  ->  api.football-data.org
 //
+// It also relays ESPN's public World Cup scoreboard feed
+// (site.api.espn.com) which supplies the card / own-goal events
+// for the Chaos Award — football-data.org's free tier doesn't
+// include those.
+//
 // SETUP (one time, ~5 minutes, free):
 //   1. Sign up at https://dash.cloudflare.com (free plan is fine)
 //   2. Workers & Pages -> Create -> Create Worker -> Deploy
@@ -15,6 +20,7 @@
 
 const FD_TOKEN = '584ca0d160bd466c886012532e168e93'; // your football-data.org token
 const FD_BASE  = 'https://api.football-data.org/v4';
+const ESPN_BASE = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world';
 
 // Only the endpoints the sweepstake page needs.
 const ALLOWED = /^\/(competitions\/WC\/(matches|standings)|matches\/\d+)$/;
@@ -34,7 +40,25 @@ export default {
       return new Response('Method not allowed', { status: 405, headers: CORS });
     }
 
-    const path = new URL(request.url).pathname.replace(/\/+$/, '');
+    const url = new URL(request.url);
+    const path = url.pathname.replace(/\/+$/, '');
+
+    // ESPN scoreboard relay (Chaos Award events: cards + own goals).
+    // Only the whitelisted query params are forwarded.
+    if (path === '/espn/scoreboard') {
+      const qs = new URLSearchParams();
+      const dates = url.searchParams.get('dates');
+      const limit = url.searchParams.get('limit');
+      if (dates && /^\d{8}(-\d{8})?$/.test(dates)) qs.set('dates', dates);
+      if (limit && /^\d{1,4}$/.test(limit)) qs.set('limit', limit);
+      const espnRes = await fetch(`${ESPN_BASE}/scoreboard${qs.toString() ? '?' + qs.toString() : ''}`, {
+        cf: { cacheTtl: 120, cacheEverything: true },
+      });
+      const out = new Response(espnRes.body, espnRes);
+      Object.entries(CORS).forEach(([k, v]) => out.headers.set(k, v));
+      return out;
+    }
+
     if (!ALLOWED.test(path)) {
       return new Response(JSON.stringify({ message: 'Path not allowed' }), {
         status: 403,
